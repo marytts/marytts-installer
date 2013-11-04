@@ -1,0 +1,9 @@
+<ivy-module version="5.0-SNAPSHOT" xmlns:marytts="http://mary.dfki.de/fnord">
+	<info organisation="marytts" module="marytts-voice-dfki-spike" revision="5.0-SNAPSHOT" marytts:locale="en-GB" marytts:name="dfki-spike" type="unit selection" gender="male">
+		<license name="Creative Commons License: Attribution-No Derivative Works 3.0 Unported" url="http://mary.dfki.de/download/by-nd-3.0.html" />
+		<description>A male, British English expressive unit selection voice: Aggressive Spike.</description>
+	</info>
+	<publications>
+		<artifact />
+	</publications>
+</ivy-module>
