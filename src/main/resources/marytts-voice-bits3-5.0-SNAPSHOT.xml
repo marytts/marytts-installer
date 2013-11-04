@@ -1,0 +1,9 @@
+<ivy-module version="5.0-SNAPSHOT" xmlns:marytts="http://mary.dfki.de/fnord">
+	<info organisation="marytts" module="marytts-voice-bits3" revision="5.0-SNAPSHOT" marytts:locale="de" marytts:name="bits3" type="unit selection" gender="male">
+		<license name="Creative Commons License" url="http://mary.dfki.de/download/by-nd-3.0.html" />
+		<description>A male German Unit selection voice, built from voice recordings provided by the BITS project at the Bavarian Archive of Speech Signals.</description>
+	</info>
+	<publications>
+		<artifact />
+	</publications>
+</ivy-module>
