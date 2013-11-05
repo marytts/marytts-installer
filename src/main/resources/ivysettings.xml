@@ -13,6 +13,8 @@
 			<url name="dfki">
 				<artifact pattern="http://mary.dfki.de/download/5.0-SNAPSHOT/${component.pattern}" />
 			</url>
+			<ibiblio name="diax" m2compatible="true" root="http://diax.coli.uni-saarland.de/artifactory/marytts" />
+			<ibiblio name="maven2" m2compatible="true" />
 		</chain>
 	</resolvers>
 </ivysettings>
