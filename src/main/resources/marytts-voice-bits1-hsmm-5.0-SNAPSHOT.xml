@@ -8,5 +8,7 @@
 	<publications>
 		<artifact />
 	</publications>
-	<dependency org="marytts" name="marytts-lang-de" revision="5.1-SNAPSHOT" />
+	<dependencies>
+		<dependency org="marytts" name="marytts-lang-de" revision="5.1-SNAPSHOT" />
+	</dependencies>
 </ivy-module>
