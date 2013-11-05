@@ -6,4 +6,5 @@
 	<publications>
 		<artifact />
 	</publications>
+	<dependency org="marytts" name="it" revision="5.1-SNAPSHOT"/>
 </ivy-module>
