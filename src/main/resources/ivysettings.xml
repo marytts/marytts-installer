@@ -4,6 +4,7 @@
 	</caches>
 	<resolvers>
 		<chain>
+			<filesystem name="marytts-download" cache="marytts-download" />
 			<url name="dfki">
 				<artifact pattern="http://mary.dfki.de/download/[revision]/[module]-[revision].[ext]" />
 			</url>
