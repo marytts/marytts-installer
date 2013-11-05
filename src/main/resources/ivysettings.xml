@@ -3,12 +3,16 @@
 		<cache name="marytts-download" />
 	</caches>
 	<resolvers>
-		<chain>
+		<chain name="remote">
 			<filesystem name="marytts-download" cache="marytts-download" />
 			<url name="dfki">
 				<artifact pattern="http://mary.dfki.de/download/[revision]/[module]-[revision].[ext]" />
 			</url>
 			<ibiblio name="diax" m2compatible="true" usepoms="false" root="http://diax.coli.uni-saarland.de/artifactory/marytts" />
 		</chain>
+		<filesystem name="marytts-installed">
+			<ivy pattern="${mary.base}/installed/[module]-[revision].xml" />
+			<artifact pattern="${mary.base}/lib/[module]-[revision].[ext]" />
+		</filesystem>
 	</resolvers>
 </ivysettings>
