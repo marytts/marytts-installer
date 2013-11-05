@@ -1,6 +1,6 @@
-<ivy-module version="2.0" xmlns:marytts="http://mary.dfki.de/fnord">
-	<info organisation="marytts" module="marytts-voice-dfki-pavoque-neutral-hsmm" revision="5.0-SNAPSHOT" marytts:locale="de"
-		marytts:name="dfki-pavoque-neutral-hsmm" type="hsmm" gender="male">
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+	<info organisation="marytts" module="marytts-voice-dfki-pavoque-neutral-hsmm" revision="5.0-SNAPSHOT" e:locale="de"
+		e:name="dfki-pavoque-neutral-hsmm" e:type="hsmm" e:gender="male">
 		<license name="Creative Commons License: Attribution-No Derivative Works 3.0 Unported" url="http://mary.dfki.de/download/by-nd-3.0.html" />
 		<description>A male German Hidden semi-Markov model voice</description>
 	</info>

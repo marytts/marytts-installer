@@ -1,5 +1,5 @@
-<ivy-module version="2.0" xmlns:marytts="http://mary.dfki.de/fnord">
-	<info organisation="marytts" module="marytts-lang-en-GB" revision="5.1-SNAPSHOT" marytts:locale="en-GB" marytts:name="en-GB">
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+	<info organisation="marytts" module="marytts-lang-en-GB" revision="5.1-SNAPSHOT" e:locale="en-GB" e:name="en-GB">
 		<license name="GNU Lesser General Public License" url="http://www.gnu.org/licenses/lgpl-3.0-standalone.html" />
 		<description>en-GB language component</description>
 	</info>
