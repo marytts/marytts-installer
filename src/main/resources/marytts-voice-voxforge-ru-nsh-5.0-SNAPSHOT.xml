@@ -1,4 +1,4 @@
-<ivy-module version="5.0-SNAPSHOT" xmlns:marytts="http://mary.dfki.de/fnord">
+<ivy-module version="2.0" xmlns:marytts="http://mary.dfki.de/fnord">
 	<info organisation="marytts" module="marytts-voice-voxforge-ru-nsh" revision="5.0-SNAPSHOT" marytts:locale="ru" marytts:name="voxforge-ru-nsh" type="unit selection" gender="male">
 		<license name="Creative Commons License" url="http://mary.dfki.de/download/by-nd-3.0.html" />
 		<description>Russian male voice kindly made available by Nickolay V. Shmyrev.</description>

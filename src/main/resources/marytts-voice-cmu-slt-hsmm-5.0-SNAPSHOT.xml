@@ -1,4 +1,4 @@
-<ivy-module version="5.0-SNAPSHOT" xmlns:marytts="http://mary.dfki.de/fnord">
+<ivy-module version="2.0" xmlns:marytts="http://mary.dfki.de/fnord">
 	<info organisation="marytts" module="marytts-voice-cmu-slt-hsmm" revision="5.0-SNAPSHOT" marytts:locale="en-US" marytts:name="cmu-slt-hsmm" type="hsmm" gender="female">
 		<license name="Artic License" url="http://mary.dfki.de/download/voices/arctic-license.html" />
 		<description>A female US English Hidden semi-Markov model voice, built from voice recordings provided by Carnegie Mellon University.</description>

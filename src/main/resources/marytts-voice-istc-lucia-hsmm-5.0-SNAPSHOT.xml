@@ -1,4 +1,4 @@
-<ivy-module version="5.0-SNAPSHOT" xmlns:marytts="http://mary.dfki.de/fnord">
+<ivy-module version="2.0" xmlns:marytts="http://mary.dfki.de/fnord">
 	<info organisation="marytts" module="marytts-voice-istc-lucia-hsmm" revision="5.0-SNAPSHOT" marytts:locale="it" marytts:name="istc-lucia-hsmm" type="hsmm" gender="female">
 		<license name="Creative Commons License: Attribution-No Derivative Works 3.0 Unported" url="http://mary.dfki.de/download/by-nd-3.0.html" />
 		<description>Italian female Hidden semi-Markov model voice kindly made available by Fabio Tesser</description>
