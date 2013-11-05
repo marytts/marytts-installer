@@ -1,10 +1,12 @@
 <ivy-module version="2.0" xmlns:marytts="http://mary.dfki.de/fnord">
-	<info organisation="marytts" module="marytts-voice-cmu-nk-hsmm" revision="5.0-SNAPSHOT" marytts:locale="te" marytts:name="cmu-nk-hsmm" type="hsmm" gender="female">
+	<info organisation="marytts" module="marytts-voice-cmu-nk-hsmm" revision="5.0-SNAPSHOT" marytts:locale="te" marytts:name="cmu-nk-hsmm"
+		type="hsmm" gender="female">
 		<license name="Creative Commons License: Attribution-No Derivative Works 3.0 Unported" url="http://mary.dfki.de/download/by-nd-3.0.html" />
-		<description>A female Telugu Hidden semi-Markov model voice built from voice recordings provided by IIIT Hyderabad and Carnegie Mellon University.</description>
+		<description>A female Telugu Hidden semi-Markov model voice built from voice recordings provided by IIIT Hyderabad and Carnegie
+			Mellon University.</description>
 	</info>
 	<publications>
 		<artifact />
 	</publications>
-	<dependency org="marytts" name="marytts-lang-te" revision="5.1-SNAPSHOT"/>
+	<dependency org="marytts" name="marytts-lang-te" revision="5.1-SNAPSHOT" />
 </ivy-module>

@@ -1,10 +1,11 @@
 <ivy-module version="2.0" xmlns:marytts="http://mary.dfki.de/fnord">
-	<info organisation="marytts" module="marytts-voice-cmu-slt" revision="5.0-SNAPSHOT" marytts:locale="en-US" marytts:name="cmu-slt" type="unit selection" gender="female">
+	<info organisation="marytts" module="marytts-voice-cmu-slt" revision="5.0-SNAPSHOT" marytts:locale="en-US" marytts:name="cmu-slt"
+		type="unit selection" gender="female">
 		<license name="Artic License" url="http://mary.dfki.de/download/voices/arctic-license.html" />
 		<description>A female US English Unit selection voice, built from voice recordings provided by Carnegie Mellon University.</description>
 	</info>
 	<publications>
 		<artifact />
 	</publications>
-	<dependency org="marytts" name="marytts-lang-en" revision="5.1-SNAPSHOT"/>
+	<dependency org="marytts" name="marytts-lang-en" revision="5.1-SNAPSHOT" />
 </ivy-module>

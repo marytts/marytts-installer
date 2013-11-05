@@ -1,10 +1,11 @@
 <ivy-module version="2.0" xmlns:marytts="http://mary.dfki.de/fnord">
-	<info organisation="marytts" module="marytts-voice-dfki-pavoque-styles" revision="5.0-SNAPSHOT" marytts:locale="de" marytts:name="dfki-pavoque-styles" type="unit selection" gender="male">
+	<info organisation="marytts" module="marytts-voice-dfki-pavoque-styles" revision="5.0-SNAPSHOT" marytts:locale="de"
+		marytts:name="dfki-pavoque-styles" type="unit selection" gender="male">
 		<license name="Creative Commons License: Attribution-No Derivative Works 3.0 Unported" url="http://mary.dfki.de/download/by-nd-3.0.html" />
 		<description>A male German unit selection voice with expressive styles "happy", "sad", "angry", and "poker"</description>
 	</info>
 	<publications>
 		<artifact />
 	</publications>
-	<dependency org="marytts" name="marytts-lang-de" revision="5.1-SNAPSHOT"/>
+	<dependency org="marytts" name="marytts-lang-de" revision="5.1-SNAPSHOT" />
 </ivy-module>
