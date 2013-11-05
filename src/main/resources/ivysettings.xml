@@ -1,20 +1,13 @@
 <ivysettings>
-	<property name="component.pattern" value="[artifact]-[revision].[ext]" />
-	<caches defaultCacheDir="${mary.base}" artifactPattern="${component.pattern}">
-		<cache name="marybase-lib" ivyPattern="installed/[artifact]/ivy-[revision].xml" artifactPattern="lib/${component.pattern}" />
+	<caches defaultCacheDir="${mary.base}/download" ivyPattern="[module]-[revision].xml" artifactPattern="[module]-[revision].[ext]">
+		<cache name="marytts-download" />
 	</caches>
 	<resolvers>
 		<chain>
-			<filesystem name="marybase-lib">
-				<ivy pattern="${mary.base}/installed/[artifact]-[revision]-component.xml" />
-				<artifact pattern="${mary.base}/lib/${component.pattern}" />
-			</filesystem>
-			<filesystem name="marybase" cache="marybase-lib" />
 			<url name="dfki">
-				<artifact pattern="http://mary.dfki.de/download/5.0-SNAPSHOT/${component.pattern}" />
+				<artifact pattern="http://mary.dfki.de/download/[revision]/[module]-[revision].[ext]" />
 			</url>
-			<ibiblio name="diax" m2compatible="true" root="http://diax.coli.uni-saarland.de/artifactory/marytts" />
-			<ibiblio name="maven2" m2compatible="true" />
+			<ibiblio name="diax" m2compatible="true" usepoms="false" root="http://diax.coli.uni-saarland.de/artifactory/marytts" />
 		</chain>
 	</resolvers>
 </ivysettings>
