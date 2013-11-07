@@ -3,6 +3,8 @@ package marytts.tools.newinstall;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
@@ -14,9 +16,25 @@ import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
 import org.apache.ivy.util.DefaultMessageLogger;
 import org.apache.ivy.util.Message;
 
+import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.google.gson.Gson;
 
 public class Installer {
+
+	/**
+	 * Parse list of voice descriptors from JSON array in resource. The resource is generated at compile time by the <a
+	 * href="http://numberfour.github.io/file-list-maven-plugin/list-mojo.html">file-list-maven-plugin</a>.
+	 * 
+	 * @return List of voice descriptor resources
+	 * @throws IOException
+	 */
+	public List<String> readVoiceDescriptorList() throws IOException {
+		URL voiceListResource = Resources.getResource("voice-list.json");
+		String voiceListJson = Resources.toString(voiceListResource, Charsets.UTF_8);
+		String[] voiceDescriptors = new Gson().fromJson(voiceListJson, String[].class);
+		return Arrays.asList(voiceDescriptors);
+	}
 
 	/**
 	 * Test Installer <br>
