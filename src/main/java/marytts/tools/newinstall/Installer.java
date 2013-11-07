@@ -1,10 +1,15 @@
 package marytts.tools.newinstall;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import marytts.tools.newinstall.objects.Component;
 
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
@@ -22,6 +27,23 @@ import com.google.gson.Gson;
 
 public class Installer {
 
+	private List<Component> resources;
+	private IvySettings ivySettings;
+
+	public Installer() {
+
+		try {
+			this.resources = new ArrayList<Component>();
+			this.ivySettings = new IvySettings();
+			this.ivySettings.load(Resources.getResource("ivysettings.xml"));
+			parseIvyResources(this.ivySettings);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * Parse list of voice descriptors from JSON array in resource. The resource is generated at compile time by the <a
 	 * href="http://numberfour.github.io/file-list-maven-plugin/list-mojo.html">file-list-maven-plugin</a>.
@@ -37,6 +59,46 @@ public class Installer {
 	}
 
 	/**
+	 * @param ivySettings
+	 * @throws ParseException
+	 * @throws IOException
+	 */
+	private void parseIvyResources(IvySettings ivySettings) throws ParseException, IOException {
+		List<String> resourcesList = readVoiceDescriptorList();
+		for (String oneFileName : resourcesList) {
+			if (oneFileName.startsWith("marytts-voice")) {
+				URL oneResource = Resources.getResource(oneFileName);
+				ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings, oneResource,
+						true);
+				Component oneComponent = new Component(descriptor);
+				this.resources.add(oneComponent);
+			} else {
+				continue;
+			}
+		}
+
+	}
+
+	/**
+	 * @return
+	 */
+	public List<Component> getAvailableVoices() {
+
+		return this.resources;
+	}
+
+	/**
+	 * @param feature
+	 * @param value
+	 * @return
+	 */
+	public Collection<Component> getAvailableVoices(String feature, String value) {
+
+		// TODO
+		return null;
+	}
+
+	/**
 	 * Test Installer <br>
 	 * <b>Note:</b> must currently run with -Dmary.base=/path/to/marytts
 	 * 
@@ -45,12 +107,13 @@ public class Installer {
 	 * @throws ParseException
 	 */
 	public static void main(String[] args) throws ParseException, IOException {
+
 		// load ivy settings
 		IvySettings ivySettings = new IvySettings();
 		ivySettings.load(Resources.getResource("ivysettings.xml"));
 
 		// as a test, parse module descriptor for lang-de component
-		URL resource = Resources.getResource("marytts-voice-cmu-slt-hsmm-5.0-SNAPSHOT.xml");
+		URL resource = Resources.getResource("marytts-voice-cmu-slt-hsmm-5.1-SNAPSHOT.xml");
 		ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings, resource, true);
 
 		// instantiate ivy
