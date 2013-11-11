@@ -118,20 +118,6 @@ public class Component implements Comparable<Component> {
   }
 
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
-  @Override
-  public String toString() {
-
-    return "Component [locale=" + this.locale + ", gender=" + this.gender
-      + ", type=" + this.type + ", version=" + this.version + ", licenseName="
-      + this.licenseName + ", description=" + this.description + "]";
-  }
-
-
   /**
    * @return the name
    */
@@ -195,7 +181,21 @@ public class Component implements Comparable<Component> {
   }
 
 
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
+   */
   @Override
+  public String toString() {
+
+    return "Component [locale=" + this.locale + ", gender=" + this.gender
+      + ", type=" + this.type + ", version=" + this.version + ", licenseName="
+      + this.licenseName + ", description=" + this.description + "]";
+  }
+
+
+@Override
   public int compareTo(Component o) {
 
     return ComparisonChain.start()
@@ -203,6 +203,9 @@ public class Component implements Comparable<Component> {
       .compare(this.gender, o.getGender())
       .compare(this.name, o.getName()).result();
   }
+  
+  
+  
 
   // TODO getter/setter?
   // TODO compareTo/equals...?
