@@ -14,18 +14,24 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
 
 /**
+ * 
+ * 
  * @author Jonathan
  * 
  */
 public class InstallerCLI {
 
 	/**
+	 * Starting point of the parse. Initialized the needed objects and then parses the input with
+	 * {@link #evalCommandLine(String[], CommandLineParser, Options, List)}
+	 * 
 	 * @param args
+	 *            the command line arguments, passed on to the {@link CommandLineParser}
+	 * @throws Exception
 	 */
-	public static void main(String[] args) {
+	public void run(String[] args) throws Exception {
 
 		// create installer object containing a collection of Component (voice)
 		// objects
@@ -44,80 +50,79 @@ public class InstallerCLI {
 		options.addOption("i", "install", true, "install <name> component");
 		options.addOption("y", "yes", true, "always assume yes as an answer to prompts");
 		options.addOption(OptionBuilder.withLongOpt("gui").withDescription("starts GUI").create());
-		try {
-			List<Component> resources = installer.getAvailableVoices();
-			
-			parseCommandLine(args, parser, options, resources);
 
-		} catch (ParseException exp) {
-			System.out.println("Unexpected exception:" + exp.getMessage());
-		}
+		List<Component> resources = installer.getAvailableVoices();
 
+		evalCommandLine(args, parser, options, resources);
 	}
 
-	//TODO make unstatic
-	private static void parseCommandLine(String[] args, CommandLineParser parser, Options options, List<Component> resources)
-			throws ParseException {
+	/**
+	 * Parses the input command line arguments and selects the proper action to take.
+	 * 
+	 * @param args
+	 *            command line arguments to parse
+	 * @param parser
+	 *            {@link CommandLineParser used to parse the command line arguments}
+	 * @param options
+	 *            {stores the {@link Option} arguments that define the CLI parameters
+	 * @param resources
+	 *            holds the voice components that are locally available
+	 * @throws Exception
+	 */
+	private void evalCommandLine(String[] args, CommandLineParser parser, Options options, List<Component> resources)
+			throws Exception {
 		// parse the command line arguments
 		CommandLine line = parser.parse(options, args);
 
-			// --list: list all components
-			if (line.hasOption("locale")) {
-				// --list --locale
-				String localeValue = line.getOptionValue("locale");
-				resources = filterResources(resources, "locale", localeValue);
-			}
-			if (line.hasOption("type")) {
-				// --list --type
-				String typeValue = line.getOptionValue("type");
-				resources = filterResources(resources, "type", typeValue);
-			}
-			if (line.hasOption("gender")) {
-				// --list --gender
-				String genderValue = line.getOptionValue("gender");
-				resources = filterResources(resources, "gender", genderValue);
-			}
-			if (line.hasOption("name")) {
-				// --list --name
-				String nameValue = line.getOptionValue("name");
-				resources = filterResources(resources, "name", nameValue);
-			}
-			printSortedComponents(resources);
-	}
-
-	private static List<Component> filterResources(List<Component> resources, String attribute, String attributeValue) {
-
-		for (Component oneComponent : resources) {
-			if (attribute.equals("locale")) {
-				if (!oneComponent.getLocale().toString().equalsIgnoreCase(attributeValue)) {
-					resources.remove(oneComponent);
-				}
-			} else if (attribute.equals("type")) {
-				if (!oneComponent.getType().equalsIgnoreCase(attributeValue)) {
-					resources.remove(oneComponent);
-				}
-			}
-			if (attribute.equals("gender")) {
-				if (!oneComponent.getGender().equalsIgnoreCase(attributeValue)) {
-					resources.remove(oneComponent);
-				}
-			}
-			if (attribute.equals("name")) {
-				if (!oneComponent.getName().equalsIgnoreCase(attributeValue)) {
-					resources.remove(oneComponent);
-				}
-			}
+		// --list: list all components
+		if (line.hasOption("locale")) {
+			// --list --locale
+			String localeValue = line.getOptionValue("locale");
+			resources = Installer.filterResources(resources, "locale", localeValue);
 		}
-
-		return resources;
+		if (line.hasOption("type")) {
+			// --list --type
+			String typeValue = line.getOptionValue("type");
+			resources = Installer.filterResources(resources, "type", typeValue);
+		}
+		if (line.hasOption("gender")) {
+			// --list --gender
+			String genderValue = line.getOptionValue("gender");
+			resources = Installer.filterResources(resources, "gender", genderValue);
+		}
+		if (line.hasOption("name")) {
+			// --list --name
+			String nameValue = line.getOptionValue("name");
+			resources = Installer.filterResources(resources, "name", nameValue);
+		}
+		printSortedComponents(resources);
 	}
 
-	private static void printSortedComponents(List<Component> resources) {
+	/**
+	 * sorts components in resources list by their natural ordering as specified by {@link Component#compareTo(Component)}.
+	 * 
+	 * @param resources
+	 *            holds the voice components that are locally available.
+	 */
+	private void printSortedComponents(List<Component> resources) {
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("listing all voice components:").append("\n\n");
+		System.out.println("listing voice components:\n\n");
 
 		Collections.sort(resources);
+
+		printComponents(resources);
+
+	}
+
+	/**
+	 * used to format the component list so as to be put out on in the appropriate format when listing components.
+	 * 
+	 * @param resources
+	 *            holds the voice components that are locally available
+	 */
+	private void printComponents(List<Component> resources) {
+
+		StringBuilder sb = new StringBuilder();
 
 		String prevLang = "";
 		for (Component oneComp : resources) {
@@ -126,14 +131,16 @@ public class InstallerCLI {
 				sb.append("##" + oneComp.getLocale().toString() + " - " + oneComp.getLocale().getDisplayLanguage() + "##\n");
 			}
 			sb.append("\t" + oneComp.getName() + "\n");
-			sb.append("\t\t" + "gender: " + oneComp.getGender() + "\n");
-			sb.append("\t\t" + "type: " + oneComp.getType() + "\n");
-			sb.append("\t\t" + "version: " + oneComp.getVersion() + "\n");
-			sb.append("\t\t" + "license name: " + oneComp.getLicenseName() + "\n");
-			sb.append("\t\t" + "description: " + oneComp.getDescription() + "\n");
-			sb.append("\n");
+			sb.append("\t" + "gender: " + oneComp.getGender() + "; ");
+			sb.append("" + "type: " + oneComp.getType() + "; ");
+			sb.append("" + "version: " + oneComp.getVersion() + "; ");
+			sb.append("" + "license name: " + oneComp.getLicenseName() + "\n");
+			sb.append("\t" + "description: " + oneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ") + "");
+			sb.append("\n\n");
 			prevLang = oneComp.getLocale().toString();
 		}
+
+		sb.append("Total: " + resources.size() + " components");
 		System.out.println(sb.toString());
 
 	}

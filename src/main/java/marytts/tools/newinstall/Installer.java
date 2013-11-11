@@ -3,10 +3,10 @@ package marytts.tools.newinstall;
 import java.io.IOException;
 import java.net.URL;
 import java.text.ParseException;
-import java.util.Arrays;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import marytts.tools.newinstall.objects.Component;
 
@@ -24,11 +24,20 @@ import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
 
+/**
+ *  
+ * 
+ * @author Jonathan
+ * 
+ */
 public class Installer {
 
 	private List<Component> resources;
 	private IvySettings ivySettings;
 
+	/**
+	 * constructor for installer
+	 */
 	public Installer() {
 
 		try {
@@ -58,6 +67,8 @@ public class Installer {
 	}
 
 	/**
+	 * retrieves the voice component names from the {@link #readVoiceDescriptorList() and creates {@link Component} objects.
+	 * 
 	 * @param ivySettings
 	 * @throws ParseException
 	 * @throws IOException
@@ -87,14 +98,74 @@ public class Installer {
 	}
 
 	/**
-	 * @param feature
-	 * @param value
-	 * @return
+	 * filters the available voice components by a certain attribute-value pair. Iterates over list of components and removes
+	 * those that match the given attribute-value pair
+	 * 
+	 * @param resources
+	 *            the resources to be filtered
+	 * @param attribute
+	 *            the attribute that the component list should be filtered by (i.e., "gender", "locale", "name" and "type")
+	 * @param attributeValue
+	 *            the value of the attribute
+	 * @return the filtered list
+	 * @throws Exception
 	 */
-	public Collection<Component> getAvailableVoices(String feature, String value) {
+	public static List<Component> filterResources(List<Component> resources, String attribute, String attributeValue)
+			throws Exception {
 
-		// TODO
-		return null;
+		// stores the size of the voice component list before filtering.
+		int sizeBefore = resources.size();
+
+		// in order to modify the list while iterating over it, an iterator is needed to call the Iterator.remove() method.
+		Iterator<Component> it = resources.iterator();
+
+		if (attribute.equals("locale")) {
+			System.out.println("filtering by " + attribute + "=" + attributeValue);
+			for (it = it; it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!oneComponent.getLocale().toString().equalsIgnoreCase(attributeValue)) {
+					it.remove();
+				}
+			}
+		} else if (attribute.equals("type")) {
+			System.out.println("filtering by " + attribute + "=" + attributeValue);
+			for (it = it; it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!oneComponent.getType().equalsIgnoreCase(attributeValue)) {
+					it.remove();
+				}
+			}
+		} else if (attribute.equals("gender")) {
+			System.out.println("filtering by " + attribute + "=" + attributeValue);
+			for (it = it; it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!oneComponent.getGender().equalsIgnoreCase(attributeValue)) {
+					it.remove();
+				}
+			}
+		} else if (attribute.equals("name")) {
+			System.out.println("filtering by " + attribute + "=" + attributeValue);
+			for (it = it; it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!oneComponent.getName().equalsIgnoreCase(attributeValue)) {
+					it.remove();
+				}
+			}
+		}
+
+		int sizeAfter = resources.size();
+
+		// if list hasn't been empty before, but is afterwards, the attr-value pair filtered out everything that remained by using
+		// an non-existing attribute value or a value that doesn't occur in the list.
+		if (sizeBefore > 0 && sizeAfter == 0) {
+			System.out.println(attribute + "=" + attributeValue + " is not valid or filtered out all remaining components.");
+			throw new Exception(" No more filtering possible. Component list empty.");
+			// if list size didn't change, the attr-value pair can be discarded as well as it doesn't have affect.
+		} else if (sizeBefore == sizeAfter) {
+			System.out.println(attribute + "=" + attributeValue + " doesn't affect filtering.");
+		}
+
+		return resources;
 	}
 
 	/**
