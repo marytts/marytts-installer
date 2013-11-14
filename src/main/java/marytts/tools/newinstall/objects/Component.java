@@ -17,197 +17,169 @@ import com.google.common.collect.ComparisonChain;
  */
 public class Component implements Comparable<Component> {
 
-  private String name;
-  private Locale locale;
-  private String gender;
-  private String type;
-  private String version;
-  private String licenseName;
-  private String description;
+	private String name;
+	private Locale locale;
+	private String gender;
+	private String type;
+	private String version;
+	private String licenseName;
+	private String description;
 
+	public Component(ModuleDescriptor descriptor) {
 
-  /**
-   * 
-   */
-  public Component() {
+		setGender(descriptor.getExtraAttribute("gender"));
+		setDescription(descriptor.getDescription());
+		setLicenseName(descriptor.getLicenses()[0].getName());
+		setLocale(new Locale(descriptor.getExtraAttribute("locale")));
+		setType(descriptor.getExtraAttribute("type"));
+		setVersion(descriptor.getAttribute("revision"));
+		setName(descriptor.getExtraAttribute("name"));
+	}
 
-  }
+	/**
+	 * @param locale
+	 *            the locale to set
+	 */
+	private void setLocale(Locale locale) {
 
+		if (locale.toString().equalsIgnoreCase("en-us")) {
+			locale = Locale.US;
+		} else if (locale.toString().equalsIgnoreCase("en-gb")) {
+			locale = Locale.UK;
+		}
+		this.locale = locale;
+	}
 
-  public Component(ModuleDescriptor descriptor) {
+	/**
+	 * @param gender
+	 *            the gender to set
+	 */
+	private void setGender(String gender) {
 
-    setGender(descriptor.getExtraAttribute("gender"));
-    setDescription(descriptor.getDescription());
-    setLicenseName(descriptor.getLicenses()[0].getName());
-    setLocale(new Locale(descriptor.getExtraAttribute("locale")));
-    setType(descriptor.getExtraAttribute("type"));
-    setVersion(descriptor.getAttribute("revision"));
-    setName(descriptor.getExtraAttribute("name"));
-  }
+		this.gender = gender;
+	}
 
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	private void setType(String type) {
 
-  // TODO nulls for setters
+		this.type = type;
+	}
 
-  /**
-   * @param locale
-   *          the locale to set
-   */
-  private void setLocale(Locale locale) {
+	/**
+	 * @param version
+	 *            the version to set
+	 */
+	private void setVersion(String version) {
 
-    this.locale = locale;
-  }
+		this.version = version;
+	}
 
+	/**
+	 * @param licenseName
+	 *            the licenseName to set
+	 */
+	private void setLicenseName(String licenseName) {
 
-  /**
-   * @param gender
-   *          the gender to set
-   */
-  private void setGender(String gender) {
+		this.licenseName = licenseName;
+	}
 
-    this.gender = gender;
-  }
+	/**
+	 * @param description
+	 *            the description to set
+	 */
+	private void setDescription(String description) {
 
+		this.description = description;
+	}
 
-  /**
-   * @param type
-   *          the type to set
-   */
-  private void setType(String type) {
+	/**
+	 * @param name
+	 *            the name to set
+	 */
+	private void setName(String name) {
 
-    this.type = type;
-  }
+		this.name = name;
+	}
 
+	/**
+	 * @return the name
+	 */
+	public String getName() {
 
-  /**
-   * @param version
-   *          the version to set
-   */
-  private void setVersion(String version) {
+		return this.name;
+	}
 
-    this.version = version;
-  }
+	/**
+	 * @return the locale
+	 */
+	public Locale getLocale() {
 
+		return this.locale;
+	}
 
-  /**
-   * @param licenseName
-   *          the licenseName to set
-   */
-  private void setLicenseName(String licenseName) {
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
 
-    this.licenseName = licenseName;
-  }
+		return this.gender;
+	}
 
+	/**
+	 * @return the type
+	 */
+	public String getType() {
 
-  /**
-   * @param description
-   *          the description to set
-   */
-  private void setDescription(String description) {
+		return this.type;
+	}
 
-    this.description = description;
-  }
+	/**
+	 * @return the version
+	 */
+	public String getVersion() {
 
+		return this.version;
+	}
 
-  /**
-   * @param name
-   *          the name to set
-   */
-  private void setName(String name) {
+	/**
+	 * @return the licenseName
+	 */
+	public String getLicenseName() {
 
-    this.name = name;
-  }
+		return this.licenseName;
+	}
 
+	/**
+	 * @return the description
+	 */
+	public String getDescription() {
 
-  /**
-   * @return the name
-   */
-  public String getName() {
+		return this.description;
+	}
 
-    return this.name;
-  }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
 
+		return "Component [locale=" + this.locale + ", gender=" + this.gender + ", type=" + this.type + ", version="
+				+ this.version + ", licenseName=" + this.licenseName + ", description=" + this.description + "]";
+	}
 
-  /**
-   * @return the locale
-   */
-  public Locale getLocale() {
+	@Override
+	public int compareTo(Component o) {
 
-    return this.locale;
-  }
+		return ComparisonChain.start().compare(this.locale.toString(), o.getLocale().toString())
+				.compare(this.gender, o.getGender()).compare(this.name, o.getName()).result();
+	}
 
-
-  /**
-   * @return the gender
-   */
-  public String getGender() {
-
-    return this.gender;
-  }
-
-
-  /**
-   * @return the type
-   */
-  public String getType() {
-
-    return this.type;
-  }
-
-
-  /**
-   * @return the version
-   */
-  public String getVersion() {
-
-    return this.version;
-  }
-
-
-  /**
-   * @return the licenseName
-   */
-  public String getLicenseName() {
-
-    return this.licenseName;
-  }
-
-
-  /**
-   * @return the description
-   */
-  public String getDescription() {
-
-    return this.description;
-  }
-
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
-  @Override
-  public String toString() {
-
-    return "Component [locale=" + this.locale + ", gender=" + this.gender
-      + ", type=" + this.type + ", version=" + this.version + ", licenseName="
-      + this.licenseName + ", description=" + this.description + "]";
-  }
-
-
-@Override
-  public int compareTo(Component o) {
-
-    return ComparisonChain.start()
-      .compare(this.locale.toString(), o.getLocale().toString())
-      .compare(this.gender, o.getGender())
-      .compare(this.name, o.getName()).result();
-  }
-  
-  
-  
-
-  // TODO getter/setter?
-  // TODO compareTo/equals...?
+	// TODO getter/setter?
+	// TODO compareTo/equals...?
 
 }
