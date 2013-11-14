@@ -25,7 +25,7 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 
 /**
- *  
+ * 
  * 
  * @author Jonathan
  * 
@@ -36,7 +36,7 @@ public class Installer {
 	private IvySettings ivySettings;
 
 	/**
-	 * constructor for installer
+	 * constructor for Installer
 	 */
 	public Installer() {
 
@@ -90,7 +90,7 @@ public class Installer {
 	}
 
 	/**
-	 * @return
+	 * @return voice component list
 	 */
 	public List<Component> getAvailableVoices() {
 
@@ -101,7 +101,7 @@ public class Installer {
 	 * filters the available voice components by a certain attribute-value pair. Iterates over list of components and removes
 	 * those that match the given attribute-value pair
 	 * 
-	 * @param resources
+	 * @param resToBeFiltered
 	 *            the resources to be filtered
 	 * @param attribute
 	 *            the attribute that the component list should be filtered by (i.e., "gender", "locale", "name" and "type")
@@ -110,14 +110,14 @@ public class Installer {
 	 * @return the filtered list
 	 * @throws Exception
 	 */
-	public static List<Component> filterResources(List<Component> resources, String attribute, String attributeValue)
+	public List<Component> filterResources(List<Component> resToBeFiltered, String attribute, String attributeValue)
 			throws Exception {
 
 		// stores the size of the voice component list before filtering.
-		int sizeBefore = resources.size();
+		int sizeBefore = resToBeFiltered.size();
 
 		// in order to modify the list while iterating over it, an iterator is needed to call the Iterator.remove() method.
-		Iterator<Component> it = resources.iterator();
+		Iterator<Component> it = resToBeFiltered.iterator();
 
 		if (attribute.equals("locale")) {
 			System.out.println("filtering by " + attribute + "=" + attributeValue);
@@ -153,7 +153,7 @@ public class Installer {
 			}
 		}
 
-		int sizeAfter = resources.size();
+		int sizeAfter = resToBeFiltered.size();
 
 		// if list hasn't been empty before, but is afterwards, the attr-value pair filtered out everything that remained by using
 		// an non-existing attribute value or a value that doesn't occur in the list.
@@ -165,10 +165,12 @@ public class Installer {
 			System.out.println(attribute + "=" + attributeValue + " doesn't affect filtering.");
 		}
 
-		return resources;
+		return resToBeFiltered;
 	}
 
 	/**
+	 * 
+	 * TODO not used at the moment, remove. <br>
 	 * Test Installer <br>
 	 * <b>Note:</b> must currently run with -Dmary.base=/path/to/marytts
 	 * 
@@ -204,5 +206,22 @@ public class Installer {
 		String from = "remote";
 		String to = "marytts-installed";
 		ivy.install(descriptor.getModuleRevisionId(), from, to, installOptions);
+	}
+
+	/**
+	 * checks if component list contains a {@link Component} with the name equal to the one passed along to this method.
+	 * 
+	 * @param nameValue
+	 *            the value of the name to be searched for
+	 * @return true if nameValue was found, false otherwise
+	 */
+	public boolean isNamePresent(String nameValue) {
+
+		for (Component oneComponent : this.resources) {
+			if (oneComponent.getName().equalsIgnoreCase(nameValue)) {
+				return true;
+			}
+		}
+		return false;
 	}
 }
