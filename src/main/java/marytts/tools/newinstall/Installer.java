@@ -45,6 +45,8 @@ public class Installer {
 			this.ivySettings = new IvySettings();
 			this.ivySettings.load(Resources.getResource("ivysettings.xml"));
 			parseIvyResources(this.ivySettings);
+			
+			
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -67,7 +69,7 @@ public class Installer {
 	}
 
 	/**
-	 * retrieves the voice component names from the {@link #readVoiceDescriptorList() and creates {@link Component} objects.
+	 * retrieves the voice component names from the {@link #readVoiceDescriptorList()} and creates {@link Component} objects.
 	 * 
 	 * @param ivySettings
 	 * @throws ParseException

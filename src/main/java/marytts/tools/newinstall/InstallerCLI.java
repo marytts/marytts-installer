@@ -19,7 +19,8 @@ import org.apache.commons.cli.OptionGroup;
 import org.apache.commons.cli.Options;
 
 /**
- * class for parsing the CL. TODO refine Exceptions
+ * class for parsing the CL. <br>
+ * TODO refine Exceptions
  * 
  * @author Jonathan
  * 
@@ -56,8 +57,6 @@ public class InstallerCLI {
 		Options options = new Options();
 		OptionGroup optionGroup = new OptionGroup();
 
-		// TODO
-		// options.addOption("l", "list", false, "list all available voice components");
 		optionGroup.addOption(OptionBuilder.withLongOpt("list").withDescription("lists components").create());
 		optionGroup.addOption(OptionBuilder.withLongOpt("install").hasArg().isRequired()
 				.withDescription("installs <arg> component").create("i"));
@@ -94,10 +93,10 @@ public class InstallerCLI {
 
 		// parse the command line arguments
 		CommandLine line = parser.parse(options, args);
-		
+
 		// for formatting the help when wrong input was given
 		HelpFormatter hf = new HelpFormatter();
-		
+
 		// TODO specify installer usage syntax
 		final String installerSyntax = "installer syntax";
 
@@ -165,7 +164,8 @@ public class InstallerCLI {
 			}
 		} else if (line.hasOption("gui")) {
 			System.out.println("Start gui");
-			// TODO start gui
+
+			new InstallerGUI(installer);
 		} else {
 			System.err.println("Invalid syntax. Please use the following syntax");
 			hf.printHelp(installerSyntax, options);
