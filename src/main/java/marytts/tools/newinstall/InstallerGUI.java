@@ -3,17 +3,29 @@
  */
 package marytts.tools.newinstall;
 
+import java.awt.Color;
 import java.awt.Container;
+import java.awt.Dimension;
+import java.util.List;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+
+import marytts.tools.newinstall.objects.Component;
 
 /**
  * @author Jonathan
@@ -90,24 +102,67 @@ public class InstallerGUI extends JFrame {
 		tab1Panel.add(stateComboBox);
 
 		// BOTTOM TAB1
-		JList jList = new JList();
-		jList.setBounds(56, 141, 106, 163);
+		DefaultListModel componentListModel = new DefaultListModel();
+
+		fillComponentList(componentListModel);
 
 		JScrollPane tab1ScrollPane = new JScrollPane();
+
+		JList componentList = new JList(componentListModel);
+		componentList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		componentList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
+		componentList.setVisibleRowCount(-1);
+		componentList.setBounds(56, 141, 106, 163);
+
 		// tab1ScrollPane.setEnabled(false);
-		tab1ScrollPane.add(jList);
+		tab1ScrollPane.setViewportView(componentList);
 
 		// GENERAL TAB1
 		JSplitPane jSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT, tab1Panel, tab1ScrollPane);
-		jSplitPane.setDividerLocation(70);
+		jSplitPane.setDividerLocation(140);
 		jSplitPane.setEnabled(false);
+
+		// TODO fix separator not visible problem
+		JSeparator tab1ControlsSeparator = new JSeparator(SwingConstants.HORIZONTAL);
+		tab1ControlsSeparator.setBackground(Color.BLACK);
+		tab1ControlsSeparator.setBounds(16, 69, 601, 3);
+		tab1ControlsSeparator.setPreferredSize(new Dimension(600, 3));
+		tab1ControlsSeparator.setForeground(Color.BLACK);
+		tab1Panel.add(tab1ControlsSeparator);
+
+		JTextArea componentDescrTextArea = new JTextArea();
+		componentDescrTextArea.setBounds(16, 75, 601, 52);
+		tab1Panel.add(componentDescrTextArea);
 
 		// TAB2
 		JPanel tab2Panel = new JPanel();
+		JTextArea logTextArea = new JTextArea();
+		tab2Panel.add(logTextArea);
+		logTextArea.setEditable(false);
+		// TODO fix size problem
+		Dimension d = tab2Panel.getPreferredSize();
+		logTextArea.setPreferredSize(d);
+		logTextArea.setText("blablab");
 
 		// GLOBAL
+
+		JLabel maryPathLabel = new JLabel("Path to Marytts installation folder");
+		maryPathLabel.setBounds(192, 19, 221, 16);
+		contentPane.add(maryPathLabel);
+
+		JTextField maryPathTextField = new JTextField();
+		maryPathTextField.setBounds(415, 13, 134, 28);
+		contentPane.add(maryPathTextField);
+		maryPathTextField.setColumns(10);
+
+		JFileChooser maryPathFileChooser = new JFileChooser();
+
+		JButton maryPathButton = new JButton("Choose dir");
+		maryPathButton.setBounds(551, 14, 117, 29);
+		contentPane.add(maryPathButton);
+
 		JTabbedPane jTabbedPane = new JTabbedPane(SwingConstants.TOP, JTabbedPane.SCROLL_TAB_LAYOUT);
-		jTabbedPane.setBounds(6, 66, 662, 505);
+		jTabbedPane.setBounds(6, 47, 662, 524);
 		jTabbedPane.addTab("Installable components", jSplitPane);
 		jTabbedPane.addTab("Log View", tab2Panel);
 
@@ -119,6 +174,7 @@ public class InstallerGUI extends JFrame {
 		// comboBoxes.put("type", typeComboBox);
 
 		// fillComboBoxes(localeComboBox, typeComboBox, genderComboBox, stateComboBox);
+		fillLogView(logTextArea);
 
 		contentPane.add(jTabbedPane);
 
@@ -128,7 +184,36 @@ public class InstallerGUI extends JFrame {
 	}
 
 	/**
-	 * TODO remove hardcoded
+	 * @param logTextArea
+	 */
+	private boolean fillLogView(JTextArea logTextArea) {
+		// TODO Auto-generated method stub
+
+		return false;
+	}
+
+	/**
+	 * @param componentListModel
+	 * @return
+	 */
+	private boolean fillComponentList(DefaultListModel componentListModel) {
+
+		List<Component> resources = this.installer.getAvailableVoices();
+
+		if (!(resources == null)) {
+			for (Component oneComponent : resources) {
+
+				componentListModel.addElement(oneComponent.toString());
+			}
+			return true;
+		}
+
+		return false;
+
+	}
+
+	/**
+	 * TODO remove hardcodings, make generic
 	 * 
 	 * @param localeComboBox
 	 * @param typeComboBox
@@ -138,6 +223,14 @@ public class InstallerGUI extends JFrame {
 	 */
 	private boolean fillComboBoxes(JComboBox localeComboBox, JComboBox typeComboBox, JComboBox genderComboBox,
 			JComboBox stateComboBox) {
+
+		// localeComboBox.addItem("de");
+		// localeComboBox.addItem("en-gb");
+		// localeComboBox.addItem("en-us");
+		// localeComboBox.addItem("it");
+		// localeComboBox.addItem("ru");
+		// localeComboBox.addItem("te");
+		// localeComboBox.addItem("tr");
 
 		//
 		// if (!comboBoxes.isEmpty()) {
@@ -165,4 +258,8 @@ public class InstallerGUI extends JFrame {
 		setVisible(true);
 	}
 
+	public static void main(String[] args) {
+		Installer installer = new Installer();
+		new InstallerGUI(installer);
+	}
 }

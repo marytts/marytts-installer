@@ -34,7 +34,7 @@ public class Installer {
 
 	private List<Component> resources;
 	private IvySettings ivySettings;
-
+	
 	/**
 	 * constructor for Installer
 	 */
@@ -45,7 +45,6 @@ public class Installer {
 			this.ivySettings = new IvySettings();
 			this.ivySettings.load(Resources.getResource("ivysettings.xml"));
 			parseIvyResources(this.ivySettings);
-			
 			
 		} catch (ParseException e) {
 			e.printStackTrace();
