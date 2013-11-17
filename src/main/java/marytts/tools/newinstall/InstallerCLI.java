@@ -137,6 +137,10 @@ public class InstallerCLI {
 			String nameValue = line.getOptionValue("i");
 
 			// TODO implement installer object's resources to also hold lang and marytts-runtime-with-dependencies components.
+
+			// might also be done using the installer.getComponentByName method (when trying to avoid code repetition)
+			// if (installer.getComponentByName(nameValue) != null) {
+			
 			// checks if <name> to be installed is a valid component
 			if (installer.isNamePresent(nameValue)) {
 

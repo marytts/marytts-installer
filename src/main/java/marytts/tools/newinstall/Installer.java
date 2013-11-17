@@ -34,7 +34,7 @@ public class Installer {
 
 	private List<Component> resources;
 	private IvySettings ivySettings;
-	
+
 	/**
 	 * constructor for Installer
 	 */
@@ -45,7 +45,7 @@ public class Installer {
 			this.ivySettings = new IvySettings();
 			this.ivySettings.load(Resources.getResource("ivysettings.xml"));
 			parseIvyResources(this.ivySettings);
-			
+
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -207,6 +207,23 @@ public class Installer {
 		String from = "remote";
 		String to = "marytts-installed";
 		ivy.install(descriptor.getModuleRevisionId(), from, to, installOptions);
+	}
+
+	/**
+	 * returns - if present - the Component with nameValue as name. If not presents, returns null
+	 * 
+	 * @param nameValue
+	 *            the value of the name to be searched for
+	 * @return the component with nameValue, null if not present
+	 */
+	public Component getComponentByName(String nameValue) {
+
+		for (Component oneComponent : this.resources) {
+			if (oneComponent.getName().equalsIgnoreCase(nameValue)) {
+				return oneComponent;
+			}
+		}
+		return null;
 	}
 
 	/**
