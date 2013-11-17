@@ -24,6 +24,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import marytts.tools.newinstall.objects.Component;
 
@@ -61,6 +63,9 @@ public class InstallerGUI extends JFrame {
 		Container contentPane = this.getContentPane();
 		contentPane.setLayout(null);
 
+		/*
+		 * #########TAB1########
+		 */
 		// TOP TAB1
 		JPanel tab1Panel = new JPanel();
 		tab1Panel.setLayout(null);
@@ -106,15 +111,14 @@ public class InstallerGUI extends JFrame {
 
 		fillComponentList(componentListModel);
 
-		JScrollPane tab1ScrollPane = new JScrollPane();
-
 		JList componentList = new JList(componentListModel);
-		componentList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		componentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		componentList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		componentList.setVisibleRowCount(-1);
 		componentList.setBounds(56, 141, 106, 163);
 
 		// tab1ScrollPane.setEnabled(false);
+		JScrollPane tab1ScrollPane = new JScrollPane();
 		tab1ScrollPane.setViewportView(componentList);
 
 		// GENERAL TAB1
@@ -131,10 +135,19 @@ public class InstallerGUI extends JFrame {
 		tab1Panel.add(tab1ControlsSeparator);
 
 		JTextArea componentDescrTextArea = new JTextArea();
+		componentDescrTextArea.setLineWrap(true);
 		componentDescrTextArea.setBounds(16, 75, 601, 52);
-		tab1Panel.add(componentDescrTextArea);
+		componentDescrTextArea.setEditable(false);
 
-		// TAB2
+		JScrollPane componentDescrTextAreaScrollPane = new JScrollPane();
+		componentDescrTextAreaScrollPane.setViewportView(componentDescrTextArea);
+		// for testing
+		componentDescrTextAreaScrollPane.setBounds(16, 75, 601, 52);
+		tab1Panel.add(componentDescrTextAreaScrollPane);
+
+		/*
+		 * #########TAB2########
+		 */
 		JPanel tab2Panel = new JPanel();
 		JTextArea logTextArea = new JTextArea();
 		tab2Panel.add(logTextArea);
@@ -176,11 +189,36 @@ public class InstallerGUI extends JFrame {
 		// fillComboBoxes(localeComboBox, typeComboBox, genderComboBox, stateComboBox);
 		fillLogView(logTextArea);
 
+		// sets up the listSelectionListener that fills the componentDescrTextArea with the details of the selected component
+		// entry
+		setUpListSelectionListener(componentList, componentDescrTextArea);
+
 		contentPane.add(jTabbedPane);
 
 		validate();
 		repaint();
 
+	}
+
+	private void setUpListSelectionListener(final JList componentList, final JTextArea componentDescrTextArea) {
+
+		ListSelectionModel selectionModel = componentList.getSelectionModel();
+		selectionModel.addListSelectionListener(new ListSelectionListener() {
+
+			@Override
+			public void valueChanged(ListSelectionEvent e) {
+
+				String componentName = (String) componentList.getSelectedValue();
+				Component c = installer.getComponentByName(componentName);
+
+				if (c != null) {
+					componentDescrTextArea.setText(c.toString());
+				} else {
+					System.err.println("Compnent with " + componentName + " was not found!");
+				}
+
+			}
+		});
 	}
 
 	/**
@@ -203,7 +241,7 @@ public class InstallerGUI extends JFrame {
 		if (!(resources == null)) {
 			for (Component oneComponent : resources) {
 
-				componentListModel.addElement(oneComponent.toString());
+				componentListModel.addElement(oneComponent.getName());
 			}
 			return true;
 		}
