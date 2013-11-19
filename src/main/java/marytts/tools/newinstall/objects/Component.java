@@ -5,6 +5,8 @@ package marytts.tools.newinstall.objects;
 
 import java.util.Locale;
 
+import marytts.tools.newinstall.Status;
+
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 
 import com.google.common.collect.ComparisonChain;
@@ -24,6 +26,7 @@ public class Component implements Comparable<Component> {
 	private String version;
 	private String licenseName;
 	private String description;
+	private Status availabilityState;
 
 	public Component(ModuleDescriptor descriptor) {
 
@@ -34,6 +37,9 @@ public class Component implements Comparable<Component> {
 		setType(descriptor.getExtraAttribute("type"));
 		setVersion(descriptor.getAttribute("revision"));
 		setName(descriptor.getExtraAttribute("name"));
+		// TODO ONLY FOR TESTING, THIS STATE SHOULD BE DETERMINED BY SOME METHOD
+		setAvailabilityState(Status.AVAILABLE);
+
 	}
 
 	/**
@@ -158,6 +164,19 @@ public class Component implements Comparable<Component> {
 	public String getDescription() {
 
 		return this.description;
+	}
+
+	public Status getStatus() {
+
+		return this.availabilityState;
+	}
+
+	/**
+	 * @param availabilityState
+	 *            the availabilityState to set
+	 */
+	public void setAvailabilityState(Status availabilityState) {
+		this.availabilityState = availabilityState;
 	}
 
 	/*
