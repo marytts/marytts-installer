@@ -5,17 +5,21 @@ package marytts.tools.newinstall;
 
 import java.awt.Container;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.Box;
-import javax.swing.GroupLayout;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 
 import marytts.tools.newinstall.objects.Component;
 
@@ -68,7 +72,7 @@ public class InstallerGUI extends JFrame {
 
 		JPanel componentControlPanel = new JPanel();
 		componentControlPanel.setLayout(null);
-		componentControlPanel.setBounds(13, 61, 647, 552);
+		componentControlPanel.setBounds(13, 61, 647, 77);
 
 		JLabel componentsControlLabel = new JLabel("Use the following controls to filter the component list:");
 		componentsControlLabel.setBounds(159, 0, 344, 16);
@@ -106,15 +110,28 @@ public class InstallerGUI extends JFrame {
 		stateComboBox.setBounds(411, 34, 92, 34);
 		componentControlPanel.add(stateComboBox);
 
-		// this.componentGroupScrollPane = new JScrollPane();
-		// this.componentGroupScrollPane.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-		// this.componentGroupScrollPane.setViewportView(componentGroupPanel);
+		// testing
+		// JXCollapsiblePane descriptionPane = ComponentPanel.createDescriptionPane(this.installer
+		// .getComponentByName("cmu-slt-hsmm"));
+		// descriptionPane.setBounds(200, 200, 200, 200);
+		//
+		// Action toggleAction = descriptionPane.getActionMap().get(JXCollapsiblePane.TOGGLE_ACTION);
+		// toggleAction.putValue(JXCollapsiblePane.COLLAPSE_ICON, UIManager.getIcon("Tree.collapsedIcon"));
+		// toggleAction.putValue(JXCollapsiblePane.EXPAND_ICON, UIManager.getIcon("Tree.expandedIcon"));
+		// JToggleButton toggleButt = new JToggleButton(toggleAction);
+		// toggleButt.setText("expand");
+		// toggleButt.setBounds(50, 50, 50, 50);
+		//
+		// contentPane.add(toggleButt);
+		// contentPane.add(descriptionPane);
+		// end testing
+
 		JPanel componentGroupPanel = new JPanel();
 		componentGroupPanel.setLayout(new javax.swing.BoxLayout(componentGroupPanel, javax.swing.BoxLayout.Y_AXIS));
-		componentGroupPanel.setPreferredSize(new Dimension(300, 60));
 
-		JScrollPane componentScrollPane = new JScrollPane();
-		componentScrollPane.setBounds(13, 150, 647, 552);
+		JScrollPane componentScrollPane = new JScrollPane(componentGroupPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+		componentScrollPane.setBounds(13, 150, 647, 300);
 		componentScrollPane.setViewportView(componentGroupPanel);
 
 		// GLOBAL
@@ -133,17 +150,17 @@ public class InstallerGUI extends JFrame {
 
 		// fillComboBoxes(localeComboBox, typeComboBox, genderComboBox, stateComboBox);
 
+		fillComponentGroupPanel(componentGroupPanel);
+
 		contentPane.add(maryPathTextField);
 		contentPane.add(maryPathLabel);
 		contentPane.add(maryPathButton);
 		contentPane.add(componentScrollPane);
 		contentPane.add(componentControlPanel);
 
-		fillComponentGroupPanel(componentGroupPanel);
-
+		// pack();
 		validate();
 		repaint();
-
 	}
 
 	/**
