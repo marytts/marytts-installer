@@ -148,6 +148,15 @@ public class InstallerGUI extends JFrame {
 		JButton maryPathButton = new JButton("Choose dir");
 		maryPathButton.setBounds(551, 14, 117, 29);
 
+		JButton logViewButton = new JButton("Open Log view");
+		logViewButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new LogViewFrame();
+			}
+		});
+		logViewButton.setBounds(551, 55, 117, 29);
+
 		// fillComboBoxes(localeComboBox, typeComboBox, genderComboBox, stateComboBox);
 
 		fillComponentGroupPanel(componentGroupPanel);
@@ -155,6 +164,7 @@ public class InstallerGUI extends JFrame {
 		contentPane.add(maryPathTextField);
 		contentPane.add(maryPathLabel);
 		contentPane.add(maryPathButton);
+		contentPane.add(logViewButton);
 		contentPane.add(componentScrollPane);
 		contentPane.add(componentControlPanel);
 
