@@ -8,7 +8,7 @@
 			<url name="dfki">
 				<artifact pattern="http://mary.dfki.de/download/[revision]/[module]-[revision].[ext]" />
 			</url>
-			<ibiblio name="diax" m2compatible="true" usepoms="false" root="http://diax.coli.uni-saarland.de/artifactory/marytts" />
+			<ibiblio name="diax" m2compatible="true" usepoms="false" root="http://diax.coli.uni-saarland.de/artifactory/repo" />
 		</chain>
 		<filesystem name="marytts-installed">
 			<ivy pattern="${mary.base}/installed/[module]-[revision].xml" />
