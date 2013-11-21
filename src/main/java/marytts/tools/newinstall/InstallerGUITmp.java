@@ -16,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 
 import marytts.tools.newinstall.objects.Component;
+import marytts.tools.newinstall.objects.VoiceComponent;
 
 /**
  * 
@@ -36,7 +37,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 		}
 		this.installer = installer;
 		initComponents();
-		fillComponentGroupPanel();
+		fillComponentGroupPanels();
 	}
 
 	/* @formatter:off */
@@ -333,21 +334,32 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 	}
 
 	/**
+	 * TODO differentiate between mary components and lang components?
+	 * TODO separate voiceComponentPanels from langs
+	 * 
 	 * @param componentGroupPanel
 	 * @param componentTableModel
 	 * @return
 	 */
-	private boolean fillComponentGroupPanel() {
+	private boolean fillComponentGroupPanels() {
 
-		List<Component> resources = this.installer.getAvailableVoices();
+		List<Component> resources = this.installer.getAvailableComponents();
 
 		if (!(resources == null)) {
 			for (Component oneComponent : resources) {
-				this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
-				ComponentPanelTmp componentPanelTmp = new ComponentPanelTmp(oneComponent);
-				// componentPanelTmp.setPreferredSize(new Dimension(268, 140));
-				this.voicesGroupPanel.add(componentPanelTmp);
-				this.voicesGroupPanel.add(Box.createVerticalGlue());
+				if (oneComponent instanceof VoiceComponent) {
+					this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
+					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent);
+					this.voicesGroupPanel.add(voiceComponentPanel);
+					this.voicesGroupPanel.add(Box.createVerticalGlue());
+				}
+				else {
+					// TODO to which group panel -> how to distinguish?
+					this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
+					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel(oneComponent);
+					this.languagesGroupPanel.add(voiceComponentPanel);
+					this.languagesGroupPanel.add(Box.createVerticalGlue());
+				}
 			}
 			return true;
 		}

@@ -50,7 +50,7 @@
 				<version>1.0.0</version>
 				<executions>
 					<execution>
-						<id>list-voices</id>
+						<id>list-components</id>
 						<phase>process-resources</phase>
 						<goals>
 							<goal>list</goal>
@@ -58,9 +58,9 @@
 						<configuration>
 							<baseDir>${project.build.outputDirectory}</baseDir>
 							<includes>
-								<include>marytts-voice-*.xml</include>
+								<include>marytts-*.xml</include>
 							</includes>
-							<outputFile>${project.build.outputDirectory}/voice-list.json</outputFile>
+							<outputFile>${project.build.outputDirectory}/component-list.json</outputFile>
 						</configuration>
 					</execution>
 				</executions>

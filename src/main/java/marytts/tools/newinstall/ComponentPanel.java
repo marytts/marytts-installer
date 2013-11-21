@@ -29,6 +29,7 @@ import org.jdesktop.swingx.JXSearchField.LayoutStyle;
  * @author Jonathan
  * 
  */
+@Deprecated
 public class ComponentPanel extends JPanel {
 
 	private JLabel componentNameLabel;

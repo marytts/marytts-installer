@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import marytts.tools.newinstall.objects.Component;
+import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
@@ -60,24 +61,33 @@ public class Installer {
 	 * @return List of voice descriptor resources
 	 * @throws IOException
 	 */
-	public List<String> readVoiceDescriptorList() throws IOException {
-		URL voiceListResource = Resources.getResource("voice-list.json");
-		String voiceListJson = Resources.toString(voiceListResource, Charsets.UTF_8);
-		String[] voiceDescriptors = new Gson().fromJson(voiceListJson, String[].class);
-		return Arrays.asList(voiceDescriptors);
+	public List<String> readComponentDescriptorList() throws IOException {
+		URL componentListResource = Resources.getResource("component-list.json");
+		String componentListJson = Resources.toString(componentListResource, Charsets.UTF_8);
+		String[] componentDescriptors = new Gson().fromJson(componentListJson, String[].class);
+		return Arrays.asList(componentDescriptors);
 	}
 
 	/**
-	 * retrieves the voice component names from the {@link #readVoiceDescriptorList()} and creates {@link Component} objects.
+	 * retrieves the voice component names from the {@link #readComponentDescriptorList()} and creates {@link Component} objects.
+	 * TODO remove repeated code
 	 * 
 	 * @param ivySettings
 	 * @throws ParseException
 	 * @throws IOException
 	 */
 	private void parseIvyResources(IvySettings ivySettings) throws ParseException, IOException {
-		List<String> resourcesList = readVoiceDescriptorList();
+		List<String> resourcesList = readComponentDescriptorList();
 		for (String oneFileName : resourcesList) {
 			if (oneFileName.startsWith("marytts-voice")) {
+
+				URL oneResource = Resources.getResource(oneFileName);
+				ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings, oneResource,
+						true);
+				VoiceComponent oneComponent = new VoiceComponent(descriptor);
+				this.resources.add(oneComponent);
+			} else if (oneFileName.startsWith("marytts-lang")) {
+
 				URL oneResource = Resources.getResource(oneFileName);
 				ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings, oneResource,
 						true);
@@ -91,9 +101,9 @@ public class Installer {
 	}
 
 	/**
-	 * @return voice component list
+	 * @return component list
 	 */
-	public List<Component> getAvailableVoices() {
+	public List<Component> getAvailableComponents() {
 
 		return this.resources;
 	}
@@ -131,7 +141,7 @@ public class Installer {
 		} else if (attribute.equals("type")) {
 			System.out.println("filtering by " + attribute + "=" + attributeValue);
 			for (it = it; it.hasNext();) {
-				Component oneComponent = it.next();
+				VoiceComponent oneComponent = (VoiceComponent) it.next();
 				if (!oneComponent.getType().equalsIgnoreCase(attributeValue)) {
 					it.remove();
 				}
@@ -139,7 +149,7 @@ public class Installer {
 		} else if (attribute.equals("gender")) {
 			System.out.println("filtering by " + attribute + "=" + attributeValue);
 			for (it = it; it.hasNext();) {
-				Component oneComponent = it.next();
+				VoiceComponent oneComponent = (VoiceComponent) it.next();
 				if (!oneComponent.getGender().equalsIgnoreCase(attributeValue)) {
 					it.remove();
 				}

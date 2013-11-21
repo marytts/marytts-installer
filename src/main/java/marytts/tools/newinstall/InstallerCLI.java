@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import marytts.tools.newinstall.objects.Component;
+import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -89,7 +90,7 @@ public class InstallerCLI {
 	 */
 	private void evalCommandLine(String[] args, CommandLineParser parser, Options options, Installer installer) throws Exception {
 		// the voice components
-		List<Component> resources = installer.getAvailableVoices();
+		List<Component> resources = installer.getAvailableComponents();
 
 		// parse the command line arguments
 		CommandLine line = parser.parse(options, args);
@@ -140,7 +141,7 @@ public class InstallerCLI {
 
 			// might also be done using the installer.getComponentByName method (when trying to avoid code repetition)
 			// if (installer.getComponentByName(nameValue) != null) {
-			
+
 			// checks if <name> to be installed is a valid component
 			if (installer.isNamePresent(nameValue)) {
 
@@ -206,17 +207,21 @@ public class InstallerCLI {
 		String prevLang = "";
 		for (Component oneComp : resources) {
 
-			if (!prevLang.equals(oneComp.getLocale().toString())) {
-				sb.append("##" + oneComp.getLocale().toString() + " - " + oneComp.getLocale().getDisplayLanguage() + "##\n");
+			if (oneComp instanceof VoiceComponent) {
+				VoiceComponent voiceOneComp = (VoiceComponent)oneComp;
+				if (!prevLang.equals(voiceOneComp.getLocale().toString())) {
+					sb.append("##" + voiceOneComp.getLocale().toString() + " - " + voiceOneComp.getLocale().getDisplayLanguage() + "##\n");
+				}
+				sb.append("\t" + voiceOneComp.getName() + "\n");
+				sb.append("\t" + "gender: " + voiceOneComp.getGender() + "; ");
+				sb.append("" + "type: " + voiceOneComp.getType() + "; ");
+				sb.append("" + "version: " + voiceOneComp.getVersion() + "; ");
+				sb.append("" + "license name: " + voiceOneComp.getLicenseName() + "\n");
+				sb.append("\t" + "description: " + voiceOneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ")
+						+ "");
+				sb.append("\n\n");
+				prevLang = voiceOneComp.getLocale().toString();
 			}
-			sb.append("\t" + oneComp.getName() + "\n");
-			sb.append("\t" + "gender: " + oneComp.getGender() + "; ");
-			sb.append("" + "type: " + oneComp.getType() + "; ");
-			sb.append("" + "version: " + oneComp.getVersion() + "; ");
-			sb.append("" + "license name: " + oneComp.getLicenseName() + "\n");
-			sb.append("\t" + "description: " + oneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ") + "");
-			sb.append("\n\n");
-			prevLang = oneComp.getLocale().toString();
 		}
 
 		sb.append("Total: " + resources.size() + " components");

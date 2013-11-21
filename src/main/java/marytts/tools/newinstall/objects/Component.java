@@ -19,28 +19,24 @@ import com.google.common.collect.ComparisonChain;
  */
 public class Component implements Comparable<Component> {
 
-	private String name;
-	private Locale locale;
-	private String gender;
-	private String type;
-	private String version;
-	private String licenseName;
-	private String licenseShortName;
-	private String description;
+	protected String name;
+	protected Locale locale;
+	protected String version;
+	protected String licenseName;
+	protected String licenseShortName;
+	protected String description;
 	private Status availabilityState;
 	private long size;
 
 	public Component(ModuleDescriptor descriptor) {
 
-		setGender(descriptor.getExtraAttribute("gender"));
 		setDescription(descriptor.getDescription());
 		setLicenseName(descriptor.getLicenses()[0].getName());
 		setLicenseShortName(descriptor.getExtraAttribute("license"));
 		setLocale(new Locale(descriptor.getExtraAttribute("locale")));
-		setType(descriptor.getExtraAttribute("type"));
 		setVersion(descriptor.getAttribute("revision"));
 		setName(descriptor.getExtraAttribute("name"));
-		
+
 		long parsedLong;
 		try {
 			parsedLong = Long.parseLong(descriptor.getAllArtifacts()[0].getExtraAttribute("size"));
@@ -66,24 +62,6 @@ public class Component implements Comparable<Component> {
 			locale = Locale.UK;
 		}
 		this.locale = locale;
-	}
-
-	/**
-	 * @param gender
-	 *            the gender to set
-	 */
-	private void setGender(String gender) {
-
-		this.gender = gender;
-	}
-
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	private void setType(String type) {
-
-		this.type = type;
 	}
 
 	/**
@@ -136,22 +114,6 @@ public class Component implements Comparable<Component> {
 	public Locale getLocale() {
 
 		return this.locale;
-	}
-
-	/**
-	 * @return the gender
-	 */
-	public String getGender() {
-
-		return this.gender;
-	}
-
-	/**
-	 * @return the type
-	 */
-	public String getType() {
-
-		return this.type;
 	}
 
 	/**
@@ -228,16 +190,16 @@ public class Component implements Comparable<Component> {
 	 */
 	@Override
 	public String toString() {
-
-		return "Component [locale=" + this.locale + ", gender=" + this.gender + ", type=" + this.type + ", version="
-				+ this.version + ", licenseName=" + this.licenseName + ", description=" + this.description + "]";
+		return "Component [name=" + this.name + ", locale=" + this.locale + ", version=" + this.version + ", licenseName="
+				+ this.licenseName + ", licenseShortName=" + this.licenseShortName + ", description=" + this.description
+				+ ", availabilityState=" + this.availabilityState + ", size=" + this.size + "]";
 	}
 
 	@Override
 	public int compareTo(Component o) {
 
-		return ComparisonChain.start().compare(this.locale.toString(), o.getLocale().toString())
-				.compare(this.gender, o.getGender()).compare(this.name, o.getName()).result();
+		return ComparisonChain.start().compare(this.locale.toString(), o.getLocale().toString()).compare(this.name, o.getName())
+				.result();
 	}
 
 	// TODO getter/setter?

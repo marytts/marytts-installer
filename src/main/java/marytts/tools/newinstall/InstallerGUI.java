@@ -39,6 +39,7 @@ import marytts.tools.newinstall.objects.Component;
  * @author Jonathan
  * 
  */
+@Deprecated
 public class InstallerGUI extends JFrame {
 
 	// data
@@ -180,7 +181,7 @@ public class InstallerGUI extends JFrame {
 	 */
 	private boolean fillComponentGroupPanel(JPanel componentGroupPanel) {
 
-		List<Component> resources = this.installer.getAvailableVoices();
+		List<Component> resources = this.installer.getAvailableComponents();
 
 		if (!(resources == null)) {
 			for (Component oneComponent : resources) {
