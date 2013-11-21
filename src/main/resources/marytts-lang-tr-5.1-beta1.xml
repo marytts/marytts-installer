@@ -4,6 +4,6 @@
 		<description>tr language component</description>
 	</info>
 	<publications>
-		<artifact />
+		<artifact e:size="23216" />
 	</publications>
 </ivy-module>
