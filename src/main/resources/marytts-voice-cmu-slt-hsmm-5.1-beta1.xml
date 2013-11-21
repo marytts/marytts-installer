@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="marytts" module="voice-cmu-slt-hsmm" revision="5.1-SNAPSHOT" e:locale="en-US"
+	<info organisation="marytts" module="voice-cmu-slt-hsmm" revision="5.1-beta1" e:locale="en-US"
 		e:name="cmu-slt-hsmm" e:type="hsmm" e:gender="female">
 		<license name="Artic License" url="http://mary.dfki.de/download/voices/arctic-license.html" />
 		<description>A female US English Hidden semi-Markov model voice, built from voice recordings provided by Carnegie Mellon
@@ -9,6 +9,6 @@
 		<artifact />
 	</publications>
 	<dependencies>
-		<dependency org="marytts" name="marytts-lang-en" rev="5.1-SNAPSHOT" />
+		<dependency org="marytts" name="marytts-lang-en" rev="5.1-beta1" />
 	</dependencies>
 </ivy-module>

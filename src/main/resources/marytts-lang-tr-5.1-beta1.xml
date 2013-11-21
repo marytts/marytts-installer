@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="marytts" module="marytts-lang-tr" revision="5.1-SNAPSHOT" e:locale="tr" e:name="tr">
+	<info organisation="marytts" module="marytts-lang-tr" revision="5.1-beta1" e:locale="tr" e:name="tr">
 		<license name="GNU Lesser General Public License" url="http://www.gnu.org/licenses/lgpl-3.0-standalone.html" />
 		<description>tr language component</description>
 	</info>
