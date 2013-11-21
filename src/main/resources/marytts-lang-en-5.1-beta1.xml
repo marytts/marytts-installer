@@ -1,7 +1,7 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="marytts" module="marytts-lang-en-US" revision="5.1-beta1" e:locale="en-US" e:name="en-US">
+	<info organisation="marytts" module="marytts-lang-en" revision="5.1-beta1" e:locale="en" e:name="en">
 		<license name="GNU Lesser General Public License" url="http://www.gnu.org/licenses/lgpl-3.0-standalone.html" />
-		<description>en-US language component</description>
+		<description>en language component</description>
 	</info>
 	<publications>
 		<artifact />
