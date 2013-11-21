@@ -1,0 +1,9 @@
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+	<info organisation="marytts" module="marytts-lang-fr" revision="5.1-beta1" e:locale="fr" e:name="fr">
+		<license name="GNU Lesser General Public License" url="http://www.gnu.org/licenses/lgpl-3.0-standalone.html" />
+		<description>fr language component</description>
+	</info>
+	<publications>
+		<artifact e:size="298102" />
+	</publications>
+</ivy-module>
