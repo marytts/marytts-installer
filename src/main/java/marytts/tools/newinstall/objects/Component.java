@@ -25,18 +25,30 @@ public class Component implements Comparable<Component> {
 	private String type;
 	private String version;
 	private String licenseName;
+	private String licenseShortName;
 	private String description;
 	private Status availabilityState;
+	private long size;
 
 	public Component(ModuleDescriptor descriptor) {
 
 		setGender(descriptor.getExtraAttribute("gender"));
 		setDescription(descriptor.getDescription());
 		setLicenseName(descriptor.getLicenses()[0].getName());
+		setLicenseShortName(descriptor.getExtraAttribute("license"));
 		setLocale(new Locale(descriptor.getExtraAttribute("locale")));
 		setType(descriptor.getExtraAttribute("type"));
 		setVersion(descriptor.getAttribute("revision"));
 		setName(descriptor.getExtraAttribute("name"));
+		
+		long parsedLong;
+		try {
+			parsedLong = Long.parseLong(descriptor.getAllArtifacts()[0].getExtraAttribute("size"));
+		} catch (NumberFormatException nfe) {
+			System.err.println(descriptor.getAllArtifacts()[0].getExtraAttribute("size") + " could not be parsed.");
+			parsedLong = 0L;
+		}
+		setSize(parsedLong);
 		// TODO ONLY FOR TESTING, THIS STATE SHOULD BE DETERMINED BY SOME METHOD
 		setAvailabilityState(Status.AVAILABLE);
 
@@ -177,6 +189,36 @@ public class Component implements Comparable<Component> {
 	 */
 	public void setAvailabilityState(Status availabilityState) {
 		this.availabilityState = availabilityState;
+	}
+
+	/**
+	 * @return the licenseShortName
+	 */
+	public String getLicenseShortName() {
+		return this.licenseShortName;
+	}
+
+	/**
+	 * @param licenseShortName
+	 *            the licenseShortName to set
+	 */
+	private void setLicenseShortName(String licenseShortName) {
+		this.licenseShortName = licenseShortName;
+	}
+
+	/**
+	 * @return the size
+	 */
+	public long getSize() {
+		return this.size;
+	}
+
+	/**
+	 * @param size
+	 *            the size to set
+	 */
+	private void setSize(long size) {
+		this.size = size;
 	}
 
 	/*
