@@ -25,7 +25,7 @@ public class Component implements Comparable<Component> {
 	protected String licenseName;
 	protected String licenseShortName;
 	protected String description;
-	private Status availabilityState;
+	private Status status;
 	private long size;
 
 	public Component(ModuleDescriptor descriptor) {
@@ -46,7 +46,7 @@ public class Component implements Comparable<Component> {
 		}
 		setSize(parsedLong);
 		// TODO ONLY FOR TESTING, THIS STATE SHOULD BE DETERMINED BY SOME METHOD
-		setAvailabilityState(Status.AVAILABLE);
+		setStatus(Status.AVAILABLE);
 
 	}
 
@@ -142,15 +142,15 @@ public class Component implements Comparable<Component> {
 
 	public Status getStatus() {
 
-		return this.availabilityState;
+		return this.status;
 	}
 
 	/**
-	 * @param availabilityState
-	 *            the availabilityState to set
+	 * @param status
+	 *            the status to set
 	 */
-	public void setAvailabilityState(Status availabilityState) {
-		this.availabilityState = availabilityState;
+	public void setStatus(Status status) {
+		this.status = status;
 	}
 
 	/**
@@ -192,7 +192,7 @@ public class Component implements Comparable<Component> {
 	public String toString() {
 		return "Component [name=" + this.name + ", locale=" + this.locale + ", version=" + this.version + ", licenseName="
 				+ this.licenseName + ", licenseShortName=" + this.licenseShortName + ", description=" + this.description
-				+ ", availabilityState=" + this.availabilityState + ", size=" + this.size + "]";
+				+ ", availabilityState=" + this.status + ", size=" + this.size + "]";
 	}
 
 	@Override

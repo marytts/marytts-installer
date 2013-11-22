@@ -12,10 +12,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JComboBox;
 
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
@@ -43,6 +47,8 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 		addActionToAdvancedCheckBox();
 		addActionToLogButton();
 		addActionToMaryPathButton();
+
+		fillComboBoxes();
 	}
 
 	/* @formatter:off */
@@ -92,7 +98,6 @@ public class InstallerGUITmp extends javax.swing.JFrame {
         controlsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Use these controls to filter the list of available components"));
 
         localeBox.setMaximumRowCount(20);
-        localeBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         localeBox.setSelectedIndex(-1);
 
         localeLabel.setText("Locale");
@@ -100,11 +105,9 @@ public class InstallerGUITmp extends javax.swing.JFrame {
         typeLabel.setText("Type");
 
         typeBox.setMaximumRowCount(20);
-        typeBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         typeBox.setSelectedIndex(-1);
 
         genderBox.setMaximumRowCount(20);
-        genderBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         genderBox.setSelectedIndex(-1);
 
         genderLabel.setText("Gender");
@@ -112,7 +115,6 @@ public class InstallerGUITmp extends javax.swing.JFrame {
         statusLabel.setText("Status");
 
         statusBox.setMaximumRowCount(20);
-        statusBox.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         statusBox.setSelectedIndex(-1);
 
         controlsSep.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -373,30 +375,53 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 			}
 			return true;
 		}
-
 		return false;
 	}
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox advancedCheckBox;
-    private javax.swing.JTabbedPane componentTabbedPane;
-    private javax.swing.JPanel controlsPanel;
-    private javax.swing.JSeparator controlsSep;
-    private javax.swing.JComboBox genderBox;
-    private javax.swing.JLabel genderLabel;
-    private javax.swing.JPanel languagesGroupPanel;
-    private javax.swing.JScrollPane languagesScrollPane;
-    private javax.swing.JComboBox localeBox;
-    private javax.swing.JLabel localeLabel;
-    private javax.swing.JButton logButton;
-    private javax.swing.JButton maryPathButton;
-    private javax.swing.JLabel maryPathLabel;
-    private javax.swing.JTextField maryPathTextField;
-    private javax.swing.JComboBox statusBox;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JComboBox typeBox;
-    private javax.swing.JLabel typeLabel;
-    private javax.swing.JPanel voicesGroupPanel;
-    private javax.swing.JScrollPane voicesScrollPane;
-    // End of variables declaration//GEN-END:variables
+	private void fillComboBoxes() {
+		HashMap<String, HashSet<String>> attributeValues = this.installer.getAttributeValues();
+		for (Map.Entry<String, HashSet<String>> oneEntry : attributeValues.entrySet()) {
+			JComboBox componentToFill = null;
+			String key = oneEntry.getKey();
+			if (key.equals("gender")) {
+				componentToFill = this.genderBox;
+			} else if (key.equals("locale")) {
+				componentToFill = this.localeBox;
+			} else if (key.equals("status")) {
+				componentToFill = this.statusBox;
+			} else if (key.equals("type")) {
+				componentToFill = this.typeBox;
+			}
+
+			componentToFill.addItem("");
+			for (String oneValue : attributeValues.get(key)) {
+				componentToFill.addItem(oneValue);
+			}
+			componentToFill.setSelectedIndex(0);
+
+		}
+	}
+
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JCheckBox advancedCheckBox;
+	private javax.swing.JTabbedPane componentTabbedPane;
+	private javax.swing.JPanel controlsPanel;
+	private javax.swing.JSeparator controlsSep;
+	private javax.swing.JComboBox genderBox;
+	private javax.swing.JLabel genderLabel;
+	private javax.swing.JPanel languagesGroupPanel;
+	private javax.swing.JScrollPane languagesScrollPane;
+	private javax.swing.JComboBox localeBox;
+	private javax.swing.JLabel localeLabel;
+	private javax.swing.JButton logButton;
+	private javax.swing.JButton maryPathButton;
+	private javax.swing.JLabel maryPathLabel;
+	private javax.swing.JTextField maryPathTextField;
+	private javax.swing.JComboBox statusBox;
+	private javax.swing.JLabel statusLabel;
+	private javax.swing.JComboBox typeBox;
+	private javax.swing.JLabel typeLabel;
+	private javax.swing.JPanel voicesGroupPanel;
+	private javax.swing.JScrollPane voicesScrollPane;
+	// End of variables declaration//GEN-END:variables
 }

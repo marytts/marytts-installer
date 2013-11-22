@@ -5,6 +5,8 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,6 +37,7 @@ public class Installer {
 
 	private List<Component> resources;
 	private IvySettings ivySettings;
+	private HashMap<String, HashSet<String>> attributeValues;
 
 	/**
 	 * constructor for Installer
@@ -45,6 +48,12 @@ public class Installer {
 			this.resources = new ArrayList<Component>();
 			this.ivySettings = new IvySettings();
 			this.ivySettings.load(Resources.getResource("ivysettings.xml"));
+			this.attributeValues = new HashMap<String, HashSet<String>>();
+			// this.attributeValues.put("name", new HashSet<String>());
+			this.attributeValues.put("locale", new HashSet<String>());
+			this.attributeValues.put("status", new HashSet<String>());
+			this.attributeValues.put("type", new HashSet<String>());
+			this.attributeValues.put("gender", new HashSet<String>());
 			parseIvyResources(this.ivySettings);
 
 		} catch (ParseException e) {
@@ -86,6 +95,7 @@ public class Installer {
 						true);
 				VoiceComponent oneComponent = new VoiceComponent(descriptor);
 				this.resources.add(oneComponent);
+				storeAttributeValues(oneComponent);
 			} else if (oneFileName.startsWith("marytts-lang")) {
 
 				URL oneResource = Resources.getResource(oneFileName);
@@ -93,11 +103,24 @@ public class Installer {
 						true);
 				Component oneComponent = new Component(descriptor);
 				this.resources.add(oneComponent);
+				storeAttributeValues(oneComponent);
 			} else {
 				continue;
 			}
 		}
 
+	}
+
+	private void storeAttributeValues(Component oneComponent) {
+
+		// this.attributeValues.get("name").add(oneComponent.getName());
+		this.attributeValues.get("locale").add(oneComponent.getLocale().toString());
+		this.attributeValues.get("status").add(oneComponent.getStatus().toString());
+		if (oneComponent instanceof VoiceComponent) {
+			VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
+			this.attributeValues.get("type").add(oneVoiceComponent.getType());
+			this.attributeValues.get("gender").add(oneVoiceComponent.getGender());
+		}
 	}
 
 	/**
@@ -106,6 +129,13 @@ public class Installer {
 	public List<Component> getAvailableComponents() {
 
 		return this.resources;
+	}
+
+	/**
+	 * @return the attributeValues
+	 */
+	public HashMap<String, HashSet<String>> getAttributeValues() {
+		return this.attributeValues;
 	}
 
 	/**
