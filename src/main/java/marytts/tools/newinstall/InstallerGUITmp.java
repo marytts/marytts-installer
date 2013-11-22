@@ -324,6 +324,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 	private void addActionToAdvancedCheckBox() {
 		this.advancedCheckBox.setSelected(false);
 		this.componentTabbedPane.setEnabledAt(1, false);
+		this.componentTabbedPane.setForegroundAt(1, Color.lightGray);
 		this.advancedCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
