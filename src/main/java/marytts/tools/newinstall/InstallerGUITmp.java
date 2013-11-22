@@ -6,10 +6,12 @@
 
 package marytts.tools.newinstall;
 
-import java.awt.Dimension;
+import java.awt.Color;
 import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.List;
 
 import javax.swing.Box;
@@ -38,6 +40,9 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 		this.installer = installer;
 		initComponents();
 		fillComponentGroupPanels();
+		addActionToAdvancedCheckBox();
+		addActionToLogButton();
+		addActionToMaryPathButton();
 	}
 
 	/* @formatter:off */
@@ -53,7 +58,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
         maryPathLabel = new javax.swing.JLabel();
         maryPathTextField = new javax.swing.JTextField();
         maryPathButton = new javax.swing.JButton();
-        advancedButton = new javax.swing.JCheckBox();
+        advancedCheckBox = new javax.swing.JCheckBox();
         logButton = new javax.swing.JButton();
         controlsPanel = new javax.swing.JPanel();
         localeBox = new javax.swing.JComboBox();
@@ -70,8 +75,6 @@ public class InstallerGUITmp extends javax.swing.JFrame {
         voicesGroupPanel = new javax.swing.JPanel();
         languagesScrollPane = new javax.swing.JScrollPane();
         languagesGroupPanel = new javax.swing.JPanel();
-        maryttsScrollPane = new javax.swing.JScrollPane();
-        maryttsGroupPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Component Installer");
@@ -81,8 +84,8 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 
         maryPathButton.setText("dir");
 
-        advancedButton.setForeground(new java.awt.Color(153, 153, 153));
-        advancedButton.setText("advanced Mode");
+        advancedCheckBox.setForeground(java.awt.Color.lightGray);
+        advancedCheckBox.setText("advanced Mode");
 
         logButton.setText("show log view");
 
@@ -204,22 +207,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 
         languagesScrollPane.setViewportView(languagesGroupPanel);
 
-        componentTabbedPane.addTab("languages", languagesScrollPane);
-
-        javax.swing.GroupLayout maryttsGroupPanelLayout = new javax.swing.GroupLayout(maryttsGroupPanel);
-        maryttsGroupPanel.setLayout(maryttsGroupPanelLayout);
-        maryttsGroupPanelLayout.setHorizontalGroup(
-            maryttsGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 524, Short.MAX_VALUE)
-        );
-        maryttsGroupPanelLayout.setVerticalGroup(
-            maryttsGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 268, Short.MAX_VALUE)
-        );
-
-        maryttsScrollPane.setViewportView(maryttsGroupPanel);
-
-        componentTabbedPane.addTab("marytts", maryttsScrollPane);
+        componentTabbedPane.addTab("other", languagesScrollPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -229,7 +217,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(advancedButton)
+                        .addComponent(advancedCheckBox)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(logButton))
                     .addGroup(layout.createSequentialGroup()
@@ -262,7 +250,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
                 .addComponent(componentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(advancedButton)
+                    .addComponent(advancedCheckBox)
                     .addComponent(logButton))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -333,9 +321,31 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 		});
 	}
 
+	private void addActionToAdvancedCheckBox() {
+		this.advancedCheckBox.setSelected(false);
+		this.componentTabbedPane.setEnabledAt(1, false);
+		this.advancedCheckBox.addItemListener(new ItemListener() {
+			@Override
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					InstallerGUITmp.this.advancedCheckBox.setForeground(Color.BLACK);
+					InstallerGUITmp.this.componentTabbedPane.setEnabledAt(1, true);
+					InstallerGUITmp.this.componentTabbedPane.setForegroundAt(1, Color.BLACK);
+					// java.awt.Component componentAt = InstallerGUITmp.this.componentTabbedPane.getComponentAt(1);
+					// System.out.println(componentAt.toString());
+				} else {
+					InstallerGUITmp.this.advancedCheckBox.setForeground(Color.lightGray);
+					InstallerGUITmp.this.componentTabbedPane.setEnabledAt(1, false);
+					InstallerGUITmp.this.componentTabbedPane.setForegroundAt(1, Color.lightGray);
+					InstallerGUITmp.this.componentTabbedPane.setSelectedIndex(0);
+					// InstallerGUITmp.this.componentTabbedPane.getComponentAt(1).setVisible(true);
+				}
+			}
+		});
+	}
+
 	/**
-	 * TODO differentiate between mary components and lang components?
-	 * TODO separate voiceComponentPanels from langs
+	 * TODO differentiate between mary components and lang components? TODO separate voiceComponentPanels from langs
 	 * 
 	 * @param componentGroupPanel
 	 * @param componentTableModel
@@ -352,8 +362,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent);
 					this.voicesGroupPanel.add(voiceComponentPanel);
 					this.voicesGroupPanel.add(Box.createVerticalGlue());
-				}
-				else {
+				} else {
 					// TODO to which group panel -> how to distinguish?
 					this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
 					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel(oneComponent);
@@ -368,7 +377,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JCheckBox advancedButton;
+	private javax.swing.JCheckBox advancedCheckBox;
 	private javax.swing.JTabbedPane componentTabbedPane;
 	private javax.swing.JPanel controlsPanel;
 	private javax.swing.JSeparator controlsSep;
@@ -382,8 +391,6 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 	private javax.swing.JButton maryPathButton;
 	private javax.swing.JLabel maryPathLabel;
 	private javax.swing.JTextField maryPathTextField;
-	private javax.swing.JPanel maryttsGroupPanel;
-	private javax.swing.JScrollPane maryttsScrollPane;
 	private javax.swing.JComboBox statusBox;
 	private javax.swing.JLabel statusLabel;
 	private javax.swing.JComboBox typeBox;
