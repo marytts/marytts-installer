@@ -39,12 +39,11 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
         installButton = new javax.swing.JButton();
         collapseButton = new javax.swing.JToggleButton();
         collapsiblePanel = new javax.swing.JPanel();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
-        versionLabel = new javax.swing.JLabel();
-        licenseValueLabel = new javax.swing.JLabel();
         versionValueLabel = new javax.swing.JLabel();
         licenseLabel = new javax.swing.JLabel();
+        licenseValueLabel = new javax.swing.JLabel();
+        versionLabel = new javax.swing.JLabel();
+        jTextArea1 = new javax.swing.JTextArea();
         jSeparator1 = new javax.swing.JSeparator();
         localeValueLabel = new javax.swing.JLabel();
         localeLabel = new javax.swing.JLabel();
@@ -57,7 +56,7 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
 
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setToolTipText("");
-        setPreferredSize(new java.awt.Dimension(520, 170));
+        setPreferredSize(new java.awt.Dimension(522, 214));
 
         componentNameLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         componentNameLabel.setText("jLabel1");
@@ -77,10 +76,17 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
             }
         });
 
-        collapsiblePanel.setPreferredSize(new java.awt.Dimension(520, 500));
+        collapsiblePanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
-        jScrollPane2.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        jScrollPane2.setToolTipText("");
+        versionValueLabel.setText("jLabel4");
+
+        licenseLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        licenseLabel.setText("License:");
+
+        licenseValueLabel.setText("jLabel6");
+
+        versionLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        versionLabel.setText("Version:");
 
         jTextArea1.setEditable(false);
         jTextArea1.setColumns(20);
@@ -89,53 +95,39 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
         jTextArea1.setRows(5);
         jTextArea1.setWrapStyleWord(true);
         jTextArea1.setBorder(javax.swing.BorderFactory.createTitledBorder("Description"));
-        jTextArea1.setPreferredSize(new java.awt.Dimension(132, 50));
-        jScrollPane2.setViewportView(jTextArea1);
-
-        versionLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        versionLabel.setText("Version:");
-
-        licenseValueLabel.setText("jLabel6");
-
-        versionValueLabel.setText("jLabel4");
-
-        licenseLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        licenseLabel.setText("License:");
+        jTextArea1.setMaximumSize(new java.awt.Dimension(132, 30));
+        jTextArea1.setPreferredSize(new java.awt.Dimension(132, 40));
 
         javax.swing.GroupLayout collapsiblePanelLayout = new javax.swing.GroupLayout(collapsiblePanel);
         collapsiblePanel.setLayout(collapsiblePanelLayout);
         collapsiblePanelLayout.setHorizontalGroup(
             collapsiblePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(collapsiblePanelLayout.createSequentialGroup()
-                .addGroup(collapsiblePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 512, Short.MAX_VALUE)
-                    .addGroup(collapsiblePanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(collapsiblePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(collapsiblePanelLayout.createSequentialGroup()
-                                .addComponent(licenseLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(licenseValueLabel))
-                            .addGroup(collapsiblePanelLayout.createSequentialGroup()
-                                .addComponent(versionLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(versionValueLabel)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(versionLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(versionValueLabel)
+                .addGap(115, 115, 115)
+                .addComponent(licenseLabel)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(licenseValueLabel)
+                .addGap(153, 153, 153))
+            .addGroup(collapsiblePanelLayout.createSequentialGroup()
+                .addComponent(jTextArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         collapsiblePanelLayout.setVerticalGroup(
             collapsiblePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(collapsiblePanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 79, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(collapsiblePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(versionLabel)
-                    .addComponent(versionValueLabel))
+                .addComponent(jTextArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(collapsiblePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(licenseLabel)
-                    .addComponent(licenseValueLabel))
-                .addContainerGap(18, Short.MAX_VALUE))
+                    .addComponent(licenseValueLabel)
+                    .addComponent(versionLabel)
+                    .addComponent(versionValueLabel))
+                .addContainerGap(16, Short.MAX_VALUE))
         );
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
@@ -165,11 +157,11 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(19, 19, 19)
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(componentNameLabel)
                     .addComponent(collapseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -180,10 +172,7 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
                         .addGap(27, 27, 27)
                         .addComponent(typeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(typeValueLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(statusLabel)
-                        .addGap(27, 27, 27))
+                        .addComponent(typeValueLabel))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(genderLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -191,37 +180,53 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(sizeLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(sizeValueLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(installButton)
-                        .addContainerGap())))
-            .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 518, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(sizeValueLabel)))
+                .addGap(49, 49, 49)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(installButton)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(statusLabel)
+                        .addGap(18, 18, 18)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(63, 63, 63))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(statusLabel)
+                                .addComponent(componentNameLabel))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(installButton))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(collapseButton))))
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(componentNameLabel)
-                            .addComponent(statusLabel)
                             .addComponent(localeLabel)
                             .addComponent(localeValueLabel)
                             .addComponent(typeLabel)
                             .addComponent(typeValueLabel))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(collapseButton)
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                .addComponent(installButton)
-                                .addComponent(genderLabel)
-                                .addComponent(genderValueLabel)
-                                .addComponent(sizeLabel)
-                                .addComponent(sizeValueLabel))))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 147, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(genderLabel)
+                            .addComponent(genderValueLabel)
+                            .addComponent(sizeLabel)
+                            .addComponent(sizeValueLabel))))
+                .addGap(11, 11, 11)
+                .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 134, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(8, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -257,7 +262,6 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
     private javax.swing.JLabel genderLabel;
     private javax.swing.JLabel genderValueLabel;
     private javax.swing.JButton installButton;
-    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JLabel licenseLabel;

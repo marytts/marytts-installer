@@ -183,7 +183,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
         voicesGroupPanel.setLayout(voicesGroupPanelLayout);
         voicesGroupPanelLayout.setHorizontalGroup(
             voicesGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 524, Short.MAX_VALUE)
+            .addGap(0, 535, Short.MAX_VALUE)
         );
         voicesGroupPanelLayout.setVerticalGroup(
             voicesGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -198,7 +198,7 @@ public class InstallerGUITmp extends javax.swing.JFrame {
         languagesGroupPanel.setLayout(languagesGroupPanelLayout);
         languagesGroupPanelLayout.setHorizontalGroup(
             languagesGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 524, Short.MAX_VALUE)
+            .addGap(0, 535, Short.MAX_VALUE)
         );
         languagesGroupPanelLayout.setVerticalGroup(
             languagesGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -227,13 +227,13 @@ public class InstallerGUITmp extends javax.swing.JFrame {
                         .addComponent(maryPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(maryPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(0, 78, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(controlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(componentTabbedPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(componentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -377,26 +377,26 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 		return false;
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JCheckBox advancedCheckBox;
-	private javax.swing.JTabbedPane componentTabbedPane;
-	private javax.swing.JPanel controlsPanel;
-	private javax.swing.JSeparator controlsSep;
-	private javax.swing.JComboBox genderBox;
-	private javax.swing.JLabel genderLabel;
-	private javax.swing.JPanel languagesGroupPanel;
-	private javax.swing.JScrollPane languagesScrollPane;
-	private javax.swing.JComboBox localeBox;
-	private javax.swing.JLabel localeLabel;
-	private javax.swing.JButton logButton;
-	private javax.swing.JButton maryPathButton;
-	private javax.swing.JLabel maryPathLabel;
-	private javax.swing.JTextField maryPathTextField;
-	private javax.swing.JComboBox statusBox;
-	private javax.swing.JLabel statusLabel;
-	private javax.swing.JComboBox typeBox;
-	private javax.swing.JLabel typeLabel;
-	private javax.swing.JPanel voicesGroupPanel;
-	private javax.swing.JScrollPane voicesScrollPane;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox advancedCheckBox;
+    private javax.swing.JTabbedPane componentTabbedPane;
+    private javax.swing.JPanel controlsPanel;
+    private javax.swing.JSeparator controlsSep;
+    private javax.swing.JComboBox genderBox;
+    private javax.swing.JLabel genderLabel;
+    private javax.swing.JPanel languagesGroupPanel;
+    private javax.swing.JScrollPane languagesScrollPane;
+    private javax.swing.JComboBox localeBox;
+    private javax.swing.JLabel localeLabel;
+    private javax.swing.JButton logButton;
+    private javax.swing.JButton maryPathButton;
+    private javax.swing.JLabel maryPathLabel;
+    private javax.swing.JTextField maryPathTextField;
+    private javax.swing.JComboBox statusBox;
+    private javax.swing.JLabel statusLabel;
+    private javax.swing.JComboBox typeBox;
+    private javax.swing.JLabel typeLabel;
+    private javax.swing.JPanel voicesGroupPanel;
+    private javax.swing.JScrollPane voicesScrollPane;
+    // End of variables declaration//GEN-END:variables
 }
