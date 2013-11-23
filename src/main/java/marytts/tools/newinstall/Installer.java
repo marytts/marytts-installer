@@ -210,6 +210,40 @@ public class Installer {
 	}
 
 	/**
+	 * returns - if present - the Component with nameValue as name. If not presents, returns null
+	 * 
+	 * @param nameValue
+	 *            the value of the name to be searched for
+	 * @return the component with nameValue, null if not present
+	 */
+	public Component getComponentByName(String nameValue) {
+
+		for (Component oneComponent : this.resources) {
+			if (oneComponent.getName().equalsIgnoreCase(nameValue)) {
+				return oneComponent;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * checks if component list contains a {@link Component} with the name equal to the one passed along to this method.
+	 * 
+	 * @param nameValue
+	 *            the value of the name to be searched for
+	 * @return true if nameValue was found, false otherwise
+	 */
+	public boolean isNamePresent(String nameValue) {
+
+		for (Component oneComponent : this.resources) {
+			if (oneComponent.getName().equalsIgnoreCase(nameValue)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * 
 	 * TODO not used at the moment, remove. <br>
 	 * Test Installer <br>
@@ -247,39 +281,5 @@ public class Installer {
 		String from = "remote";
 		String to = "marytts-installed";
 		ivy.install(descriptor.getModuleRevisionId(), from, to, installOptions);
-	}
-
-	/**
-	 * returns - if present - the Component with nameValue as name. If not presents, returns null
-	 * 
-	 * @param nameValue
-	 *            the value of the name to be searched for
-	 * @return the component with nameValue, null if not present
-	 */
-	public Component getComponentByName(String nameValue) {
-
-		for (Component oneComponent : this.resources) {
-			if (oneComponent.getName().equalsIgnoreCase(nameValue)) {
-				return oneComponent;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * checks if component list contains a {@link Component} with the name equal to the one passed along to this method.
-	 * 
-	 * @param nameValue
-	 *            the value of the name to be searched for
-	 * @return true if nameValue was found, false otherwise
-	 */
-	public boolean isNamePresent(String nameValue) {
-
-		for (Component oneComponent : this.resources) {
-			if (oneComponent.getName().equalsIgnoreCase(nameValue)) {
-				return true;
-			}
-		}
-		return false;
 	}
 }
