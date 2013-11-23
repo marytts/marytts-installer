@@ -1,6 +1,8 @@
 package marytts.tools.newinstall;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -13,15 +15,10 @@ import java.util.List;
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
-import org.apache.ivy.Ivy;
-import org.apache.ivy.core.install.InstallOptions;
+import org.apache.commons.io.FileUtils;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
-import org.apache.ivy.core.resolve.ResolveOptions;
-import org.apache.ivy.core.retrieve.RetrieveOptions;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
-import org.apache.ivy.util.DefaultMessageLogger;
-import org.apache.ivy.util.Message;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
@@ -30,7 +27,7 @@ import com.google.gson.Gson;
 /**
  * 
  * 
- * @author Jonathan
+ * @author Jonathan, Ingmar
  * 
  */
 public class Installer {
@@ -38,6 +35,8 @@ public class Installer {
 	private List<Component> resources;
 	private IvySettings ivySettings;
 	private HashMap<String, HashSet<String>> attributeValues;
+	private InstallerCLI cli;
+	private String maryBasePath;
 
 	/**
 	 * constructor for Installer
@@ -60,6 +59,55 @@ public class Installer {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public Installer(String[] args) {
+		cli = new InstallerCLI(args);
+		setMaryBase();
+		System.out.println(maryBasePath);
+	}
+
+	private void setMaryBase() {
+		String userSelection = cli.getTargetDirectory();
+		File maryBase = null;
+		try {
+			maryBase = new File(userSelection);
+		} catch (NullPointerException npe) {
+			// no target directory selected;
+			// fall back to location of this class/jar
+			// from http://stackoverflow.com/a/320595
+			URL location = Installer.class.getProtectionDomain().getCodeSource().getLocation();
+			try {
+				maryBase = new File(location.toURI().getPath());
+			} catch (URISyntaxException use) {
+				// TODO Auto-generated catch block
+				System.err.printf("Could not parse %s: %s\n", location, use.getMessage());
+			}
+		}
+		setMaryBase(maryBase);
+	}
+
+	private void setMaryBase(File maryBase) {
+		try {
+			maryBase = maryBase.getCanonicalFile();
+		} catch (IOException ioe) {
+			System.err.printf("Could not determine path to directory %s: %s\n", maryBase, ioe);
+		}
+		// if this is running from the jar file, back off to directory containing it
+		if (maryBase.isFile()) {
+			maryBase = maryBase.getParentFile();
+		}
+		// create directory (with parents, if required)
+		try {
+			FileUtils.forceMkdir(maryBase);
+		} catch (IOException ioe) {
+			System.err.println(ioe.getMessage());
+		}
+		try {
+			maryBasePath = maryBase.getCanonicalPath();
+		} catch (IOException ioe) {
+			System.err.printf("Could not determine path to directory %s: %s\n", maryBase, ioe);
 		}
 	}
 
@@ -250,36 +298,8 @@ public class Installer {
 	 * <b>Note:</b> must currently run with -Dmary.base=/path/to/marytts
 	 * 
 	 * @param args
-	 * @throws IOException
-	 * @throws ParseException
 	 */
-	public static void main(String[] args) throws ParseException, IOException {
-
-		// load ivy settings
-		IvySettings ivySettings = new IvySettings();
-		ivySettings.load(Resources.getResource("ivysettings.xml"));
-
-		// as a test, parse module descriptor for lang-de component
-		URL resource = Resources.getResource("marytts-voice-cmu-slt-hsmm-5.1-SNAPSHOT.xml");
-		ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings, resource, true);
-
-		// instantiate ivy
-		Ivy ivy = Ivy.newInstance(ivySettings);
-		// set ivy loglevel to DEBUG
-		ivy.getLoggerEngine().pushLogger(new DefaultMessageLogger(Message.MSG_DEBUG));
-		ResolveOptions resolveOptions = new ResolveOptions();
-		ivy.resolve(descriptor, resolveOptions);
-		// retrieve options; retrieved artifacts go into MARYBASE/lib
-		RetrieveOptions retrieveOptions = new RetrieveOptions();
-		retrieveOptions.setDestIvyPattern("${mary.base}/installed/[module]-[revision].xml");
-		retrieveOptions.setDestArtifactPattern("${mary.base}/lib/[module]-[revision].[ext]");
-		ivy.retrieve(descriptor.getModuleRevisionId(), retrieveOptions);
-
-		InstallOptions installOptions = new InstallOptions();
-		installOptions.setTransitive(true);
-		installOptions.setOverwrite(true);
-		String from = "remote";
-		String to = "marytts-installed";
-		ivy.install(descriptor.getModuleRevisionId(), from, to, installOptions);
+	public static void main(String[] args) {
+		Installer installer = new Installer(args);
 	}
 }
