@@ -16,7 +16,10 @@ import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.ivy.Ivy;
+import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
+import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
 
@@ -32,8 +35,12 @@ import com.google.gson.Gson;
  */
 public class Installer {
 
-	private List<Component> resources;
+	private Ivy ivy;
 	private IvySettings ivySettings;
+	private ResolveOptions resolveOptions;
+	private InstallOptions installOptions;
+
+	private List<Component> resources;
 	private HashMap<String, HashSet<String>> attributeValues;
 	private InstallerCLI cli;
 	private String maryBasePath;
@@ -65,7 +72,20 @@ public class Installer {
 	public Installer(String[] args) {
 		cli = new InstallerCLI(args);
 		setMaryBase();
-		System.out.println(maryBasePath);
+
+		// setup ivy
+		IvySettings ivySettings = new IvySettings();
+		ivySettings.setVariable("mary.base", maryBasePath);
+		try {
+			ivySettings.load(Resources.getResource("ivysettings.xml"));
+		} catch (IOException ioe) {
+			System.err.printf("Could not access settings file: %s", ioe.getMessage());
+		} catch (ParseException pe) {
+			System.err.printf("Could not parse settings file: %s", pe.getMessage());
+		}
+		Ivy.newInstance(ivySettings);
+		resolveOptions = new ResolveOptions().setOutputReport(false);
+		installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
 	}
 
 	private void setMaryBase() {
@@ -109,6 +129,11 @@ public class Installer {
 		} catch (IOException ioe) {
 			System.err.printf("Could not determine path to directory %s: %s\n", maryBase, ioe);
 		}
+	}
+
+	public void install(Component component) throws ParseException, IOException {
+		ivy.resolve(component.getModuleDescriptor(), resolveOptions);
+		ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed", installOptions);
 	}
 
 	/**

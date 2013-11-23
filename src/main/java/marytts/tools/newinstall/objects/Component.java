@@ -19,6 +19,7 @@ import com.google.common.collect.ComparisonChain;
  */
 public class Component implements Comparable<Component> {
 
+	private ModuleDescriptor moduleDescriptor;
 	protected String name;
 	protected Locale locale;
 	protected String version;
@@ -29,7 +30,7 @@ public class Component implements Comparable<Component> {
 	private long size;
 
 	public Component(ModuleDescriptor descriptor) {
-
+		moduleDescriptor = descriptor;
 		setDescription(descriptor.getDescription());
 		setLicenseName(descriptor.getLicenses()[0].getName());
 		setLicenseShortName(descriptor.getExtraAttribute("license"));
@@ -98,6 +99,10 @@ public class Component implements Comparable<Component> {
 	private void setName(String name) {
 
 		this.name = name;
+	}
+
+	public ModuleDescriptor getModuleDescriptor() {
+		return moduleDescriptor;
 	}
 
 	/**
