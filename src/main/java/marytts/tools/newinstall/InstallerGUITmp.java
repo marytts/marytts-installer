@@ -39,16 +39,18 @@ public class InstallerGUITmp extends javax.swing.JFrame {
 	public InstallerGUITmp(Installer installer) {
 		if (installer == null) {
 			System.err.println("Installer should not be null at this point!");
-			installer = new Installer();
+			System.exit(0);
+			// installer = new Installer();
 		}
 		this.installer = installer;
 		initComponents();
+
+		// TODO can't be filled at construction time as Installer hasn't loaded this data yet by then, figure out solution!
 		fillComponentGroupPanels();
 		addActionToAdvancedCheckBox();
 		addActionToLogButton();
 		addActionToMaryPathButton();
-
-		fillComboBoxes();
+		// fillComboBoxes();
 	}
 
 	/* @formatter:off */
@@ -261,44 +263,44 @@ public class InstallerGUITmp extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     /* @formatter:on */
 
-	/**
-	 * @param args
-	 *            the command line arguments
+	// /**
+	// * @param args
+	// * the command line arguments
+	// */
+	// public static void main(String args[]) {
+
+	/* Set the Nimbus look and feel */
+	// <editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+	/*
+	 * If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel. For details see
+	 * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
 	 */
-	public static void main(String args[]) {
+	// try {
+	// for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+	// if ("Nimbus".equals(info.getName())) {
+	// javax.swing.UIManager.setLookAndFeel(info.getClassName());
+	// break;
+	// }
+	// }
+	// } catch (ClassNotFoundException ex) {
+	// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	// } catch (InstantiationException ex) {
+	// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	// } catch (IllegalAccessException ex) {
+	// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	// } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+	// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+	// }
+	// </editor-fold>
 
-		/* Set the Nimbus look and feel */
-		// <editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-		/*
-		 * If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel. For details see
-		 * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-		 */
-		// try {
-		// for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-		// if ("Nimbus".equals(info.getName())) {
-		// javax.swing.UIManager.setLookAndFeel(info.getClassName());
-		// break;
-		// }
-		// }
-		// } catch (ClassNotFoundException ex) {
-		// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		// } catch (InstantiationException ex) {
-		// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		// } catch (IllegalAccessException ex) {
-		// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		// } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-		// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-		// }
-		// </editor-fold>
-
-		/* Create and display the form */
-		java.awt.EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				Installer installer = new Installer();
-				new InstallerGUITmp(installer).setVisible(true);
-			}
-		});
-	}
+	/* Create and display the form */
+	// java.awt.EventQueue.invokeLater(new Runnable() {
+	// public void run() {
+	// Installer installer = new Installer();
+	// new InstallerGUITmp(installer).setVisible(true);
+	// }
+	// });
+	// }
 
 	private void addActionToLogButton() {
 		this.logButton.addActionListener(new ActionListener() {
