@@ -36,7 +36,7 @@ import com.google.gson.Gson;
 public class Installer {
 
 	private Ivy ivy;
-	private IvySettings ivySettings;
+	// private IvySettings ivySettings;
 	private ResolveOptions resolveOptions;
 	private InstallOptions installOptions;
 
@@ -45,32 +45,40 @@ public class Installer {
 	private InstallerCLI cli;
 	private String maryBasePath;
 
+	// /**
+	// * constructor for Installer
+	// */
+	// public Installer() {
+	//
+	// try {
+	// this.resources = new ArrayList<Component>();
+	// this.ivySettings = new IvySettings();
+	// this.ivySettings.load(Resources.getResource("ivysettings.xml"));
+	// initAttributeValues();
+	// parseIvyResources(this.ivySettings);
+	//
+	// } catch (ParseException e) {
+	// e.printStackTrace();
+	// } catch (IOException e) {
+	// e.printStackTrace();
+	// }
+	// }
+
 	/**
-	 * constructor for Installer
+	 * initializes the attribute values to be stored in Installer for later usage in GUI and CLI
 	 */
-	public Installer() {
-
-		try {
-			this.resources = new ArrayList<Component>();
-			this.ivySettings = new IvySettings();
-			this.ivySettings.load(Resources.getResource("ivysettings.xml"));
-			this.attributeValues = new HashMap<String, HashSet<String>>();
-			// this.attributeValues.put("name", new HashSet<String>());
-			this.attributeValues.put("locale", new HashSet<String>());
-			this.attributeValues.put("status", new HashSet<String>());
-			this.attributeValues.put("type", new HashSet<String>());
-			this.attributeValues.put("gender", new HashSet<String>());
-			parseIvyResources(this.ivySettings);
-
-		} catch (ParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	private void initAttributeValues() {
+		this.attributeValues = new HashMap<String, HashSet<String>>();
+		this.attributeValues.put("locale", new HashSet<String>());
+		this.attributeValues.put("status", new HashSet<String>());
+		this.attributeValues.put("type", new HashSet<String>());
+		this.attributeValues.put("gender", new HashSet<String>());
 	}
 
 	public Installer(String[] args) {
-		cli = new InstallerCLI(args);
+
+		this.resources = new ArrayList<Component>();
+		cli = new InstallerCLI(args, this);
 		setMaryBase();
 
 		// setup ivy
@@ -78,6 +86,8 @@ public class Installer {
 		ivySettings.setVariable("mary.base", maryBasePath);
 		try {
 			ivySettings.load(Resources.getResource("ivysettings.xml"));
+			initAttributeValues();
+			parseIvyResources(ivySettings);
 		} catch (IOException ioe) {
 			System.err.printf("Could not access settings file: %s", ioe.getMessage());
 		} catch (ParseException pe) {
@@ -151,7 +161,9 @@ public class Installer {
 	}
 
 	/**
-	 * retrieves the voice component names from the {@link #readComponentDescriptorList()} and creates {@link Component} objects.
+	 * retrieves the voice component names from the {@link #readComponentDescriptorList()} and creates {@link Component} objects.<br>
+	 * Those Components then are added to the list holding all Components and the {{@link #storeAttributeValues(Component)} method
+	 * takes care of storing possible attribute values in a HashMap<br>
 	 * TODO remove repeated code
 	 * 
 	 * @param ivySettings
@@ -177,16 +189,12 @@ public class Installer {
 				Component oneComponent = new Component(descriptor);
 				this.resources.add(oneComponent);
 				storeAttributeValues(oneComponent);
-			} else {
-				continue;
 			}
 		}
-
 	}
 
 	private void storeAttributeValues(Component oneComponent) {
 
-		// this.attributeValues.get("name").add(oneComponent.getName());
 		this.attributeValues.get("locale").add(oneComponent.getLocale().toString());
 		this.attributeValues.get("status").add(oneComponent.getStatus().toString());
 		if (oneComponent instanceof VoiceComponent) {
