@@ -46,10 +46,6 @@ public class InstallerCLI {
 			System.exit(1);
 		}
 		evalCommandLine(installerInstance);
-		// if (commandLine.hasOption(HELP)) {
-		// helper.printHelp(HELP, options);
-		// System.exit(0);
-		// }
 	}
 
 	private void createOptions() {
@@ -64,13 +60,17 @@ public class InstallerCLI {
 		return commandLine.getOptionValue(TARGET);
 	}
 
-	private void evalCommandLine(Installer installerInstance) {
+	private void evalCommandLine(final Installer installerInstance) {
 		if (this.commandLine.hasOption(HELP)) {
 			this.helper.printHelp(HELP, this.options);
 			System.exit(0);
 		} else if (this.commandLine.hasOption(GUI)) {
-			InstallerGUITmp installerGUITmp = new InstallerGUITmp(installerInstance);
-			installerGUITmp.setVisible(true);
+			java.awt.EventQueue.invokeLater(new Runnable() {
+				public void run() {
+					InstallerGUI gui = new InstallerGUI(installerInstance);
+					gui.setVisible(true);
+				}
+			});
 		}
 	}
 
