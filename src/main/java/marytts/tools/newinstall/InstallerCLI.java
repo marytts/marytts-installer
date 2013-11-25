@@ -7,6 +7,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Logger;
 
 /**
  * class for parsing the CL. <br>
@@ -26,6 +27,8 @@ public class InstallerCLI {
 	private CommandLineParser parser;
 	private CommandLine commandLine;
 	private HelpFormatter helper;
+
+	static Logger logger = Logger.getLogger(marytts.tools.newinstall.InstallerCLI.class.getName());
 
 	/**
 	 * Constructor
@@ -60,6 +63,11 @@ public class InstallerCLI {
 		return commandLine.getOptionValue(TARGET);
 	}
 
+	/**
+	 * Evaluate the commandLine by the means of its options and their arguments
+	 * 
+	 * @param installerInstance
+	 */
 	private void evalCommandLine(final Installer installerInstance) {
 		if (this.commandLine.hasOption(HELP)) {
 			this.helper.printHelp(HELP, this.options);

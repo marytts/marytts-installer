@@ -8,6 +8,7 @@ import java.util.Locale;
 import marytts.tools.newinstall.Status;
 
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
+import org.apache.log4j.Logger;
 
 import com.google.common.collect.ComparisonChain;
 
@@ -28,6 +29,8 @@ public class Component implements Comparable<Component> {
 	protected String description;
 	protected Status status;
 	protected long size;
+	
+	static Logger logger = Logger.getLogger(marytts.tools.newinstall.objects.Component.class.getName());
 
 	public Component(ModuleDescriptor descriptor) {
 		moduleDescriptor = descriptor;

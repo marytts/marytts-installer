@@ -23,6 +23,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
 
+import org.apache.log4j.Logger;
+
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
@@ -40,6 +42,9 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 	// the attributes and values of the comboBoxes in case they're set.
 	private HashMap<String, String> filters;
+	
+	static Logger logger = Logger.getLogger(marytts.tools.newinstall.InstallerGUI.class.getName());
+
 
 	/**
 	 * Creates new form InstallerGUI

@@ -6,6 +6,8 @@
 
 package marytts.tools.newinstall;
 
+import org.apache.log4j.Logger;
+
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
@@ -16,6 +18,8 @@ import marytts.tools.newinstall.objects.VoiceComponent;
 public class VoiceComponentPanel extends javax.swing.JPanel {
 
 	private Component component;
+
+	static Logger logger = Logger.getLogger(marytts.tools.newinstall.VoiceComponentPanel.class.getName());
 
 	/**
 	 * Creates new form VoiceComponentPanel

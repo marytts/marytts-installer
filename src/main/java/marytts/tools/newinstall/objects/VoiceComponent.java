@@ -1,6 +1,7 @@
 package marytts.tools.newinstall.objects;
 
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
+import org.apache.log4j.Logger;
 
 import com.google.common.collect.ComparisonChain;
 
@@ -8,6 +9,8 @@ public class VoiceComponent extends Component {
 
 	private String gender;
 	private String type;
+
+	static Logger logger = Logger.getLogger(marytts.tools.newinstall.objects.VoiceComponent.class.getName());
 
 	public VoiceComponent(ModuleDescriptor descriptor) {
 		super(descriptor);
