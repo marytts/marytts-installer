@@ -56,15 +56,16 @@ public class VoiceComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return "VoiceComponent [gender=" + this.gender + ", type=" + this.type + ", name=" + super.name + ", locale="
-				+ super.locale + ", version=" + super.version + ", licenseName=" + super.licenseName + ", licenseShortName="
-				+ super.licenseShortName + ", description=" + super.description + "]";
+		return "VoiceComponent [gender=" + this.gender + ", type=" + this.type + ", name=" + this.name + ", locale="
+				+ this.locale + ", version=" + this.version + ", licenseName=" + this.licenseName + ", licenseShortName="
+				+ this.licenseShortName + ", description=" + this.description + ", status=" + this.status + ", size=" + this.size
+				+ "]";
 	}
 
 	@Override
 	public int compareTo(Component o) {
 
-		VoiceComponent newO = (VoiceComponent)o;
+		VoiceComponent newO = (VoiceComponent) o;
 		return ComparisonChain.start().compare(super.locale.toString(), newO.getLocale().toString())
 				.compare(this.gender, newO.getGender()).compare(super.name, newO.getName()).result();
 	}
