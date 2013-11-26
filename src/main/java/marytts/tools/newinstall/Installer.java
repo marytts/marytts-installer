@@ -262,7 +262,7 @@ public class Installer {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Component> filterGlobal(HashMap<String, String> filterMap) throws Exception {
+	public List<Component> filterGlobal(HashMap<String, String> filterMap) {
 
 		logger.info("Filtering resources by " + filterMap.toString());
 		List<Component> resourcesToBeFiltered = new ArrayList<Component>(this.resources);

@@ -42,21 +42,23 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 	// the attributes and values of the comboBoxes in case they're set.
 	private HashMap<String, String> filters;
-	
-	static Logger logger = Logger.getLogger(marytts.tools.newinstall.InstallerGUI.class.getName());
 
+	static Logger logger = Logger.getLogger(marytts.tools.newinstall.InstallerGUI.class.getName());
 
 	/**
 	 * Creates new form InstallerGUI
 	 */
 	public InstallerGUI(Installer installer) {
+		logger.info("Starting InstallerGUI");
 		if (installer == null) {
-			System.err.println("Installer should not be null at this point!");
-			System.exit(0);
-			// installer = new Installer();
+			logger.error("There is no installer object!");
+			System.exit(1);
 		}
 		this.installer = installer;
+		logger.debug("Fetching resources from installer");
 		this.curResources = this.installer.getAvailableComponents();
+		// TODO shouldn't be empty at this point, and in reality isn't
+		logger.debug("The current resource list: " + this.curResources.toString());
 		this.filters = new HashMap<String, String>();
 		this.filters.put("locale", "");
 		this.filters.put("type", "");
@@ -65,8 +67,8 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 		initComponents();
 
-		// TODO can't be filled at construction time as Installer hasn't loaded this data yet by then, figure out solution!
 		fillComponentGroupPanels();
+
 		addActionToAdvancedCheckBox();
 		addActionToLogButton();
 		addActionToMaryPathButton();
@@ -384,6 +386,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 		this.logButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
+				logger.debug("Log View button has been clicked.");
 				java.awt.EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						LogViewFrame logViewFrame = new LogViewFrame();
@@ -398,7 +401,12 @@ public class InstallerGUI extends javax.swing.JFrame {
 		this.maryPathButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				new FileDialog(InstallerGUI.this);
+				java.awt.EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						logger.warn("Not implemented yet");
+						// new FileDialog(InstallerGUI.this);
+					}
+				});
 			}
 		});
 	}
@@ -408,16 +416,17 @@ public class InstallerGUI extends javax.swing.JFrame {
 		comboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				try {
-					InstallerGUI.this.filters.put(attribute, comboBox.getSelectedItem().toString());
-					InstallerGUI.this.curResources = installer.filterGlobal(InstallerGUI.this.filters);
-					System.out.println("number of comps:" + InstallerGUI.this.curResources.size());
-					System.out.println(InstallerGUI.this.curResources.toString());
-					// fillComponentGroupPanels();
-				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				java.awt.EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						InstallerGUI.this.filters.put(attribute, comboBox.getSelectedItem().toString());
+						logger.debug("Components will be filtered by " + attribute + "=" + comboBox.getSelectedIndex());
+						InstallerGUI.this.curResources = installer.filterGlobal(InstallerGUI.this.filters);
+						logger.debug("number of components after filtering:" + InstallerGUI.this.curResources.size());
+						// System.out.println(InstallerGUI.this.curResources.toString());
+						fillComponentGroupPanels();
+					}
+
+				});
 			}
 		});
 	}
@@ -429,18 +438,16 @@ public class InstallerGUI extends javax.swing.JFrame {
 		this.advancedCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
+				logger.debug("Checkbox state has been changed to " + e.getStateChange());
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					InstallerGUI.this.advancedCheckBox.setForeground(Color.BLACK);
 					InstallerGUI.this.componentTabbedPane.setEnabledAt(1, true);
 					InstallerGUI.this.componentTabbedPane.setForegroundAt(1, Color.BLACK);
-					// java.awt.Component componentAt = InstallerGUITmp.this.componentTabbedPane.getComponentAt(1);
-					// System.out.println(componentAt.toString());
 				} else {
 					InstallerGUI.this.advancedCheckBox.setForeground(Color.lightGray);
 					InstallerGUI.this.componentTabbedPane.setEnabledAt(1, false);
 					InstallerGUI.this.componentTabbedPane.setForegroundAt(1, Color.lightGray);
 					InstallerGUI.this.componentTabbedPane.setSelectedIndex(0);
-					// InstallerGUITmp.this.componentTabbedPane.getComponentAt(1).setVisible(true);
 				}
 			}
 		});
@@ -454,29 +461,38 @@ public class InstallerGUI extends javax.swing.JFrame {
 	 */
 	private void fillComponentGroupPanels() {
 
+		logger.debug("(Re)filling component lists");
+		logger.debug("Removing all components from voicesGroupPanel.");
 		this.voicesGroupPanel.removeAll();
+		logger.debug("Removing all components from languagesGroupPanel.");
 		this.languagesGroupPanel.removeAll();
 		if (!(this.curResources == null)) {
 			for (Component oneComponent : curResources) {
 				if (oneComponent instanceof VoiceComponent) {
 					this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
+					logger.debug("Creating new VoiceComponentPanel for component " + oneComponent.getName());
 					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent);
 					this.voicesGroupPanel.add(voiceComponentPanel);
 					this.voicesGroupPanel.add(Box.createVerticalGlue());
 				} else {
-					// TODO to which group panel -> how to distinguish?
 					this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
+					logger.debug("Creating new VoiceComponentPanel for component " + oneComponent.getName());
 					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel(oneComponent);
 					this.languagesGroupPanel.add(voiceComponentPanel);
 					this.languagesGroupPanel.add(Box.createVerticalGlue());
 				}
 			}
 		}
-		// validate();
-		// repaint();
+		// logger.debug(this.languagesScrollPane.getVerticalScrollBar().getValue() +
+		// " is the position of language pane vertical scroll bar");
+		// this.languagesScrollPane.getVerticalScrollBar().setValue(0);
+		// this.voicesScrollPane.getVerticalScrollBar().setValue(0);
+		validate();
+		repaint();
 	}
 
 	private void fillComboBoxes() {
+		logger.debug("Filling comboBoxes with data retrieved from installer.getAttributeValues()");
 		HashMap<String, HashSet<String>> attributeValues = this.installer.getAttributeValues();
 		for (Map.Entry<String, HashSet<String>> oneEntry : attributeValues.entrySet()) {
 			JComboBox componentToFill = null;
@@ -494,9 +510,9 @@ public class InstallerGUI extends javax.swing.JFrame {
 			componentToFill.addItem("");
 			for (String oneValue : attributeValues.get(key)) {
 				componentToFill.addItem(oneValue);
+				logger.debug(oneValue + " was added to " + key + " comboBox");
 			}
 			componentToFill.setSelectedIndex(0);
-
 		}
 	}
 

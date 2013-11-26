@@ -39,28 +39,30 @@ public class InstallerCLI {
 	}
 
 	public InstallerCLI(String[] args, Installer installerInstance) {
+		logger.debug("Starting InstallerCLI");
 		createOptions();
-		parser = new BasicParser();
+		this.parser = new BasicParser();
 		try {
-			commandLine = parser.parse(options, args);
+			this.commandLine = this.parser.parse(this.options, args);
 		} catch (ParseException e) {
-			System.err.println("Could not parse command line arguments: " + e.getMessage());
-			helper.printHelp(INSTALLER, options);
+			logger.error("Could not parse command line arguments: " + e.getMessage());
+			this.helper.printHelp(INSTALLER, this.options);
 			System.exit(1);
 		}
 		evalCommandLine(installerInstance);
 	}
 
 	private void createOptions() {
-		options = new Options();
-		options.addOption("h", HELP, false, "print help");
-		options.addOption("t", TARGET, true, "target installation directory");
-		options.addOption(OptionBuilder.withLongOpt("gui").withDescription("starts GUI").create());
-		helper = new HelpFormatter();
+		this.options = new Options();
+		this.options.addOption("h", HELP, false, "print help");
+		this.options.addOption("t", TARGET, true, "target installation directory");
+		this.options.addOption(OptionBuilder.withLongOpt("gui").withDescription("starts GUI").create());
+		this.helper = new HelpFormatter();
+		logger.debug("Created the following options: \n" + this.options.toString());
 	}
 
 	public String getTargetDirectory() {
-		return commandLine.getOptionValue(TARGET);
+		return this.commandLine.getOptionValue(TARGET);
 	}
 
 	/**
@@ -69,10 +71,13 @@ public class InstallerCLI {
 	 * @param installerInstance
 	 */
 	private void evalCommandLine(final Installer installerInstance) {
+		logger.debug("Evaluating the command line: " + commandLine);
 		if (this.commandLine.hasOption(HELP)) {
+			logger.debug("CL has option HELP");
 			this.helper.printHelp(HELP, this.options);
 			System.exit(0);
 		} else if (this.commandLine.hasOption(GUI)) {
+			logger.debug("CL has option GUI");
 			java.awt.EventQueue.invokeLater(new Runnable() {
 				public void run() {
 					InstallerGUI gui = new InstallerGUI(installerInstance);
