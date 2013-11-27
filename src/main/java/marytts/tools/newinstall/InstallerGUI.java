@@ -476,9 +476,9 @@ public class InstallerGUI extends javax.swing.JFrame {
 					this.voicesGroupPanel.add(Box.createVerticalGlue());
 				} else {
 					this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
-					logger.debug("Creating new VoiceComponentPanel for component " + oneComponent.getName());
-					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel(oneComponent);
-					this.languagesGroupPanel.add(voiceComponentPanel);
+					logger.debug("Creating new ComponentPanel for component " + oneComponent.getName());
+					ComponentPanel componentPanel = new ComponentPanel(oneComponent);
+					this.languagesGroupPanel.add(componentPanel);
 					this.languagesGroupPanel.add(Box.createVerticalGlue());
 				}
 			}
