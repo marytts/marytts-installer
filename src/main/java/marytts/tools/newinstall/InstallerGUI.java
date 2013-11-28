@@ -467,15 +467,15 @@ public class InstallerGUI extends javax.swing.JFrame {
 		logger.debug("Removing all components from languagesGroupPanel.");
 		this.languagesGroupPanel.removeAll();
 		if (!(this.curResources == null)) {
+			this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
+			this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
 			for (Component oneComponent : curResources) {
 				if (oneComponent instanceof VoiceComponent) {
-					this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
 					logger.debug("Creating new VoiceComponentPanel for component " + oneComponent.getName());
 					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent);
 					this.voicesGroupPanel.add(voiceComponentPanel);
 					this.voicesGroupPanel.add(Box.createVerticalGlue());
 				} else {
-					this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
 					logger.debug("Creating new ComponentPanel for component " + oneComponent.getName());
 					ComponentPanel componentPanel = new ComponentPanel(oneComponent);
 					this.languagesGroupPanel.add(componentPanel);
