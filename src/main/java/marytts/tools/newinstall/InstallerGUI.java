@@ -468,16 +468,24 @@ public class InstallerGUI extends javax.swing.JFrame {
 		this.languagesGroupPanel.removeAll();
 		if (!(this.curResources == null)) {
 			this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
+			logger.debug("voicesGroupPanel has PS: " + this.voicesGroupPanel.getPreferredSize());
 			this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
+			logger.debug("languagesGroupPanel has PS: " + this.languagesGroupPanel.getPreferredSize());
 			for (Component oneComponent : curResources) {
 				if (oneComponent instanceof VoiceComponent) {
-					logger.debug("Creating new VoiceComponentPanel for component " + oneComponent.getName());
 					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent);
+					voiceComponentPanel.setSize(voiceComponentPanel.getPreferredSize());
+					logger.debug("Created new VoiceComponentPanel for component " + oneComponent.getName()
+							+ " with preferred dimensions: " + voiceComponentPanel.getPreferredSize());
+					logger.debug("Created new VoiceComponentPanel for component " + oneComponent.getName() + " with dimensions: "
+							+ voiceComponentPanel.getSize());
+
 					this.voicesGroupPanel.add(voiceComponentPanel);
 					this.voicesGroupPanel.add(Box.createVerticalGlue());
 				} else {
-					logger.debug("Creating new ComponentPanel for component " + oneComponent.getName());
 					ComponentPanel componentPanel = new ComponentPanel(oneComponent);
+					logger.debug("Created new ComponentPanel for component " + oneComponent.getName()
+							+ " with preferred dimensions: " + componentPanel.getPreferredSize());
 					this.languagesGroupPanel.add(componentPanel);
 					this.languagesGroupPanel.add(Box.createVerticalGlue());
 				}
