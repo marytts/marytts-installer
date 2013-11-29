@@ -124,6 +124,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 
         advancedCheckBox.setForeground(java.awt.Color.lightGray);
         advancedCheckBox.setText("advanced Mode");
+        advancedCheckBox.setName("advancedCheckBox"); // NOI18N
 
         logButton.setText("show log view");
 
@@ -524,30 +525,30 @@ public class InstallerGUI extends javax.swing.JFrame {
 		}
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JCheckBox advancedCheckBox;
-	private javax.swing.JTabbedPane componentTabbedPane;
-	private javax.swing.JPanel controlsPanel;
-	private javax.swing.JSeparator controlsSep;
-	private javax.swing.JComboBox genderBox;
-	private javax.swing.JLabel genderLabel;
-	private javax.swing.JPanel genderPanel;
-	private javax.swing.JPanel languagesGroupPanel;
-	private javax.swing.JScrollPane languagesScrollPane;
-	private javax.swing.JComboBox localeBox;
-	private javax.swing.JLabel localeLabel;
-	private javax.swing.JPanel localePanel;
-	private javax.swing.JButton logButton;
-	private javax.swing.JButton maryPathButton;
-	private javax.swing.JLabel maryPathLabel;
-	private javax.swing.JTextField maryPathTextField;
-	private javax.swing.JComboBox statusBox;
-	private javax.swing.JLabel statusLabel;
-	private javax.swing.JPanel statusPanel;
-	private javax.swing.JComboBox typeBox;
-	private javax.swing.JLabel typeLabel;
-	private javax.swing.JPanel typePanel;
-	private javax.swing.JPanel voicesGroupPanel;
-	private javax.swing.JScrollPane voicesScrollPane;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox advancedCheckBox;
+    private javax.swing.JTabbedPane componentTabbedPane;
+    private javax.swing.JPanel controlsPanel;
+    private javax.swing.JSeparator controlsSep;
+    private javax.swing.JComboBox genderBox;
+    private javax.swing.JLabel genderLabel;
+    private javax.swing.JPanel genderPanel;
+    private javax.swing.JPanel languagesGroupPanel;
+    private javax.swing.JScrollPane languagesScrollPane;
+    private javax.swing.JComboBox localeBox;
+    private javax.swing.JLabel localeLabel;
+    private javax.swing.JPanel localePanel;
+    private javax.swing.JButton logButton;
+    private javax.swing.JButton maryPathButton;
+    private javax.swing.JLabel maryPathLabel;
+    private javax.swing.JTextField maryPathTextField;
+    private javax.swing.JComboBox statusBox;
+    private javax.swing.JLabel statusLabel;
+    private javax.swing.JPanel statusPanel;
+    private javax.swing.JComboBox typeBox;
+    private javax.swing.JLabel typeLabel;
+    private javax.swing.JPanel typePanel;
+    private javax.swing.JPanel voicesGroupPanel;
+    private javax.swing.JScrollPane voicesScrollPane;
+    // End of variables declaration//GEN-END:variables
 }

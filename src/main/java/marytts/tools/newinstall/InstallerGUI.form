@@ -98,6 +98,7 @@
           <Color blue="c0" green="c0" id="lightGray" palette="1" red="c0" type="palette"/>
         </Property>
         <Property name="text" type="java.lang.String" value="advanced Mode"/>
+        <Property name="name" type="java.lang.String" value="advancedCheckBox" noResource="true"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JButton" name="logButton">
