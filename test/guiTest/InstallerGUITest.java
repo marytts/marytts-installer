@@ -1,6 +1,7 @@
 package guiTest;
 
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
+
 import marytts.tools.newinstall.Installer;
 import marytts.tools.newinstall.InstallerGUI;
 
@@ -28,10 +29,11 @@ public class InstallerGUITest {
 	public void setUp() throws Exception {
 
 		final String[] testArgs = { "--gui" };
+		this.installer = new Installer(testArgs);
 
 		this.frame = GuiActionRunner.execute(new GuiQuery<InstallerGUI>() {
 			protected InstallerGUI executeInEDT() {
-				return new InstallerGUI(new Installer(testArgs));
+				return new InstallerGUI(InstallerGUITest.this.installer);
 			}
 		});
 		this.testFrame = new FrameFixture(this.frame);
@@ -39,8 +41,16 @@ public class InstallerGUITest {
 	}
 
 	@Test
-	public void test() {
+	public void setUpTest() {
 		this.testFrame.checkBox("advancedCheckBox").requireNotSelected();
+	}
+
+	@Test
+	public void requirePopulated() {
+		if (this.installer.getAvailableComponents() != null) {
+			assertTrue(this.testFrame.panel("voicesGroupPanel").component().getComponentCount() != 0
+					|| this.testFrame.panel("languagesGroupPanel").component().getComponentCount() != 0);
+		}
 	}
 
 	@After

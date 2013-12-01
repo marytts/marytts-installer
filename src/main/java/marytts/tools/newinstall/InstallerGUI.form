@@ -350,6 +350,9 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
             <Container class="javax.swing.JPanel" name="voicesGroupPanel">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="voicesGroupPanel" noResource="true"/>
+              </Properties>
 
               <Layout>
                 <DimensionLayout dim="0">
@@ -378,6 +381,9 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
             <Container class="javax.swing.JPanel" name="languagesGroupPanel">
+              <Properties>
+                <Property name="name" type="java.lang.String" value="languagesGroupPanel" noResource="true"/>
+              </Properties>
 
               <Layout>
                 <DimensionLayout dim="0">

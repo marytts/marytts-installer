@@ -264,6 +264,8 @@ public class InstallerGUI extends javax.swing.JFrame {
 
         componentTabbedPane.setPreferredSize(new java.awt.Dimension(477, 318));
 
+        voicesGroupPanel.setName("voicesGroupPanel"); // NOI18N
+
         javax.swing.GroupLayout voicesGroupPanelLayout = new javax.swing.GroupLayout(voicesGroupPanel);
         voicesGroupPanel.setLayout(voicesGroupPanelLayout);
         voicesGroupPanelLayout.setHorizontalGroup(
@@ -278,6 +280,8 @@ public class InstallerGUI extends javax.swing.JFrame {
         voicesScrollPane.setViewportView(voicesGroupPanel);
 
         componentTabbedPane.addTab("voices", voicesScrollPane);
+
+        languagesGroupPanel.setName("languagesGroupPanel"); // NOI18N
 
         javax.swing.GroupLayout languagesGroupPanelLayout = new javax.swing.GroupLayout(languagesGroupPanel);
         languagesGroupPanel.setLayout(languagesGroupPanelLayout);
@@ -496,6 +500,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 		// " is the position of language pane vertical scroll bar");
 		// this.languagesScrollPane.getVerticalScrollBar().setValue(0);
 		// this.voicesScrollPane.getVerticalScrollBar().setValue(0);
+		invalidate();
 		validate();
 		repaint();
 	}
