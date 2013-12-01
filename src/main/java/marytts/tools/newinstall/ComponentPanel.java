@@ -7,17 +7,24 @@
 package marytts.tools.newinstall;
 
 import java.awt.Dimension;
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.concurrent.ExecutionException;
+
+import javax.swing.JPanel;
+import javax.swing.SwingWorker;
 
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
+import org.apache.ivy.core.report.DownloadStatus;
 import org.apache.log4j.Logger;
 
 /**
  * 
  * @author Jonathan
  */
-public class ComponentPanel extends javax.swing.JPanel {
+public class ComponentPanel extends JPanel {
 
 	private Component component;
 
@@ -27,13 +34,21 @@ public class ComponentPanel extends javax.swing.JPanel {
 
 	private boolean first;
 
+	private Installer installer;
+
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.VoiceComponentPanel.class.getName());
 
 	/**
 	 * Creates new form VoiceComponentPanel
+	 * 
+	 * @param component
+	 * 
+	 * @param installer
+	 *            the installer instance
 	 */
-	public ComponentPanel(Component component) {
+	public ComponentPanel(Component component, Installer installer) {
 
+		this.installer = installer;
 		this.component = component;
 		this.first = true;
 		initComponents();
@@ -217,6 +232,51 @@ public class ComponentPanel extends javax.swing.JPanel {
 
 	/* @formatter:on */
 	private void installButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton1ActionPerformed
+
+		if (this.component == null) {
+			logger.error("Can not install as component is null!");
+			return;
+		} else if (this.installer == null) {
+			logger.error("Can not install as installer instance is null");
+			return;
+		}
+
+		SwingWorker installThread = new SwingWorker<DownloadStatus, Void>() {
+
+			@Override
+			public DownloadStatus doInBackground() {
+				try {
+					return ComponentPanel.this.installer.install(ComponentPanel.this.component);
+				} catch (ParseException pe) {
+					logger.error("ParseException: " + pe.getMessage());
+				} catch (IOException ioe) {
+					logger.error("IOException: " + ioe.getMessage());
+				}
+				return DownloadStatus.FAILED;
+			}
+
+			@Override
+			public void done() {
+				try {
+					DownloadStatus result = get();
+					String resultString = null;
+					if (result == DownloadStatus.NO) {
+						resultString = "DOWNLOADED";
+					} else if (result == DownloadStatus.FAILED) {
+						resultString = "AVAILABLE";
+					} else if (result == DownloadStatus.SUCCESSFUL) {
+						resultString = "INSTALLED";
+					} else {
+						resultString = "ERROR";
+					}
+					ComponentPanel.this.statusLabel.setText(resultString);
+				} catch (Exception e) {
+					logger.error(e.getMessage());
+				}
+			}
+		};
+
+		installThread.execute();
 
 	}// GEN-LAST:event_jButton1ActionPerformed
 

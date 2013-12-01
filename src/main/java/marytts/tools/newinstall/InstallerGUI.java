@@ -477,7 +477,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 			logger.debug("languagesGroupPanel has PS: " + this.languagesGroupPanel.getPreferredSize());
 			for (Component oneComponent : curResources) {
 				if (oneComponent instanceof VoiceComponent) {
-					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent);
+					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent, installer);
 					logger.debug("Created new VoiceComponentPanel for component " + oneComponent.getName()
 							+ " with preferred dimensions: " + voiceComponentPanel.getPreferredSize());
 					logger.debug("Created new VoiceComponentPanel for component " + oneComponent.getName() + " with dimensions: "
@@ -486,7 +486,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 					this.voicesGroupPanel.add(voiceComponentPanel);
 					this.voicesGroupPanel.add(Box.createVerticalGlue());
 				} else {
-					ComponentPanel componentPanel = new ComponentPanel(oneComponent);
+					ComponentPanel componentPanel = new ComponentPanel(oneComponent, installer);
 					logger.debug("Created new ComponentPanel for component " + oneComponent.getName()
 							+ " with preferred dimensions: " + componentPanel.getPreferredSize());
 					this.languagesGroupPanel.add(componentPanel);

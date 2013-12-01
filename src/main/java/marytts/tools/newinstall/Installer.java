@@ -20,6 +20,9 @@ import org.apache.commons.io.FileUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
+import org.apache.ivy.core.report.ArtifactDownloadReport;
+import org.apache.ivy.core.report.DownloadStatus;
+import org.apache.ivy.core.report.ResolveReport;
 import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
@@ -103,7 +106,7 @@ public class Installer {
 			logger.error("Could not access settings file: " + pe.getMessage());
 		}
 		logger.info("Creating new Ivy file");
-		Ivy.newInstance(ivySettings);
+		this.ivy = Ivy.newInstance(ivySettings);
 		resolveOptions = new ResolveOptions().setOutputReport(false);
 		installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
 	}
@@ -162,10 +165,26 @@ public class Installer {
 		return this.maryBasePath;
 	}
 
-	public void install(Component component) throws ParseException, IOException {
+	public DownloadStatus install(Component component) throws ParseException, IOException {
 		logger.info("Resolving and installing component " + component.getName());
-		ivy.resolve(component.getModuleDescriptor(), resolveOptions);
-		ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed", installOptions);
+		ResolveReport resolve = ivy.resolve(component.getModuleDescriptor(), resolveOptions);
+		ResolveReport install = ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
+				installOptions);
+
+		ArtifactDownloadReport[] dependencyReports = resolve.getAllArtifactsReports();
+		logger.debug("Resolve reports of dependencies");
+		for (int i = 0; i < resolve.getAllArtifactsReports().length; i++) {
+			logger.debug(dependencyReports[i]);
+		}
+
+		ArtifactDownloadReport[] installReports = install.getAllArtifactsReports();
+		logger.debug("Resolve reports of target installation");
+		if (installReports.length > 1) {
+			logger.error("There are " + installReports.length
+					+ " artifacts. There should not be more than one target artifact to be resolved.");
+		}
+		logger.debug(installReports[0]);
+		return installReports[0].getDownloadStatus();
 	}
 
 	/**
