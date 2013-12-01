@@ -151,13 +151,14 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
                 .addComponent(licenseValueLabel)
                 .addGap(153, 153, 153))
             .addGroup(collapsiblePanelLayout.createSequentialGroup()
-                .addComponent(jTextArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 421, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addContainerGap()
+                .addComponent(jTextArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         collapsiblePanelLayout.setVerticalGroup(
             collapsiblePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(collapsiblePanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(12, Short.MAX_VALUE)
                 .addComponent(jTextArea1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(collapsiblePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -209,7 +210,7 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -237,7 +238,7 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
                         .addComponent(typeLabel)
                         .addComponent(typeValueLabel)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -256,18 +257,14 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
 		}
 
 		logger.debug("PS before: " + this.getPreferredSize());
-		logger.debug("S before: " + this.getSize());
 
 		if (this.collapseButton.isSelected()) {
-			// this.setSize(new Dimension(this.getPreferredSize().width, this.uncollapsedHeight));
 			this.setPreferredSize(new Dimension(this.getPreferredSize().width, this.uncollapsedHeight));
 		} else {
-			// this.setSize(new Dimension(this.getWidth(), this.collapsedHeight));
 			this.setPreferredSize(new Dimension(this.getWidth(), this.collapsedHeight));
 		}
 
 		logger.debug("PS after: " + this.getPreferredSize());
-		logger.debug("S after: " + this.getSize());
 
 		this.revalidate();
 		this.repaint();
@@ -291,25 +288,25 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
 		}
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JToggleButton collapseButton;
-	private javax.swing.JPanel collapsiblePanel;
-	private javax.swing.JLabel componentNameLabel;
-	private javax.swing.JLabel genderLabel;
-	private javax.swing.JLabel genderValueLabel;
-	private javax.swing.JButton installButton;
-	private javax.swing.JSeparator jSeparator1;
-	private javax.swing.JTextArea jTextArea1;
-	private javax.swing.JLabel licenseLabel;
-	private javax.swing.JLabel licenseValueLabel;
-	private javax.swing.JLabel localeLabel;
-	private javax.swing.JLabel localeValueLabel;
-	private javax.swing.JLabel sizeLabel;
-	private javax.swing.JLabel sizeValueLabel;
-	private javax.swing.JLabel statusLabel;
-	private javax.swing.JLabel typeLabel;
-	private javax.swing.JLabel typeValueLabel;
-	private javax.swing.JLabel versionLabel;
-	private javax.swing.JLabel versionValueLabel;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton collapseButton;
+    private javax.swing.JPanel collapsiblePanel;
+    private javax.swing.JLabel componentNameLabel;
+    private javax.swing.JLabel genderLabel;
+    private javax.swing.JLabel genderValueLabel;
+    private javax.swing.JButton installButton;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel licenseLabel;
+    private javax.swing.JLabel licenseValueLabel;
+    private javax.swing.JLabel localeLabel;
+    private javax.swing.JLabel localeValueLabel;
+    private javax.swing.JLabel sizeLabel;
+    private javax.swing.JLabel sizeValueLabel;
+    private javax.swing.JLabel statusLabel;
+    private javax.swing.JLabel typeLabel;
+    private javax.swing.JLabel typeValueLabel;
+    private javax.swing.JLabel versionLabel;
+    private javax.swing.JLabel versionValueLabel;
+    // End of variables declaration//GEN-END:variables
 }

@@ -229,18 +229,14 @@ public class ComponentPanel extends javax.swing.JPanel {
 		}
 
 		logger.debug("PS before: " + this.getPreferredSize());
-		logger.debug("S before: " + this.getSize());
 
 		if (this.collapseButton.isSelected()) {
-			this.setSize(new Dimension(this.getPreferredSize().width, this.uncollapsedHeight));
-			this.setPreferredSize(this.getSize());
+			this.setPreferredSize(new Dimension(this.getPreferredSize().width, this.uncollapsedHeight));
 		} else {
-			this.setSize(new Dimension(this.getWidth(), this.collapsedHeight));
-			this.setPreferredSize(this.getSize());
+			this.setPreferredSize(new Dimension(this.getWidth(), this.collapsedHeight));
 		}
 
 		logger.debug("PS after: " + this.getPreferredSize());
-		logger.debug("S after: " + this.getSize());
 
 		this.revalidate();
 		this.repaint();
