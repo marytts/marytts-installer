@@ -38,8 +38,8 @@
                       <Component id="maryPathLabel" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="maryPathTextField" min="-2" pref="188" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="maryPathButton" min="-2" pref="43" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="maryPathButton" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
@@ -89,7 +89,7 @@
     </Component>
     <Component class="javax.swing.JButton" name="maryPathButton">
       <Properties>
-        <Property name="text" type="java.lang.String" value="dir"/>
+        <Property name="text" type="java.lang.String" value="change"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JCheckBox" name="advancedCheckBox">

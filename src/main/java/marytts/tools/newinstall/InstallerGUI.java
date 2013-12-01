@@ -7,12 +7,10 @@
 package marytts.tools.newinstall;
 
 import java.awt.Color;
-import java.awt.FileDialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -21,12 +19,11 @@ import java.util.Map;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
-import javax.swing.JPanel;
-
-import org.apache.log4j.Logger;
 
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
+
+import org.apache.log4j.Logger;
 
 /**
  * 
@@ -77,6 +74,8 @@ public class InstallerGUI extends javax.swing.JFrame {
 		addActionToComboBox("type", this.typeBox);
 		addActionToComboBox("gender", this.genderBox);
 		addActionToComboBox("status", this.statusBox);
+
+		populateMaryPath();
 	}
 
 	/* @formatter:off */
@@ -120,7 +119,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 
         maryPathLabel.setText("Path to marytts installation folder:");
 
-        maryPathButton.setText("dir");
+        maryPathButton.setText("change");
 
         advancedCheckBox.setForeground(java.awt.Color.lightGray);
         advancedCheckBox.setText("advanced Mode");
@@ -315,7 +314,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(maryPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(maryPathButton, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(maryPathButton)))
                 .addGap(0, 0, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -526,6 +525,16 @@ public class InstallerGUI extends javax.swing.JFrame {
 				logger.debug(oneValue + " was added to " + key + " comboBox");
 			}
 			componentToFill.setSelectedIndex(0);
+		}
+	}
+
+	/**
+	 * Fills the mary base path in the appropriate text field if it was specified before on the CommandLine
+	 */
+	private void populateMaryPath() {
+		String maryBasePath = installer.getMaryBasePath();
+		if (maryBasePath != null || !maryBasePath.isEmpty()) {
+			this.maryPathTextField.setText(maryBasePath);
 		}
 	}
 

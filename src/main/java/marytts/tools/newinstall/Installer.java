@@ -155,6 +155,13 @@ public class Installer {
 		}
 	}
 
+	/**
+	 * @return the maryBasePath
+	 */
+	public String getMaryBasePath() {
+		return this.maryBasePath;
+	}
+
 	public void install(Component component) throws ParseException, IOException {
 		logger.info("Resolving and installing component " + component.getName());
 		ivy.resolve(component.getModuleDescriptor(), resolveOptions);
