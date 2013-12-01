@@ -242,8 +242,10 @@ public class ComponentPanel extends javax.swing.JPanel {
 		logger.debug("PS after: " + this.getPreferredSize());
 		logger.debug("S after: " + this.getSize());
 
-//		this.invalidate();
-//		this.getParent().repaint();
+		this.revalidate();
+		this.repaint();
+		this.getParent().getParent().repaint();
+
 	}// GEN-LAST:event_jToggleButton1ActionPerformed
 
 	private void fillFields(Component component) {
@@ -262,21 +264,21 @@ public class ComponentPanel extends javax.swing.JPanel {
 		}
 	}
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton collapseButton;
-    private javax.swing.JPanel collapsiblePanel;
-    private javax.swing.JLabel componentNameLabel;
-    private javax.swing.JButton installButton;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JLabel licenseLabel;
-    private javax.swing.JLabel licenseValueLabel;
-    private javax.swing.JLabel localeLabel;
-    private javax.swing.JLabel localeValueLabel;
-    private javax.swing.JLabel sizeLabel;
-    private javax.swing.JLabel sizeValueLabel;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JLabel versionLabel;
-    private javax.swing.JLabel versionValueLabel;
-    // End of variables declaration//GEN-END:variables
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JToggleButton collapseButton;
+	private javax.swing.JPanel collapsiblePanel;
+	private javax.swing.JLabel componentNameLabel;
+	private javax.swing.JButton installButton;
+	private javax.swing.JSeparator jSeparator1;
+	private javax.swing.JTextArea jTextArea1;
+	private javax.swing.JLabel licenseLabel;
+	private javax.swing.JLabel licenseValueLabel;
+	private javax.swing.JLabel localeLabel;
+	private javax.swing.JLabel localeValueLabel;
+	private javax.swing.JLabel sizeLabel;
+	private javax.swing.JLabel sizeValueLabel;
+	private javax.swing.JLabel statusLabel;
+	private javax.swing.JLabel versionLabel;
+	private javax.swing.JLabel versionValueLabel;
+	// End of variables declaration//GEN-END:variables
 }

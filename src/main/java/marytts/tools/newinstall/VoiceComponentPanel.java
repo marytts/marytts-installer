@@ -259,18 +259,19 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
 		logger.debug("S before: " + this.getSize());
 
 		if (this.collapseButton.isSelected()) {
-			this.setSize(new Dimension(this.getPreferredSize().width, this.uncollapsedHeight));
-			this.setPreferredSize(this.getSize());
+			// this.setSize(new Dimension(this.getPreferredSize().width, this.uncollapsedHeight));
+			this.setPreferredSize(new Dimension(this.getPreferredSize().width, this.uncollapsedHeight));
 		} else {
-			this.setSize(new Dimension(this.getWidth(), this.collapsedHeight));
-			this.setPreferredSize(this.getSize());
+			// this.setSize(new Dimension(this.getWidth(), this.collapsedHeight));
+			this.setPreferredSize(new Dimension(this.getWidth(), this.collapsedHeight));
 		}
 
 		logger.debug("PS after: " + this.getPreferredSize());
 		logger.debug("S after: " + this.getSize());
-		
-		// this.invalidate();
-		// this.getParent().repaint();
+
+		this.revalidate();
+		this.repaint();
+		this.getParent().getParent().repaint();
 
 	}// GEN-LAST:event_jToggleButton1ActionPerformed
 
@@ -290,25 +291,25 @@ public class VoiceComponentPanel extends javax.swing.JPanel {
 		}
 	}
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton collapseButton;
-    private javax.swing.JPanel collapsiblePanel;
-    private javax.swing.JLabel componentNameLabel;
-    private javax.swing.JLabel genderLabel;
-    private javax.swing.JLabel genderValueLabel;
-    private javax.swing.JButton installButton;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JLabel licenseLabel;
-    private javax.swing.JLabel licenseValueLabel;
-    private javax.swing.JLabel localeLabel;
-    private javax.swing.JLabel localeValueLabel;
-    private javax.swing.JLabel sizeLabel;
-    private javax.swing.JLabel sizeValueLabel;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JLabel typeLabel;
-    private javax.swing.JLabel typeValueLabel;
-    private javax.swing.JLabel versionLabel;
-    private javax.swing.JLabel versionValueLabel;
-    // End of variables declaration//GEN-END:variables
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JToggleButton collapseButton;
+	private javax.swing.JPanel collapsiblePanel;
+	private javax.swing.JLabel componentNameLabel;
+	private javax.swing.JLabel genderLabel;
+	private javax.swing.JLabel genderValueLabel;
+	private javax.swing.JButton installButton;
+	private javax.swing.JSeparator jSeparator1;
+	private javax.swing.JTextArea jTextArea1;
+	private javax.swing.JLabel licenseLabel;
+	private javax.swing.JLabel licenseValueLabel;
+	private javax.swing.JLabel localeLabel;
+	private javax.swing.JLabel localeValueLabel;
+	private javax.swing.JLabel sizeLabel;
+	private javax.swing.JLabel sizeValueLabel;
+	private javax.swing.JLabel statusLabel;
+	private javax.swing.JLabel typeLabel;
+	private javax.swing.JLabel typeValueLabel;
+	private javax.swing.JLabel versionLabel;
+	private javax.swing.JLabel versionValueLabel;
+	// End of variables declaration//GEN-END:variables
 }
