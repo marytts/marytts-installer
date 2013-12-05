@@ -401,32 +401,30 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 	private void addActionToComboBox(final String attribute, final JComboBox comboBox) {
 
-		comboBox.addActionListener(new ActionListener() {
+		comboBox.addItemListener(new ItemListener() {
+
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				java.awt.EventQueue.invokeLater(new Runnable() {
-					public void run() {
+			public void itemStateChanged(ItemEvent e) {
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					String locale = localeBox.getSelectedItem().toString();
+					String type = typeBox.getSelectedItem().toString();
+					String gender = genderBox.getSelectedItem().toString();
+					String status = statusBox.getSelectedItem().toString();
 
-						String locale = localeBox.getSelectedItem().toString();
-						String type = typeBox.getSelectedItem().toString();
-						String gender = genderBox.getSelectedItem().toString();
-						String status = statusBox.getSelectedItem().toString();
-
-						if (locale.equalsIgnoreCase("all")) {
-							locale = null;
-						}
-						if (type.equalsIgnoreCase("all")) {
-							type = null;
-						}
-						if (gender.equalsIgnoreCase("all")) {
-							gender = null;
-						}
-						if (status.equalsIgnoreCase("all")) {
-							status = null;
-						}
-						fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null));
+					if (locale.equalsIgnoreCase("all")) {
+						locale = null;
 					}
-				});
+					if (type.equalsIgnoreCase("all")) {
+						type = null;
+					}
+					if (gender.equalsIgnoreCase("all")) {
+						gender = null;
+					}
+					if (status.equalsIgnoreCase("all")) {
+						status = null;
+					}
+					fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null));
+				}
 			}
 		});
 	}
