@@ -34,12 +34,6 @@ public class InstallerGUI extends javax.swing.JFrame {
 	// data
 	private Installer installer;
 
-	// current data
-	private List<Component> curResources;
-
-	// the attributes and values of the comboBoxes in case they're set.
-	private HashMap<String, String> filters;
-
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.InstallerGUI.class.getName());
 
 	/**
@@ -52,19 +46,10 @@ public class InstallerGUI extends javax.swing.JFrame {
 			System.exit(1);
 		}
 		this.installer = installer;
-		logger.debug("Fetching resources from installer");
-		this.curResources = this.installer.getAvailableComponents();
-		// TODO shouldn't be empty at this point, and in reality isn't
-		logger.debug("The current resource list: " + this.curResources.toString());
-		this.filters = new HashMap<String, String>();
-		this.filters.put("locale", "");
-		this.filters.put("type", "");
-		this.filters.put("gender", "");
-		this.filters.put("status", "");
 
 		initComponents();
 
-		fillComponentGroupPanels();
+		fillComponentGroupPanels(this.installer.getAvailableComponents());
 
 		addActionToAdvancedCheckBox();
 		addActionToLogButton();
@@ -115,7 +100,6 @@ public class InstallerGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Component Installer");
-        setResizable(false);
 
         maryPathLabel.setText("Path to marytts installation folder:");
 
@@ -422,14 +406,26 @@ public class InstallerGUI extends javax.swing.JFrame {
 			public void actionPerformed(ActionEvent e) {
 				java.awt.EventQueue.invokeLater(new Runnable() {
 					public void run() {
-						InstallerGUI.this.filters.put(attribute, comboBox.getSelectedItem().toString());
-						logger.debug("Components will be filtered by " + attribute + "=" + comboBox.getSelectedIndex());
-						InstallerGUI.this.curResources = installer.filterGlobal(InstallerGUI.this.filters);
-						logger.debug("number of components after filtering:" + InstallerGUI.this.curResources.size());
-						// System.out.println(InstallerGUI.this.curResources.toString());
-						fillComponentGroupPanels();
-					}
 
+						String locale = localeBox.getSelectedItem().toString();
+						String type = typeBox.getSelectedItem().toString();
+						String gender = genderBox.getSelectedItem().toString();
+						String status = statusBox.getSelectedItem().toString();
+
+						if (locale.equalsIgnoreCase("all")) {
+							locale = null;
+						}
+						if (type.equalsIgnoreCase("all")) {
+							type = null;
+						}
+						if (gender.equalsIgnoreCase("all")) {
+							gender = null;
+						}
+						if (status.equalsIgnoreCase("all")) {
+							status = null;
+						}
+						fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null));
+					}
 				});
 			}
 		});
@@ -459,23 +455,24 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 	/**
 	 * 
+	 * @param componentList
 	 * @param componentGroupPanel
 	 * @param componentTableModel
 	 * @return
 	 */
-	private void fillComponentGroupPanels() {
+	private void fillComponentGroupPanels(List<Component> componentList) {
 
 		logger.debug("(Re)filling component lists");
 		logger.debug("Removing all components from voicesGroupPanel.");
 		this.voicesGroupPanel.removeAll();
 		logger.debug("Removing all components from languagesGroupPanel.");
 		this.languagesGroupPanel.removeAll();
-		if (!(this.curResources == null)) {
+		if (!(componentList == null)) {
 			this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
 			logger.debug("voicesGroupPanel has PS: " + this.voicesGroupPanel.getPreferredSize());
 			this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
 			logger.debug("languagesGroupPanel has PS: " + this.languagesGroupPanel.getPreferredSize());
-			for (Component oneComponent : curResources) {
+			for (Component oneComponent : componentList) {
 				if (oneComponent instanceof VoiceComponent) {
 					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent, installer);
 					logger.debug("Created new VoiceComponentPanel for component " + oneComponent.getName()
@@ -494,8 +491,8 @@ public class InstallerGUI extends javax.swing.JFrame {
 				}
 			}
 		}
-		// logger.debug(this.languagesScrollPane.getVerticalScrollBar().getValue() +
-		// " is the position of language pane vertical scroll bar");
+		// logger.debug(this.languagesScrollPane.getVerticalScrollBar().getValue()
+		// + " is the position of language pane vertical scroll bar");
 		// this.languagesScrollPane.getVerticalScrollBar().setValue(0);
 		// this.voicesScrollPane.getVerticalScrollBar().setValue(0);
 		invalidate();
@@ -519,7 +516,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 				componentToFill = this.typeBox;
 			}
 
-			componentToFill.addItem("");
+			componentToFill.addItem("all");
 			for (String oneValue : attributeValues.get(key)) {
 				componentToFill.addItem(oneValue);
 				logger.debug(oneValue + " was added to " + key + " comboBox");

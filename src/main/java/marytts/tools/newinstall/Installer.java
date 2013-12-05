@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import marytts.tools.newinstall.objects.Component;
@@ -266,11 +267,107 @@ public class Installer {
 	}
 
 	/**
+	 * filters the available components by one or many attribute-value pairs. Iterates over list of components and removes those
+	 * that match the given attribute-value pair. if all attributeValues are null, the method simply returns all components.
+	 * 
+	 * @param locale
+	 * @param type
+	 * @param gender
+	 * @param status
+	 * @param name
 	 * @return component list
 	 */
-	public List<Component> getAvailableComponents() {
+	public List<Component> getAvailableComponents(String locale, String type, String gender, String status, String name) {
 
-		return this.resources;
+		/* @formatter:off */
+		logger.info("Filtering resources by " + ((locale == null) ? "" : "locale=" + locale + ";")
+										      + ((type == null) ? "" : "locale=" + type + ";") 
+										      + ((gender== null) ? "" : "locale=" + gender + ";")
+										      + ((status == null) ? "" : "locale=" + status + ";")
+										      + ((name == null) ? "" : "locale=" + name + ";"));
+		/* @formatter:on */
+
+		List<Component> resourcesToBeFiltered = new ArrayList<Component>(this.resources);
+
+		// stores the size of the voice component list before filtering.
+		int sizeBefore = resourcesToBeFiltered.size();
+		logger.debug("Resource list size before filtering: " + sizeBefore);
+
+		// in order to modify the list while iterating over it, an iterator is needed to call the Iterator.remove() method.
+		Iterator<Component> it = resourcesToBeFiltered.iterator();
+
+		if (resourcesToBeFiltered.isEmpty()) {
+			logger.warn("List is empty!");
+			return resourcesToBeFiltered;
+		}
+
+		// int sizeAfter = resourcesToBeFiltered.size();
+		if (locale != null) {
+			logger.info("filtering by " + "locale=" + locale);
+			for (it = it; it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!oneComponent.getLocale().toString().equalsIgnoreCase(locale)) {
+					// logger.debug("Removed " + oneComponent + " as its locale=" + locale);
+					it.remove();
+				}
+			}
+			// sizeAfter = resourcesToBeFiltered.size();
+			// logger.debug("Resource list size after filtering: " + sizeAfter);
+			// if (sizeBefore == sizeAfter) {
+			// logger.info("Locale didn't affect filtering");
+			// }
+			// sizeBefore = sizeAfter;
+		}
+		if (type != null) {
+			logger.info("filtering by " + "type=" + type);
+			for (it = it; it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!(oneComponent instanceof VoiceComponent)) {
+					logger.debug("Removed " + oneComponent + " as it is not a VoiceComponent");
+					it.remove();
+					continue;
+				}
+				VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
+				if (!oneVoiceComponent.getType().equalsIgnoreCase(type)) {
+					it.remove();
+				}
+			}
+		}
+		if (gender != null) {
+			logger.info("filtering by " + "genger=" + gender);
+			for (it = it; it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!(oneComponent instanceof VoiceComponent)) {
+					logger.debug("Removed " + oneComponent + " as it is not a VoiceComponent");
+					it.remove();
+					continue;
+				}
+				VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
+				if (!oneVoiceComponent.getGender().equalsIgnoreCase(gender)) {
+					it.remove();
+				}
+			}
+		}
+		if (status != null) {
+			logger.info("filtering by " + "status=" + status);
+			for (it = it; it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!oneComponent.getStatus().toString().equalsIgnoreCase(status)) {
+					it.remove();
+				}
+			}
+		}
+		if (name != null) {
+			logger.info("filtering by " + "name=" + name);
+			for (it = it; it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!oneComponent.getName().equalsIgnoreCase(locale)) {
+					it.remove();
+				}
+			}
+		}
+
+		return resourcesToBeFiltered;
 	}
 
 	/**
@@ -278,205 +375,6 @@ public class Installer {
 	 */
 	public HashMap<String, HashSet<String>> getAttributeValues() {
 		return this.attributeValues;
-	}
-
-	/**
-	 * filters the available components by one or many attribute-value pairs. Iterates over list of components and removes those
-	 * that match the given attribute-value pair
-	 * 
-	 * @param filterMap
-	 * @return
-	 * @throws Exception
-	 */
-	public List<Component> filterGlobal(HashMap<String, String> filterMap) {
-
-		logger.info("Filtering resources by " + filterMap.toString());
-		List<Component> resourcesToBeFiltered = new ArrayList<Component>(this.resources);
-
-		// stores the size of the voice component list before filtering.
-		int sizeBefore = resourcesToBeFiltered.size();
-		logger.debug("Resource list size before filtering: " + sizeBefore);
-
-		String attribute = "", attributeValue = "";
-		for (Map.Entry<String, String> oneEntry : filterMap.entrySet()) {
-			// in order to modify the list while iterating over it, an iterator is needed to call the Iterator.remove() method.
-			Iterator<Component> it = resourcesToBeFiltered.iterator();
-
-			if (oneEntry.getValue().equals("")) {
-				continue;
-			}
-			if (resourcesToBeFiltered.isEmpty()) {
-				logger.warn("List is empty!");
-				break;
-			}
-			attribute = oneEntry.getKey();
-			attributeValue = oneEntry.getValue();
-			if (attribute.equalsIgnoreCase("locale")) {
-				logger.info("filtering by " + attribute + "=" + attributeValue);
-				for (it = it; it.hasNext();) {
-					Component oneComponent = it.next();
-					if (!oneComponent.getLocale().toString().equalsIgnoreCase(attributeValue)) {
-						logger.debug("Removed " + oneComponent + " as its locale = " + attributeValue);
-						it.remove();
-					}
-				}
-			} else if (attribute.equals("type")) {
-				logger.info("filtering by " + attribute + "=" + attributeValue);
-				for (it = it; it.hasNext();) {
-					Component oneComponent = it.next();
-					if (!(oneComponent instanceof VoiceComponent)) {
-						logger.debug("Removed " + oneComponent + " as it is not a VoiceComponent");
-						it.remove();
-						continue;
-					}
-					VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
-					if (!oneVoiceComponent.getType().equalsIgnoreCase(attributeValue)) {
-						logger.debug("Removed " + oneComponent + " as its type = " + attributeValue);
-						it.remove();
-					}
-				}
-			} else if (attribute.equals("gender")) {
-				logger.info("filtering by " + attribute + "=" + attributeValue);
-				for (it = it; it.hasNext();) {
-					Component oneComponent = it.next();
-					if (!(oneComponent instanceof VoiceComponent)) {
-						logger.debug("Removed " + oneComponent + " as it is not a VoiceComponent");
-						it.remove();
-						continue;
-					}
-					VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
-					if (!oneVoiceComponent.getType().equalsIgnoreCase(attributeValue)) {
-						logger.debug("Removed " + oneComponent + " as its gender = " + attributeValue);
-						it.remove();
-					}
-				}
-			} else if (attribute.equals("status")) {
-				logger.info("filtering by " + attribute + "=" + attributeValue);
-				for (it = it; it.hasNext();) {
-					Component oneComponent = it.next();
-					if (!oneComponent.getStatus().toString().equalsIgnoreCase(attributeValue)) {
-						logger.debug("Removed " + oneComponent + " as its status = " + attributeValue);
-						it.remove();
-					}
-				}
-			}
-			int sizeAfterTMP = resourcesToBeFiltered.size();
-			if (sizeBefore == sizeAfterTMP) {
-				logger.warn(attribute + "=" + attributeValue + " doesn't affect filtering.");
-			}
-		}
-		int sizeAfter = resourcesToBeFiltered.size();
-		logger.debug("Resource list size after filtering: " + sizeAfter);
-
-		// if list hasn't been empty before, but is afterwards, the attr-value pair filtered out everything that remained by using
-		// an non-existing attribute value or a value that doesn't occur in the list.
-		// if (sizeBefore > 0 && sizeAfter == 0) {
-		// System.out.println(attribute + "=" + attributeValue + " is not valid or filtered out all remaining components.");
-		// throw new Exception(" No more filtering possible. Component list empty.");
-		// // if list size didn't change, the attr-value pair can be discarded as well as it doesn't have affect.
-		// }
-		if (sizeBefore != sizeAfter) {
-			logger.info("Successfully filtered resource list");
-		}
-
-		return resourcesToBeFiltered;
-
-	}
-
-	/**
-	 * filters the available voice components by a certain attribute-value pair. Iterates over list of components and removes
-	 * those that match the given attribute-value pair
-	 * 
-	 * @param resToBeFiltered
-	 *            the resources to be filtered
-	 * @param attribute
-	 *            the attribute that the component list should be filtered by (i.e., "gender", "locale", "name" and "type")
-	 * @param attributeValue
-	 *            the value of the attribute
-	 * @return the filtered list
-	 * @throws Exception
-	 */
-	// public List<Component> filterResources(List<Component> resToBeFiltered, String attribute, String attributeValue)
-	// throws Exception {
-	//
-	// // stores the size of the voice component list before filtering.
-	// int sizeBefore = resToBeFiltered.size();
-	//
-	// // in order to modify the list while iterating over it, an iterator is needed to call the Iterator.remove() method.
-	// Iterator<Component> it = resToBeFiltered.iterator();
-	//
-	// if (attribute.equals("locale")) {
-	// System.out.println("filtering by " + attribute + "=" + attributeValue);
-	// for (it = it; it.hasNext();) {
-	// Component oneComponent = it.next();
-	// if (!oneComponent.getLocale().toString().equalsIgnoreCase(attributeValue)) {
-	// it.remove();
-	// }
-	// }
-	// } else if (attribute.equals("type")) {
-	// System.out.println("filtering by " + attribute + "=" + attributeValue);
-	// for (it = it; it.hasNext();) {
-	// Component oneComponent = it.next();
-	// if (!(oneComponent instanceof VoiceComponent)) {
-	// it.remove();
-	// }
-	// VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
-	// if (!oneVoiceComponent.getType().equalsIgnoreCase(attributeValue)) {
-	// it.remove();
-	// }
-	// }
-	// } else if (attribute.equals("gender")) {
-	// System.out.println("filtering by " + attribute + "=" + attributeValue);
-	// for (it = it; it.hasNext();) {
-	// Component oneComponent = it.next();
-	// if (!(oneComponent instanceof VoiceComponent)) {
-	// it.remove();
-	// }
-	// VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
-	// if (!oneVoiceComponent.getType().equalsIgnoreCase(attributeValue)) {
-	// it.remove();
-	// }
-	// }
-	// } else if (attribute.equals("name")) {
-	// System.out.println("filtering by " + attribute + "=" + attributeValue);
-	// for (it = it; it.hasNext();) {
-	// Component oneComponent = it.next();
-	// if (!oneComponent.getName().equalsIgnoreCase(attributeValue)) {
-	// it.remove();
-	// }
-	// }
-	// }
-	//
-	// int sizeAfter = resToBeFiltered.size();
-	//
-	// // if list hasn't been empty before, but is afterwards, the attr-value pair filtered out everything that remained by using
-	// // an non-existing attribute value or a value that doesn't occur in the list.
-	// if (sizeBefore > 0 && sizeAfter == 0) {
-	// System.out.println(attribute + "=" + attributeValue + " is not valid or filtered out all remaining components.");
-	// throw new Exception(" No more filtering possible. Component list empty.");
-	// // if list size didn't change, the attr-value pair can be discarded as well as it doesn't have affect.
-	// } else if (sizeBefore == sizeAfter) {
-	// System.out.println(attribute + "=" + attributeValue + " doesn't affect filtering.");
-	// }
-	//
-	// return resToBeFiltered;
-	// }
-
-	/**
-	 * returns - if present - the Component with nameValue as name. If not presents, returns null
-	 * 
-	 * @param nameValue
-	 *            the value of the name to be searched for
-	 * @return the component with nameValue, null if not present
-	 */
-	public Component getComponentByName(String nameValue) {
-
-		for (Component oneComponent : this.resources) {
-			if (oneComponent.getName().equalsIgnoreCase(nameValue)) {
-				return oneComponent;
-			}
-		}
-		return null;
 	}
 
 	/**
@@ -497,9 +395,15 @@ public class Installer {
 	}
 
 	/**
+	 * @return
+	 */
+	public List<Component> getAvailableComponents() {
+		return getAvailableComponents(null, null, null, null, null);
+	}
+
+	/**
 	 * 
-	 * TODO not used at the moment, remove. <br>
-	 * Test Installer <br>
+	 * Installer Main Method<br>
 	 * <b>Note:</b> must currently run with -Dmary.base=/path/to/marytts
 	 * 
 	 * @param args
@@ -507,5 +411,6 @@ public class Installer {
 	public static void main(String[] args) {
 		Installer installer = new Installer(args);
 	}
+
 
 }
