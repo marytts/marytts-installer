@@ -9,7 +9,6 @@ package marytts.tools.newinstall;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.concurrent.ExecutionException;
 
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;

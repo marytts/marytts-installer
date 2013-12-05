@@ -74,14 +74,14 @@ public class VoiceComponentPanel extends JPanel /* extends AbstractComponentPane
         genderValueLabel = new javax.swing.JLabel();
         typeLabel = new javax.swing.JLabel();
         typeValueLabel = new javax.swing.JLabel();
-        sizeLabel = new javax.swing.JLabel();
-        sizeValueLabel = new javax.swing.JLabel();
         collapsiblePanel = new javax.swing.JPanel();
         versionValueLabel = new javax.swing.JLabel();
         licenseLabel = new javax.swing.JLabel();
         licenseValueLabel = new javax.swing.JLabel();
         versionLabel = new javax.swing.JLabel();
         jTextArea1 = new javax.swing.JTextArea();
+        sizeLabel = new javax.swing.JLabel();
+        sizeValueLabel = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setToolTipText("");
@@ -121,11 +121,6 @@ public class VoiceComponentPanel extends JPanel /* extends AbstractComponentPane
         typeLabel.setText("Type:");
 
         typeValueLabel.setText("jLabel6");
-
-        sizeLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        sizeLabel.setText("Size:");
-
-        sizeValueLabel.setText("jLabel6");
 
         collapsiblePanel.setPreferredSize(new java.awt.Dimension(0, 0));
 
@@ -181,6 +176,11 @@ public class VoiceComponentPanel extends JPanel /* extends AbstractComponentPane
                     .addComponent(versionValueLabel)))
         );
 
+        sizeLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        sizeLabel.setText("Size:");
+
+        sizeValueLabel.setText("jLabel6");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -201,18 +201,18 @@ public class VoiceComponentPanel extends JPanel /* extends AbstractComponentPane
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(localeValueLabel)
                                 .addGap(18, 18, 18)
-                                .addComponent(typeLabel)
+                                .addComponent(sizeLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(typeValueLabel))
+                                .addComponent(sizeValueLabel))
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(genderLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(genderValueLabel)
                                 .addGap(18, 18, 18)
-                                .addComponent(sizeLabel)
+                                .addComponent(typeLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(sizeValueLabel)))
-                        .addGap(57, 57, 57)
+                                .addComponent(typeValueLabel)))
+                        .addGap(50, 50, 50)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(installButton)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -224,7 +224,7 @@ public class VoiceComponentPanel extends JPanel /* extends AbstractComponentPane
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(43, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(layout.createSequentialGroup()
@@ -241,15 +241,15 @@ public class VoiceComponentPanel extends JPanel /* extends AbstractComponentPane
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                             .addComponent(genderLabel)
                                             .addComponent(genderValueLabel)
-                                            .addComponent(sizeLabel)
-                                            .addComponent(sizeValueLabel))
+                                            .addComponent(typeLabel)
+                                            .addComponent(typeValueLabel))
                                         .addComponent(installButton)))))
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(localeLabel)
                         .addComponent(localeValueLabel)
-                        .addComponent(typeLabel)
-                        .addComponent(typeValueLabel)))
+                        .addComponent(sizeLabel)
+                        .addComponent(sizeValueLabel)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
@@ -342,28 +342,33 @@ public class VoiceComponentPanel extends JPanel /* extends AbstractComponentPane
 		if (component instanceof VoiceComponent) {
 			this.typeValueLabel.setText(((VoiceComponent) component).getType());
 			this.genderValueLabel.setText(((VoiceComponent) component).getGender());
+		} else {
+			this.typeLabel.setVisible(false);
+			this.typeValueLabel.setVisible(false);
+			this.genderLabel.setVisible(false);
+			this.genderValueLabel.setVisible(false);
 		}
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JToggleButton collapseButton;
-	private javax.swing.JPanel collapsiblePanel;
-	private javax.swing.JLabel componentNameLabel;
-	private javax.swing.JLabel genderLabel;
-	private javax.swing.JLabel genderValueLabel;
-	private javax.swing.JButton installButton;
-	private javax.swing.JSeparator jSeparator1;
-	private javax.swing.JTextArea jTextArea1;
-	private javax.swing.JLabel licenseLabel;
-	private javax.swing.JLabel licenseValueLabel;
-	private javax.swing.JLabel localeLabel;
-	private javax.swing.JLabel localeValueLabel;
-	private javax.swing.JLabel sizeLabel;
-	private javax.swing.JLabel sizeValueLabel;
-	private javax.swing.JLabel statusLabel;
-	private javax.swing.JLabel typeLabel;
-	private javax.swing.JLabel typeValueLabel;
-	private javax.swing.JLabel versionLabel;
-	private javax.swing.JLabel versionValueLabel;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton collapseButton;
+    private javax.swing.JPanel collapsiblePanel;
+    private javax.swing.JLabel componentNameLabel;
+    private javax.swing.JLabel genderLabel;
+    private javax.swing.JLabel genderValueLabel;
+    private javax.swing.JButton installButton;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel licenseLabel;
+    private javax.swing.JLabel licenseValueLabel;
+    private javax.swing.JLabel localeLabel;
+    private javax.swing.JLabel localeValueLabel;
+    private javax.swing.JLabel sizeLabel;
+    private javax.swing.JLabel sizeValueLabel;
+    private javax.swing.JLabel statusLabel;
+    private javax.swing.JLabel typeLabel;
+    private javax.swing.JLabel typeValueLabel;
+    private javax.swing.JLabel versionLabel;
+    private javax.swing.JLabel versionValueLabel;
+    // End of variables declaration//GEN-END:variables
 }

@@ -473,22 +473,28 @@ public class InstallerGUI extends javax.swing.JFrame {
 			this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
 			logger.debug("languagesGroupPanel has PS: " + this.languagesGroupPanel.getPreferredSize());
 			for (Component oneComponent : componentList) {
+				VoiceComponentPanel voiceComponentPanel;
 				if (oneComponent instanceof VoiceComponent) {
-					VoiceComponentPanel voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent, installer);
-					logger.debug("Created new VoiceComponentPanel for component " + oneComponent.getName()
-							+ " with preferred dimensions: " + voiceComponentPanel.getPreferredSize());
-					logger.debug("Created new VoiceComponentPanel for component " + oneComponent.getName() + " with dimensions: "
-							+ voiceComponentPanel.getSize());
-
-					this.voicesGroupPanel.add(voiceComponentPanel);
-					this.voicesGroupPanel.add(Box.createVerticalGlue());
+					voiceComponentPanel = new VoiceComponentPanel((VoiceComponent) oneComponent, installer);
 				} else {
-					ComponentPanel componentPanel = new ComponentPanel(oneComponent, installer);
-					logger.debug("Created new ComponentPanel for component " + oneComponent.getName()
-							+ " with preferred dimensions: " + componentPanel.getPreferredSize());
-					this.languagesGroupPanel.add(componentPanel);
-					this.languagesGroupPanel.add(Box.createVerticalGlue());
+					voiceComponentPanel = new VoiceComponentPanel(oneComponent, installer);
 				}
+
+				logger.debug("Created new VoiceComponentPanel for component " + oneComponent.getName()
+						+ " with preferred dimensions: " + voiceComponentPanel.getPreferredSize());
+				logger.debug("Created new VoiceComponentPanel for component " + oneComponent.getName() + " with dimensions: "
+						+ voiceComponentPanel.getSize());
+
+				this.voicesGroupPanel.add(voiceComponentPanel);
+				this.voicesGroupPanel.add(Box.createVerticalGlue());
+
+				// else {
+				// ComponentPanel componentPanel = new ComponentPanel(oneComponent, installer);
+				// logger.debug("Created new ComponentPanel for component " + oneComponent.getName()
+				// + " with preferred dimensions: " + componentPanel.getPreferredSize());
+				// this.languagesGroupPanel.add(componentPanel);
+				// this.languagesGroupPanel.add(Box.createVerticalGlue());
+				// }
 			}
 		}
 		// logger.debug(this.languagesScrollPane.getVerticalScrollBar().getValue()
