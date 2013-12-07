@@ -85,6 +85,8 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setToolTipText("");
+        setMaximumSize(new java.awt.Dimension(32767, 63));
+        setMinimumSize(new java.awt.Dimension(535, 63));
         setPreferredSize(new java.awt.Dimension(535, 63));
 
         componentNameLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
@@ -224,7 +226,7 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(43, Short.MAX_VALUE)
+                .addContainerGap(17, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(layout.createSequentialGroup()

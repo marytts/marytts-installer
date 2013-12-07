@@ -4,6 +4,9 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="Component Installer"/>
+    <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+      <Dimension value="[566, 512]"/>
+    </Property>
   </Properties>
   <SyntheticProperties>
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
@@ -97,7 +100,8 @@
         <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
           <Color blue="c0" green="c0" id="lightGray" palette="1" red="c0" type="palette"/>
         </Property>
-        <Property name="text" type="java.lang.String" value="advanced Mode"/>
+        <Property name="text" type="java.lang.String" value="show language and marytts components"/>
+        <Property name="toolTipText" type="java.lang.String" value="Advanced users only!"/>
         <Property name="name" type="java.lang.String" value="advancedCheckBox" noResource="true"/>
       </Properties>
     </Component>
@@ -126,10 +130,8 @@
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="genderPanel" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="controlsSep" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="statusPanel" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
+                  <Component id="statusPanel" max="32767" attributes="0"/>
+                  <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -141,7 +143,6 @@
                       <Component id="statusPanel" alignment="1" max="32767" attributes="0"/>
                       <Component id="genderPanel" alignment="1" max="32767" attributes="0"/>
                       <Component id="typePanel" alignment="1" max="32767" attributes="0"/>
-                      <Component id="controlsSep" min="-2" pref="49" max="-2" attributes="0"/>
                       <Component id="localePanel" alignment="1" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -150,11 +151,6 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JSeparator" name="controlsSep">
-          <Properties>
-            <Property name="orientation" type="int" value="1"/>
-          </Properties>
-        </Component>
         <Container class="javax.swing.JPanel" name="localePanel">
 
           <Layout>
@@ -166,7 +162,7 @@
                           <Component id="localeBox" min="-2" max="-2" attributes="0"/>
                           <Component id="localeLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -209,7 +205,7 @@
                           <Component id="typeLabel" min="-2" max="-2" attributes="0"/>
                           <Component id="typeBox" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="0" pref="20" max="32767" attributes="0"/>
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -252,7 +248,7 @@
                           <Component id="genderBox" min="-2" max="-2" attributes="0"/>
                           <Component id="genderLabel" alignment="0" min="-2" max="-2" attributes="0"/>
                       </Group>
-                      <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

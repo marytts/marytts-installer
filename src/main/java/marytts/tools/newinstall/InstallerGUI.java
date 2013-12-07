@@ -79,7 +79,6 @@ public class InstallerGUI extends javax.swing.JFrame {
         advancedCheckBox = new javax.swing.JCheckBox();
         logButton = new javax.swing.JButton();
         controlsPanel = new javax.swing.JPanel();
-        controlsSep = new javax.swing.JSeparator();
         localePanel = new javax.swing.JPanel();
         localeLabel = new javax.swing.JLabel();
         localeBox = new javax.swing.JComboBox();
@@ -97,20 +96,20 @@ public class InstallerGUI extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Component Installer");
+        setMinimumSize(new java.awt.Dimension(566, 512));
 
         maryPathLabel.setText("Path to marytts installation folder:");
 
         maryPathButton.setText("change");
 
         advancedCheckBox.setForeground(java.awt.Color.lightGray);
-        advancedCheckBox.setText("advanced Mode");
+        advancedCheckBox.setText("show language and marytts components");
+        advancedCheckBox.setToolTipText("Advanced users only!");
         advancedCheckBox.setName("advancedCheckBox"); // NOI18N
 
         logButton.setText("show log view");
 
         controlsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Use these controls to filter the list of available components"));
-
-        controlsSep.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
         localeLabel.setText("Locale");
 
@@ -125,7 +124,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addGroup(localePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(localeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(localeLabel))
-                .addGap(20, 20, 20))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         localePanelLayout.setVerticalGroup(
             localePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -150,7 +149,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addGroup(typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(typeLabel)
                     .addComponent(typeBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(0, 20, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         typePanelLayout.setVerticalGroup(
             typePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -175,7 +174,7 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addGroup(genderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(genderBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(genderLabel))
-                .addGap(20, 20, 20))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         genderPanelLayout.setVerticalGroup(
             genderPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -224,10 +223,8 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(genderPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(controlsSep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(statusPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(statusPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         controlsPanelLayout.setVerticalGroup(
             controlsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,7 +234,6 @@ public class InstallerGUI extends javax.swing.JFrame {
                     .addComponent(statusPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(genderPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(typePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(controlsSep, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(localePanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -507,7 +503,6 @@ public class InstallerGUI extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox advancedCheckBox;
     private javax.swing.JPanel controlsPanel;
-    private javax.swing.JSeparator controlsSep;
     private javax.swing.JComboBox genderBox;
     private javax.swing.JLabel genderLabel;
     private javax.swing.JPanel genderPanel;
