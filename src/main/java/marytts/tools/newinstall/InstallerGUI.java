@@ -92,11 +92,8 @@ public class InstallerGUI extends javax.swing.JFrame {
         statusPanel = new javax.swing.JPanel();
         statusLabel = new javax.swing.JLabel();
         statusBox = new javax.swing.JComboBox();
-        componentTabbedPane = new javax.swing.JTabbedPane();
         voicesScrollPane = new javax.swing.JScrollPane();
         voicesGroupPanel = new javax.swing.JPanel();
-        languagesScrollPane = new javax.swing.JScrollPane();
-        languagesGroupPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Component Installer");
@@ -245,15 +242,13 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        componentTabbedPane.setPreferredSize(new java.awt.Dimension(477, 318));
-
         voicesGroupPanel.setName("voicesGroupPanel"); // NOI18N
 
         javax.swing.GroupLayout voicesGroupPanelLayout = new javax.swing.GroupLayout(voicesGroupPanel);
         voicesGroupPanel.setLayout(voicesGroupPanelLayout);
         voicesGroupPanelLayout.setHorizontalGroup(
             voicesGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 535, Short.MAX_VALUE)
+            .addGap(0, 550, Short.MAX_VALUE)
         );
         voicesGroupPanelLayout.setVerticalGroup(
             voicesGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -261,25 +256,6 @@ public class InstallerGUI extends javax.swing.JFrame {
         );
 
         voicesScrollPane.setViewportView(voicesGroupPanel);
-
-        componentTabbedPane.addTab("voices", voicesScrollPane);
-
-        languagesGroupPanel.setName("languagesGroupPanel"); // NOI18N
-
-        javax.swing.GroupLayout languagesGroupPanelLayout = new javax.swing.GroupLayout(languagesGroupPanel);
-        languagesGroupPanel.setLayout(languagesGroupPanelLayout);
-        languagesGroupPanelLayout.setHorizontalGroup(
-            languagesGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 535, Short.MAX_VALUE)
-        );
-        languagesGroupPanelLayout.setVerticalGroup(
-            languagesGroupPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 268, Short.MAX_VALUE)
-        );
-
-        languagesScrollPane.setViewportView(languagesGroupPanel);
-
-        componentTabbedPane.addTab("other", languagesScrollPane);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -289,24 +265,24 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(advancedCheckBox)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(logButton))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(advancedCheckBox)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(logButton))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(12, 12, 12)
+                                .addComponent(maryPathLabel)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(maryPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(maryPathButton)))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addComponent(maryPathLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(maryPathTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 188, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(maryPathButton)))
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(controlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(componentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 560, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(controlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(voicesScrollPane))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -319,12 +295,12 @@ public class InstallerGUI extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(controlsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(componentTabbedPane, javax.swing.GroupLayout.PREFERRED_SIZE, 318, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(voicesScrollPane)
+                .addGap(52, 52, 52)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(advancedCheckBox)
                     .addComponent(logButton))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -431,21 +407,14 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 	private void addActionToAdvancedCheckBox() {
 		this.advancedCheckBox.setSelected(false);
-		this.componentTabbedPane.setEnabledAt(1, false);
-		this.componentTabbedPane.setForegroundAt(1, Color.lightGray);
 		this.advancedCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
 				logger.debug("Checkbox state has been changed to " + e.getStateChange());
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					InstallerGUI.this.advancedCheckBox.setForeground(Color.BLACK);
-					InstallerGUI.this.componentTabbedPane.setEnabledAt(1, true);
-					InstallerGUI.this.componentTabbedPane.setForegroundAt(1, Color.BLACK);
 				} else {
 					InstallerGUI.this.advancedCheckBox.setForeground(Color.lightGray);
-					InstallerGUI.this.componentTabbedPane.setEnabledAt(1, false);
-					InstallerGUI.this.componentTabbedPane.setForegroundAt(1, Color.lightGray);
-					InstallerGUI.this.componentTabbedPane.setSelectedIndex(0);
 				}
 			}
 		});
@@ -463,13 +432,9 @@ public class InstallerGUI extends javax.swing.JFrame {
 		logger.debug("(Re)filling component lists");
 		logger.debug("Removing all components from voicesGroupPanel.");
 		this.voicesGroupPanel.removeAll();
-		logger.debug("Removing all components from languagesGroupPanel.");
-		this.languagesGroupPanel.removeAll();
 		if (!(componentList == null)) {
 			this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
 			logger.debug("voicesGroupPanel has PS: " + this.voicesGroupPanel.getPreferredSize());
-			this.languagesGroupPanel.setLayout(new BoxLayout(this.languagesGroupPanel, BoxLayout.Y_AXIS));
-			logger.debug("languagesGroupPanel has PS: " + this.languagesGroupPanel.getPreferredSize());
 			for (Component oneComponent : componentList) {
 				ComponentPanel componentPanel;
 				if (oneComponent instanceof VoiceComponent) {
@@ -539,30 +504,27 @@ public class InstallerGUI extends javax.swing.JFrame {
 		}
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JCheckBox advancedCheckBox;
-	private javax.swing.JTabbedPane componentTabbedPane;
-	private javax.swing.JPanel controlsPanel;
-	private javax.swing.JSeparator controlsSep;
-	private javax.swing.JComboBox genderBox;
-	private javax.swing.JLabel genderLabel;
-	private javax.swing.JPanel genderPanel;
-	private javax.swing.JPanel languagesGroupPanel;
-	private javax.swing.JScrollPane languagesScrollPane;
-	private javax.swing.JComboBox localeBox;
-	private javax.swing.JLabel localeLabel;
-	private javax.swing.JPanel localePanel;
-	private javax.swing.JButton logButton;
-	private javax.swing.JButton maryPathButton;
-	private javax.swing.JLabel maryPathLabel;
-	private javax.swing.JTextField maryPathTextField;
-	private javax.swing.JComboBox statusBox;
-	private javax.swing.JLabel statusLabel;
-	private javax.swing.JPanel statusPanel;
-	private javax.swing.JComboBox typeBox;
-	private javax.swing.JLabel typeLabel;
-	private javax.swing.JPanel typePanel;
-	private javax.swing.JPanel voicesGroupPanel;
-	private javax.swing.JScrollPane voicesScrollPane;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox advancedCheckBox;
+    private javax.swing.JPanel controlsPanel;
+    private javax.swing.JSeparator controlsSep;
+    private javax.swing.JComboBox genderBox;
+    private javax.swing.JLabel genderLabel;
+    private javax.swing.JPanel genderPanel;
+    private javax.swing.JComboBox localeBox;
+    private javax.swing.JLabel localeLabel;
+    private javax.swing.JPanel localePanel;
+    private javax.swing.JButton logButton;
+    private javax.swing.JButton maryPathButton;
+    private javax.swing.JLabel maryPathLabel;
+    private javax.swing.JTextField maryPathTextField;
+    private javax.swing.JComboBox statusBox;
+    private javax.swing.JLabel statusLabel;
+    private javax.swing.JPanel statusPanel;
+    private javax.swing.JComboBox typeBox;
+    private javax.swing.JLabel typeLabel;
+    private javax.swing.JPanel typePanel;
+    private javax.swing.JPanel voicesGroupPanel;
+    private javax.swing.JScrollPane voicesScrollPane;
+    // End of variables declaration//GEN-END:variables
 }
