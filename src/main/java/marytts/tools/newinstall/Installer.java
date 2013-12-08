@@ -279,13 +279,13 @@ public class Installer {
 	 */
 	public List<Component> getAvailableComponents(String locale, String type, String gender, String status, String name) {
 
-		/* @formatter:off */
-		logger.info("Filtering resources by " + ((locale == null) ? "" : "locale=" + locale + ";")
-										      + ((type == null) ? "" : "locale=" + type + ";") 
-										      + ((gender== null) ? "" : "locale=" + gender + ";")
-										      + ((status == null) ? "" : "locale=" + status + ";")
-										      + ((name == null) ? "" : "locale=" + name + ";"));
-		/* @formatter:on */
+//		/* @formatter:off */
+//		logger.info("Filtering resources by " + ((locale == null) ? "" : "locale=" + locale + ";")
+//										      + ((type == null) ? "" : "locale=" + type + ";") 
+//										      + ((gender== null) ? "" : "locale=" + gender + ";")
+//										      + ((status == null) ? "" : "locale=" + status + ";")
+//										      + ((name == null) ? "" : "locale=" + name + ";"));
+//		/* @formatter:on */
 
 		List<Component> resourcesToBeFiltered = new ArrayList<Component>(this.resources);
 
@@ -411,6 +411,5 @@ public class Installer {
 	public static void main(String[] args) {
 		Installer installer = new Installer(args);
 	}
-
 
 }

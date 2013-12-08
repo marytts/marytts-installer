@@ -1,12 +1,22 @@
 package marytts.tools.newinstall;
 
+import java.awt.HeadlessException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Scanner;
+
+import marytts.tools.newinstall.objects.Component;
+import marytts.tools.newinstall.objects.VoiceComponent;
+
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 /**
@@ -23,6 +33,8 @@ public class InstallerCLI {
 	private final static String HELP = "help";
 	private final static String TARGET = "target";
 	private final static String GUI = "gui";
+	private final static String DEBUG = "debug";
+	private final static String YES = "yes";
 
 	private CommandLineParser parser;
 	private CommandLine commandLine;
@@ -56,7 +68,21 @@ public class InstallerCLI {
 		this.options = new Options();
 		this.options.addOption("h", HELP, false, "print help");
 		this.options.addOption("t", TARGET, true, "target installation directory");
+		this.options.addOption("y", "yes", false, "always assume yes as an answer to prompts");
+
+		// filtering options
+		this.options.addOption("n", "name", true, "only with --list: filter by name (also substrings possible");
+		this.options.addOption("l", "locale", true, "only with --list: filter by locale");
+		this.options.addOption("g", "gender", true, "only with --list: filter by gender");
+		this.options.addOption("t", "type", true, "only with --list: filter by voice type (hsmm/unit-selection)");
+		this.options.addOption("s", "status", true, "only with --list: filter by download status");
+
 		this.options.addOption(OptionBuilder.withLongOpt("gui").withDescription("starts GUI").create());
+		this.options.addOption(OptionBuilder.withLongOpt("debug").withDescription("log in debug mode").create());
+		this.options.addOption(OptionBuilder.withLongOpt("list").withDescription("lists components").create());
+		this.options.addOption(OptionBuilder.withLongOpt("install").hasArg().withDescription("installs <arg> component")
+				.create("i"));
+
 		this.helper = new HelpFormatter();
 		logger.debug("Created the following options: \n" + this.options.toString());
 	}
@@ -71,20 +97,77 @@ public class InstallerCLI {
 	 * @param installerInstance
 	 */
 	private void evalCommandLine(final Installer installerInstance) {
-		logger.debug("Evaluating the command line: " + commandLine);
+		logger.debug("Evaluating the command line: " + this.commandLine);
 		if (this.commandLine.hasOption(HELP)) {
 			logger.debug("CL has option HELP");
 			this.helper.printHelp(HELP, this.options);
 			System.exit(0);
 		} else if (this.commandLine.hasOption(GUI)) {
-			logger.debug("CL has option GUI");
-			java.awt.EventQueue.invokeLater(new Runnable() {
-				public void run() {
+			startGUI(installerInstance);
+		}
+		if (this.commandLine.hasOption(DEBUG)) {
+			Logger.getRootLogger().setLevel(Level.DEBUG);
+		}
+
+		evaluateListFiltering(installerInstance);
+
+		if (this.commandLine.getOptions().length == 0) {
+			logger.info("no options were given, starting GUI");
+			startGUI(installerInstance);
+		}
+	}
+
+	private void evaluateListFiltering(Installer installerInstance) {
+		// check for right input syntax (--list has to be present when listing constraints are present)
+		if ((this.commandLine.hasOption("n") || this.commandLine.hasOption("l") || this.commandLine.hasOption("g") || this.commandLine
+				.hasOption("t")) && !this.commandLine.hasOption("list")) {
+			logger.error("Invalid syntax. Please use the following syntax");
+			this.helper.printHelp(INSTALLER, options);
+			return;
+		}
+
+		List<Component> resources = installerInstance.getAvailableComponents();
+		// --list: list all components
+		if (this.commandLine.hasOption("list")) {
+			String locale = null, type = null, gender = null, status = null, name = null;
+
+			if (this.commandLine.hasOption("locale") || this.commandLine.hasOption('l')) {
+				// --list --locale
+				locale = this.commandLine.getOptionValue("locale");
+			}
+			if (this.commandLine.hasOption("type") || this.commandLine.hasOption('t')) {
+				// --list --type
+				type = this.commandLine.getOptionValue("type");
+			}
+			if (this.commandLine.hasOption("gender") || this.commandLine.hasOption('g')) {
+				// --list --gender
+				gender = this.commandLine.getOptionValue("gender");
+			}
+			if (this.commandLine.hasOption("status") || this.commandLine.hasOption('s')) {
+				// --list --status
+				status = this.commandLine.getOptionValue("status");
+			}
+			if (this.commandLine.hasOption("name") || this.commandLine.hasOption('n')) {
+				// --list --name
+				name = this.commandLine.getOptionValue("name");
+			}
+
+			resources = installerInstance.getAvailableComponents(locale, type, gender, status, name);
+			printSortedComponents(resources);
+		}
+	}
+
+	private void startGUI(final Installer installerInstance) {
+		java.awt.EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
 					InstallerGUI gui = new InstallerGUI(installerInstance);
 					gui.setVisible(true);
+				} catch (HeadlessException he) {
+					logger.warn("Cannot start GUI, please use the command line interface instead!");
 				}
-			});
-		}
+			}
+		});
 	}
 
 	/**
@@ -134,7 +217,7 @@ public class InstallerCLI {
 	 */
 	// private void evalCommandLine(String[] args, CommandLineParser parser, Options options) {
 	// // the voice components
-	// List<Component> resources = installer.getAvailableComponents();
+	// List<Component> resources = installerInstance.getAvailableComponents();
 	//
 	// // parse the command line arguments
 	// CommandLine line = parser.parse(options, args);
@@ -158,22 +241,22 @@ public class InstallerCLI {
 	// if (line.hasOption("locale") || line.hasOption('l')) {
 	// // --list --locale
 	// String localeValue = line.getOptionValue("locale");
-	// resources = installer.filterResources(resources, "locale", localeValue);
+	// resources = installerInstance.filterResources(resources, "locale", localeValue);
 	// }
 	// if (line.hasOption("type") || line.hasOption('t')) {
 	// // --list --type
 	// String typeValue = line.getOptionValue("type");
-	// resources = installer.filterResources(resources, "type", typeValue);
+	// resources = installerInstance.filterResources(resources, "type", typeValue);
 	// }
 	// if (line.hasOption("gender") || line.hasOption('g')) {
 	// // --list --gender
 	// String genderValue = line.getOptionValue("gender");
-	// resources = installer.filterResources(resources, "gender", genderValue);
+	// resources = installerInstance.filterResources(resources, "gender", genderValue);
 	// }
 	// if (line.hasOption("name") || line.hasOption('n')) {
 	// // --list --name
 	// String nameValue = line.getOptionValue("name");
-	// resources = installer.filterResources(resources, "name", nameValue);
+	// resources = installerInstance.filterResources(resources, "name", nameValue);
 	// }
 	// printSortedComponents(resources);
 	// // --install || -i
@@ -188,7 +271,7 @@ public class InstallerCLI {
 	// // if (installer.getComponentByName(nameValue) != null) {
 	//
 	// // checks if <name> to be installed is a valid component
-	// if (installer.isNamePresent(nameValue)) {
+	// if (installerInstance.isNamePresent(nameValue)) {
 	//
 	// // if --yes option is set, installs without further asking.
 	// if (this.assumeYes) {
@@ -215,64 +298,64 @@ public class InstallerCLI {
 	// } else if (line.hasOption("gui")) {
 	// System.out.println("Start gui");
 	//
-	// new InstallerGUI(installer);
+	// new InstallerGUI(installerInstance);
 	// } else {
 	// System.err.println("Invalid syntax. Please use the following syntax");
 	// hf.printHelp(installerSyntax, options);
 	// }
 	//
 	// }
-	//
-	// /**
-	// * sorts components in resources list by their natural ordering as specified by {@link Component#compareTo(Component)}.
-	// *
-	// * @param resources
-	// * holds the voice components that are locally available.
-	// */
-	// private void printSortedComponents(List<Component> resources) {
-	//
-	// System.out.println("listing voice components:\n\n");
-	//
-	// Collections.sort(resources);
-	//
-	// printComponents(resources);
-	//
-	// }
-	//
-	// /**
-	// * used to format the component list so as to be put out on in the appropriate format when listing components.
-	// *
-	// * @param resources
-	// * holds the voice components that are locally available
-	// */
-	// private static void printComponents(List<Component> resources) {
-	//
-	// StringBuilder sb = new StringBuilder();
-	//
-	// String prevLang = "";
-	// for (Component oneComp : resources) {
-	//
-	// if (oneComp instanceof VoiceComponent) {
-	// VoiceComponent voiceOneComp = (VoiceComponent) oneComp;
-	// if (!prevLang.equals(voiceOneComp.getLocale().toString())) {
-	// sb.append("##" + voiceOneComp.getLocale().toString() + " - " + voiceOneComp.getLocale().getDisplayLanguage()
-	// + "##\n");
-	// }
-	// sb.append("\t" + voiceOneComp.getName() + "\n");
-	// sb.append("\t" + "gender: " + voiceOneComp.getGender() + "; ");
-	// sb.append("" + "type: " + voiceOneComp.getType() + "; ");
-	// sb.append("" + "version: " + voiceOneComp.getVersion() + "; ");
-	// sb.append("" + "license name: " + voiceOneComp.getLicenseName() + "\n");
-	// sb.append("\t" + "description: "
-	// + voiceOneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ") + "");
-	// sb.append("\n\n");
-	// prevLang = voiceOneComp.getLocale().toString();
-	// }
-	// }
-	//
-	// sb.append("Total: " + resources.size() + " components");
-	// System.out.println(sb.toString());
-	//
-	// }
-	//
+
+	/**
+	 * sorts components in resources list by their natural ordering as specified by {@link Component#compareTo(Component)}.
+	 * 
+	 * @param resources
+	 *            holds the voice components that are locally available.
+	 */
+	private void printSortedComponents(List<Component> resources) {
+
+		System.out.println("listing voice components:\n\n");
+
+		Collections.sort(resources);
+
+		printComponents(resources);
+
+	}
+
+	/**
+	 * used to format the component list so as to be put out on in the appropriate format when listing components.
+	 * 
+	 * @param resources
+	 *            holds the voice components that are locally available
+	 */
+	private static void printComponents(List<Component> resources) {
+
+		StringBuilder sb = new StringBuilder();
+
+		String prevLang = "";
+		for (Component oneComp : resources) {
+
+			if (oneComp instanceof VoiceComponent) {
+				VoiceComponent voiceOneComp = (VoiceComponent) oneComp;
+				if (!prevLang.equals(voiceOneComp.getLocale().toString())) {
+					sb.append("##" + voiceOneComp.getLocale().toString() + " - " + voiceOneComp.getLocale().getDisplayLanguage()
+							+ "##\n");
+				}
+				sb.append("\t" + voiceOneComp.getName() + "\n");
+				sb.append("\t" + "gender: " + voiceOneComp.getGender() + "; ");
+				sb.append("" + "type: " + voiceOneComp.getType() + "; ");
+				sb.append("" + "version: " + voiceOneComp.getVersion() + "; ");
+				sb.append("" + "license name: " + voiceOneComp.getLicenseName() + "\n");
+				sb.append("\t" + "description: "
+						+ voiceOneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ") + "");
+				sb.append("\n\n");
+				prevLang = voiceOneComp.getLocale().toString();
+			}
+		}
+
+		sb.append("Total: " + resources.size() + " components");
+		System.out.println(sb.toString());
+
+	}
+
 }
