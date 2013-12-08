@@ -16,6 +16,7 @@ import javax.swing.SwingWorker;
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.ivy.core.report.DownloadStatus;
 import org.apache.log4j.Logger;
 
@@ -39,13 +40,13 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 
 	/**
 	 * Creates new form ComponentPanel
+	 * @param component 
 	 * 
 	 * @param installer
 	 *            the installer instance
 	 */
 	public ComponentPanel(Component component, Installer installer) {
 
-		// super(installer, component);
 		this.component = component;
 		this.installer = installer;
 		this.first = true;
@@ -336,7 +337,7 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 		this.jTextArea1.setText(component.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
 		this.versionValueLabel.setText(component.getVersion());
 		this.licenseValueLabel.setText(component.getLicenseShortName());
-		this.sizeValueLabel.setText(String.valueOf(component.getSize()));
+		this.sizeValueLabel.setText(FileUtils.byteCountToDisplaySize(component.getSize()));
 		this.statusLabel.setText(component.getStatus().toString());
 		this.localeValueLabel.setText(component.getLocale().toString());
 

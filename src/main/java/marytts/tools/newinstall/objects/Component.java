@@ -7,6 +7,7 @@ import java.util.Locale;
 
 import marytts.tools.newinstall.Status;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.log4j.Logger;
 
@@ -49,6 +50,7 @@ public class Component implements Comparable<Component> {
 			parsedLong = 0L;
 		}
 		setSize(parsedLong);
+		
 		// TODO ONLY FOR TESTING, THIS STATE SHOULD BE DETERMINED BY SOME METHOD
 		setStatus(Status.DUMMY);
 
