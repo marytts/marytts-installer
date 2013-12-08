@@ -23,6 +23,7 @@ public class Component implements Comparable<Component> {
 
 	private ModuleDescriptor moduleDescriptor;
 	protected String name;
+	protected String displayName;
 	protected Locale locale;
 	protected String version;
 	protected String licenseName;
@@ -30,7 +31,7 @@ public class Component implements Comparable<Component> {
 	protected String description;
 	protected Status status;
 	protected long size;
-	
+
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.objects.Component.class.getName());
 
 	public Component(ModuleDescriptor descriptor) {
@@ -41,16 +42,17 @@ public class Component implements Comparable<Component> {
 		setLocale(new Locale(descriptor.getExtraAttribute("locale")));
 		setVersion(descriptor.getAttribute("revision"));
 		setName(descriptor.getExtraAttribute("name"));
+		setDisplayNameFromName(descriptor.getExtraAttribute("name"));
 
 		long parsedLong;
 		try {
 			parsedLong = Long.parseLong(descriptor.getAllArtifacts()[0].getExtraAttribute("size"));
 		} catch (NumberFormatException nfe) {
-			System.err.println(descriptor.getAllArtifacts()[0].getExtraAttribute("size") + " could not be parsed.");
+			logger.error(descriptor.getAllArtifacts()[0].getExtraAttribute("size") + " could not be parsed.");
 			parsedLong = 0L;
 		}
 		setSize(parsedLong);
-		
+
 		// TODO ONLY FOR TESTING, THIS STATE SHOULD BE DETERMINED BY SOME METHOD
 		setStatus(Status.DUMMY);
 
@@ -193,6 +195,27 @@ public class Component implements Comparable<Component> {
 		this.size = size;
 	}
 
+	/**
+	 * @return the displayName
+	 */
+	public String getDisplayName() {
+		return this.displayName;
+	}
+
+	/**
+	 * TODO has to be modified once there are mary components as well
+	 * 
+	 * @param displayName
+	 *            the displayName to set
+	 */
+	public void setDisplayNameFromName(String name) {
+		if (!(this instanceof VoiceComponent)) {
+			this.displayName = this.getLocale().getDisplayName();
+		} else {
+			this.displayName = name;
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -211,8 +234,5 @@ public class Component implements Comparable<Component> {
 		return ComparisonChain.start().compare(this.locale.toString(), o.getLocale().toString()).compare(this.name, o.getName())
 				.result();
 	}
-
-	// TODO getter/setter?
-	// TODO compareTo/equals...?
 
 }

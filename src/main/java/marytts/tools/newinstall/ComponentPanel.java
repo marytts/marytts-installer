@@ -333,7 +333,7 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 	}// GEN-LAST:event_jToggleButton1ActionPerformed
 
 	private void fillFields(Component component) {
-		this.componentNameLabel.setText(component.getName());
+		this.componentNameLabel.setText(component.getDisplayName());
 		this.jTextArea1.setText(component.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
 		this.versionValueLabel.setText(component.getVersion());
 		this.licenseValueLabel.setText(component.getLicenseShortName());
