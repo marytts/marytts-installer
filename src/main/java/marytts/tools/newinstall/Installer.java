@@ -87,7 +87,6 @@ public class Installer {
 
 		logger.debug("Loading installer.");
 		this.resources = new ArrayList<Component>();
-		cli = new InstallerCLI(args, this);
 		setMaryBase();
 		logger.debug("Set mary base path to: " + maryBasePath);
 
@@ -101,37 +100,40 @@ public class Installer {
 			initAttributeValues();
 			logger.debug("Starting ivy resource parse");
 			parseIvyResources(ivySettings);
+			logger.info("Creating new Ivy file");
+			this.ivy = Ivy.newInstance(ivySettings);
+			resolveOptions = new ResolveOptions().setOutputReport(false);
+			installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
+
+			cli = new InstallerCLI(args, this);
+
 		} catch (IOException ioe) {
 			logger.error("Could not access settings file: " + ioe.getMessage());
 		} catch (ParseException pe) {
 			logger.error("Could not access settings file: " + pe.getMessage());
 		}
-		logger.info("Creating new Ivy file");
-		this.ivy = Ivy.newInstance(ivySettings);
-		resolveOptions = new ResolveOptions().setOutputReport(false);
-		installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
 	}
 
 	private void setMaryBase() {
 		logger.debug("Setting mary base directory");
-		String userSelection = cli.getTargetDirectory();
+		// String userSelection = cli.getTargetDirectory();
 		File maryBase = null;
+		// try {
+		// maryBase = new File(userSelection);
+		// } catch (NullPointerException npe) {
+		// no target directory selected;
+		// fall back to location of this class/jar
+		// from http://stackoverflow.com/a/320595
+		logger.warn("No directory specified on the command line");
+		URL location = Installer.class.getProtectionDomain().getCodeSource().getLocation();
 		try {
-			maryBase = new File(userSelection);
-		} catch (NullPointerException npe) {
-			// no target directory selected;
-			// fall back to location of this class/jar
-			// from http://stackoverflow.com/a/320595
-			logger.warn("No directory specified on the command line");
-			URL location = Installer.class.getProtectionDomain().getCodeSource().getLocation();
-			try {
-				logger.debug("Trying to use directory Installer is run from.");
-				maryBase = new File(location.toURI().getPath());
-			} catch (URISyntaxException use) {
-				// TODO Auto-generated catch block
-				logger.error("Could not parse " + location + ": " + use.getMessage() + "\n");
-			}
+			logger.debug("Trying to use directory Installer is run from.");
+			maryBase = new File(location.toURI().getPath());
+		} catch (URISyntaxException use) {
+			// TODO Auto-generated catch block
+			logger.error("Could not parse " + location + ": " + use.getMessage() + "\n");
 		}
+		// }
 		setMaryBase(maryBase);
 	}
 
