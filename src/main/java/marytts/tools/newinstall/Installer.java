@@ -296,7 +296,7 @@ public class Installer {
 		logger.debug("Resource list size before filtering: " + sizeBefore);
 
 		// in order to modify the list while iterating over it, an iterator is needed to call the Iterator.remove() method.
-		Iterator<Component> it = resourcesToBeFiltered.iterator();
+		Iterator<Component> it;
 
 		if (resourcesToBeFiltered.isEmpty()) {
 			logger.warn("List is empty!");
@@ -306,7 +306,7 @@ public class Installer {
 		// int sizeAfter = resourcesToBeFiltered.size();
 		if (locale != null) {
 			logger.info("filtering by " + "locale=" + locale);
-			for (it = it; it.hasNext();) {
+			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!oneComponent.getLocale().toString().equalsIgnoreCase(locale)) {
 					// logger.debug("Removed " + oneComponent + " as its locale=" + locale);
@@ -322,7 +322,7 @@ public class Installer {
 		}
 		if (type != null) {
 			logger.info("filtering by " + "type=" + type);
-			for (it = it; it.hasNext();) {
+			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!(oneComponent instanceof VoiceComponent)) {
 					logger.debug("Removed " + oneComponent + " as it is not a VoiceComponent");
@@ -336,8 +336,8 @@ public class Installer {
 			}
 		}
 		if (gender != null) {
-			logger.info("filtering by " + "genger=" + gender);
-			for (it = it; it.hasNext();) {
+			logger.info("filtering by " + "gender=" + gender);
+			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!(oneComponent instanceof VoiceComponent)) {
 					logger.debug("Removed " + oneComponent + " as it is not a VoiceComponent");
@@ -352,7 +352,7 @@ public class Installer {
 		}
 		if (status != null) {
 			logger.info("filtering by " + "status=" + status);
-			for (it = it; it.hasNext();) {
+			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!oneComponent.getStatus().toString().equalsIgnoreCase(status)) {
 					it.remove();
@@ -361,7 +361,7 @@ public class Installer {
 		}
 		if (name != null) {
 			logger.info("filtering by " + "name=" + name);
-			for (it = it; it.hasNext();) {
+			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!oneComponent.getName().equalsIgnoreCase(locale)) {
 					it.remove();
