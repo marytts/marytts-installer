@@ -18,6 +18,7 @@ import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
@@ -53,25 +54,6 @@ public class Installer {
 
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.Installer.class.getName());
 
-	// /**
-	// * constructor for Installer
-	// */
-	// public Installer() {
-	//
-	// try {
-	// this.resources = new ArrayList<Component>();
-	// this.ivySettings = new IvySettings();
-	// this.ivySettings.load(Resources.getResource("ivysettings.xml"));
-	// initAttributeValues();
-	// parseIvyResources(this.ivySettings);
-	//
-	// } catch (ParseException e) {
-	// e.printStackTrace();
-	// } catch (IOException e) {
-	// e.printStackTrace();
-	// }
-	// }
-
 	/**
 	 * initializes the attribute values to be stored in Installer for later usage in GUI and CLI
 	 */
@@ -83,17 +65,26 @@ public class Installer {
 		this.attributeValues.put("gender", new HashSet<String>());
 	}
 
+	private Installer() {
+
+	}
+
 	public Installer(String[] args) {
 
 		logger.debug("Loading installer.");
 		this.resources = new ArrayList<Component>();
-		setMaryBase();
-		logger.debug("Set mary base path to: " + maryBasePath);
+		this.cli = new InstallerCLI(args, this);
+
+		// test if user has specified mary path on command line. If not, determine directory Installer is run from
+		if (this.maryBasePath == null) {
+			setMaryBase();
+		}
+		logger.debug("Set mary base path to: " + this.maryBasePath);
 
 		// setup ivy
 
 		IvySettings ivySettings = new IvySettings();
-		ivySettings.setVariable("mary.base", maryBasePath);
+		ivySettings.setVariable("mary.base", this.maryBasePath);
 		try {
 			logger.debug("Loading ivysettings.xml");
 			ivySettings.load(Resources.getResource("ivysettings.xml"));
@@ -102,10 +93,11 @@ public class Installer {
 			parseIvyResources(ivySettings);
 			logger.info("Creating new Ivy file");
 			this.ivy = Ivy.newInstance(ivySettings);
-			resolveOptions = new ResolveOptions().setOutputReport(false);
-			installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
+			this.resolveOptions = new ResolveOptions().setOutputReport(false);
+			this.installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
 
-			cli = new InstallerCLI(args, this);
+			//
+			this.cli.mainEvalCommandLine();
 
 		} catch (IOException ioe) {
 			logger.error("Could not access settings file: " + ioe.getMessage());
@@ -124,7 +116,7 @@ public class Installer {
 		// no target directory selected;
 		// fall back to location of this class/jar
 		// from http://stackoverflow.com/a/320595
-		logger.warn("No directory specified on the command line");
+		// logger.warn("No directory specified on the command line");
 		URL location = Installer.class.getProtectionDomain().getCodeSource().getLocation();
 		try {
 			logger.debug("Trying to use directory Installer is run from.");
@@ -137,7 +129,7 @@ public class Installer {
 		setMaryBase(maryBase);
 	}
 
-	private void setMaryBase(File maryBase) {
+	public void setMaryBase(File maryBase) {
 		try {
 			maryBase = maryBase.getCanonicalFile();
 		} catch (IOException ioe) {
@@ -155,7 +147,7 @@ public class Installer {
 			logger.error(ioe.getMessage());
 		}
 		try {
-			maryBasePath = maryBase.getCanonicalPath();
+			this.maryBasePath = maryBase.getCanonicalPath();
 		} catch (IOException ioe) {
 			logger.error("Could not determine path to directory " + maryBase + ": " + ioe + "\n");
 		}
@@ -170,9 +162,9 @@ public class Installer {
 
 	public DownloadStatus install(Component component) throws ParseException, IOException {
 		logger.info("Resolving and installing component " + component.getName());
-		ResolveReport resolve = ivy.resolve(component.getModuleDescriptor(), resolveOptions);
-		ResolveReport install = ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
-				installOptions);
+		ResolveReport resolve = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
+		ResolveReport install = this.ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
+				this.installOptions);
 
 		ArtifactDownloadReport[] dependencyReports = resolve.getAllArtifactsReports();
 		logger.debug("Resolve reports of dependencies");
@@ -227,6 +219,8 @@ public class Installer {
 					ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings,
 							oneResource, true);
 					VoiceComponent oneComponent = new VoiceComponent(descriptor);
+					String componentJarName = FilenameUtils.removeExtension(oneFileName) + ".jar";
+					oneComponent.setStatus(getResourceStatus(componentJarName));
 					this.resources.add(oneComponent);
 					storeAttributeValues(oneComponent);
 					logger.info((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
@@ -237,6 +231,8 @@ public class Installer {
 					ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings,
 							oneResource, true);
 					Component oneComponent = new Component(descriptor);
+					String componentJarName = FilenameUtils.removeExtension(oneFileName) + ".jar";
+					oneComponent.setStatus(getResourceStatus(componentJarName));
 					this.resources.add(oneComponent);
 					storeAttributeValues(oneComponent);
 					logger.info((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
@@ -248,6 +244,28 @@ public class Installer {
 		} catch (ParseException pe) {
 			logger.error("Problem parsing component file: " + pe.getMessage());
 		}
+	}
+
+	private Status getResourceStatus(String componentName) {
+		
+		// File downloadBase = new File(this.maryBasePath + "download/");
+		// File installedBase = new File(this.maryBasePath + "installed/");
+		// File libBase = new File(this.maryBasePath + "lib/");
+		
+		if (componentName.startsWith("marytts-voice")) {
+			if (new File(this.maryBasePath + "/installed/" + componentName).exists()) {
+				return Status.INSTALLED;
+			}
+		}
+		if (componentName.startsWith("marytts-lang")) {
+			if (new File(this.maryBasePath + "/lib/" + componentName).exists()) {
+				return Status.INSTALLED;
+			}
+		}
+		if (new File(this.maryBasePath + "/download/" + componentName).exists()) {
+			return Status.DOWNLOADED;
+		}
+		return Status.AVAILABLE;
 	}
 
 	/**

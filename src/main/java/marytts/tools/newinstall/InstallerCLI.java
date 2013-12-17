@@ -1,9 +1,9 @@
 package marytts.tools.newinstall;
 
 import java.awt.HeadlessException;
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
-import java.util.Scanner;
 
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
@@ -12,7 +12,6 @@ import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
@@ -29,7 +28,7 @@ import org.apache.log4j.Logger;
 public class InstallerCLI {
 
 	private Options options;
-	private final static String INSTALLER = "marytts-installer";
+	private final static String MARYTTSINSTALLER = "marytts-installer";
 	private final static String HELP = "help";
 	private final static String TARGET = "target";
 	private final static String GUI = "gui";
@@ -39,35 +38,33 @@ public class InstallerCLI {
 	private CommandLineParser parser;
 	private CommandLine commandLine;
 	private HelpFormatter helper;
+	private Installer installer;
 
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.InstallerCLI.class.getName());
 
-	/**
-	 * Constructor
-	 * 
-	 * @throws Exception
-	 */
-	public InstallerCLI() throws Exception {
+	private InstallerCLI() {
 	}
 
-	public InstallerCLI(String[] args, Installer installerInstance) {
+	public InstallerCLI(String[] args, Installer installer) {
+
+		this.installer = installer;
 		logger.debug("Starting InstallerCLI");
+
 		createOptions();
 		this.parser = new BasicParser();
 		try {
 			this.commandLine = this.parser.parse(this.options, args);
 		} catch (ParseException e) {
 			logger.error("Could not parse command line arguments: " + e.getMessage());
-			this.helper.printHelp(INSTALLER, this.options);
+			this.helper.printHelp(MARYTTSINSTALLER, this.options);
 			System.exit(1);
 		}
-		evalCommandLine(installerInstance);
+		preEvalCommandLine();
 	}
 
 	private void createOptions() {
 		this.options = new Options();
 		this.options.addOption("h", HELP, false, "print help");
-		this.options.addOption("t", TARGET, true, "target installation directory");
 		this.options.addOption("y", "yes", false, "always assume yes as an answer to prompts");
 
 		// filtering options
@@ -80,6 +77,7 @@ public class InstallerCLI {
 		this.options.addOption(OptionBuilder.withLongOpt("gui").withDescription("starts GUI").create());
 		this.options.addOption(OptionBuilder.withLongOpt("debug").withDescription("log in debug mode").create());
 		this.options.addOption(OptionBuilder.withLongOpt("list").withDescription("lists components").create());
+		this.options.addOption(OptionBuilder.withLongOpt("target").hasArg().withDescription("target installation directory").create());
 		this.options.addOption(OptionBuilder.withLongOpt("install").hasArg().withDescription("installs <arg> component")
 				.create("i"));
 
@@ -93,40 +91,47 @@ public class InstallerCLI {
 
 	/**
 	 * Evaluate the commandLine by the means of its options and their arguments
-	 * 
-	 * @param installerInstance
 	 */
-	private void evalCommandLine(final Installer installerInstance) {
-		logger.debug("Evaluating the command line: " + this.commandLine);
+	private void preEvalCommandLine() {
+		logger.debug("Evaluating the configuration options set on command line: " + this.commandLine);
 		if (this.commandLine.hasOption(HELP)) {
 			logger.debug("CL has option HELP");
 			this.helper.printHelp(HELP, this.options);
 			System.exit(0);
-		} else if (this.commandLine.hasOption(GUI)) {
-			startGUI(installerInstance);
+		} else if (this.commandLine.hasOption(TARGET)) {
+			this.installer.setMaryBase(new File(getTargetDirectory()));
+		}
+	}
+
+	/**
+	 * public eval command line method. Is called upon completion of Installer construction
+	 */
+	public void mainEvalCommandLine() {
+		if (this.commandLine.hasOption(GUI)) {
+			startGUI();
 		}
 		if (this.commandLine.hasOption(DEBUG)) {
 			Logger.getRootLogger().setLevel(Level.DEBUG);
 		}
 
-		evaluateListFiltering(installerInstance);
+		evalListFiltering();
 
 		if (this.commandLine.getOptions().length == 0) {
 			logger.info("no options were given, starting GUI");
-			startGUI(installerInstance);
+			startGUI();
 		}
 	}
 
-	private void evaluateListFiltering(Installer installerInstance) {
+	private void evalListFiltering() {
 		// check for right input syntax (--list has to be present when listing constraints are present)
 		if ((this.commandLine.hasOption("n") || this.commandLine.hasOption("l") || this.commandLine.hasOption("g") || this.commandLine
 				.hasOption("t")) && !this.commandLine.hasOption("list")) {
 			logger.error("Invalid syntax. Please use the following syntax");
-			this.helper.printHelp(INSTALLER, options);
+			this.helper.printHelp(MARYTTSINSTALLER, options);
 			return;
 		}
 
-		List<Component> resources = installerInstance.getAvailableComponents();
+		List<Component> resources = this.installer.getAvailableComponents();
 		// --list: list all components
 		if (this.commandLine.hasOption("list")) {
 			String locale = null, type = null, gender = null, status = null, name = null;
@@ -152,16 +157,16 @@ public class InstallerCLI {
 				name = this.commandLine.getOptionValue("name");
 			}
 
-			resources = installerInstance.getAvailableComponents(locale, type, gender, status, name);
+			resources = this.installer.getAvailableComponents(locale, type, gender, status, name);
 			printSortedComponents(resources);
 		}
 	}
 
-	private void startGUI(final Installer installerInstance) {
+	private void startGUI() {
 		java.awt.EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					InstallerGUI gui = new InstallerGUI(installerInstance);
+					InstallerGUI gui = new InstallerGUI(InstallerCLI.this.installer);
 					gui.setVisible(true);
 				} catch (HeadlessException he) {
 					logger.warn("Cannot start GUI, please use the command line interface instead!");

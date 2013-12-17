@@ -53,9 +53,6 @@ public class Component implements Comparable<Component> {
 		}
 		setSize(parsedLong);
 
-		// TODO ONLY FOR TESTING, THIS STATE SHOULD BE DETERMINED BY SOME METHOD
-		setStatus(Status.DUMMY);
-
 	}
 
 	/**
