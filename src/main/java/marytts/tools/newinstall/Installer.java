@@ -22,6 +22,8 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
+import org.apache.ivy.core.module.id.ArtifactRevisionId;
+import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.report.ArtifactDownloadReport;
 import org.apache.ivy.core.report.DownloadStatus;
 import org.apache.ivy.core.report.ResolveReport;
@@ -219,8 +221,11 @@ public class Installer {
 					ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings,
 							oneResource, true);
 					VoiceComponent oneComponent = new VoiceComponent(descriptor);
-					String componentJarName = FilenameUtils.removeExtension(oneFileName) + ".jar";
-					oneComponent.setStatus(getResourceStatus(componentJarName));
+
+					ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
+					String artifactName = artifactRevisionId.getAttribute("organisation") + "-" + artifactRevisionId.getName()
+							+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
+					oneComponent.setStatus(getResourceStatus(artifactName));
 					this.resources.add(oneComponent);
 					storeAttributeValues(oneComponent);
 					logger.info((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
