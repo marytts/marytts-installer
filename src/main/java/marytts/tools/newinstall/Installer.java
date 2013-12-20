@@ -247,20 +247,9 @@ public class Installer {
 	}
 
 	private Status getResourceStatus(String componentName) {
-		
-		// File downloadBase = new File(this.maryBasePath + "download/");
-		// File installedBase = new File(this.maryBasePath + "installed/");
-		// File libBase = new File(this.maryBasePath + "lib/");
-		
-		if (componentName.startsWith("marytts-voice")) {
-			if (new File(this.maryBasePath + "/installed/" + componentName).exists()) {
-				return Status.INSTALLED;
-			}
-		}
-		if (componentName.startsWith("marytts-lang")) {
-			if (new File(this.maryBasePath + "/lib/" + componentName).exists()) {
-				return Status.INSTALLED;
-			}
+
+		if (new File(this.maryBasePath + "/installed/" + componentName).exists()) {
+			return Status.INSTALLED;
 		}
 		if (new File(this.maryBasePath + "/download/" + componentName).exists()) {
 			return Status.DOWNLOADED;
