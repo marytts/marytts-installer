@@ -65,8 +65,6 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
     private void initComponents() {
 
         componentNameLabel = new javax.swing.JLabel();
-        statusLabel = new javax.swing.JLabel();
-        installButton = new javax.swing.JButton();
         collapseButton = new javax.swing.JToggleButton();
         jSeparator1 = new javax.swing.JSeparator();
         localeValueLabel = new javax.swing.JLabel();
@@ -83,6 +81,8 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
         jTextArea1 = new javax.swing.JTextArea();
         sizeLabel = new javax.swing.JLabel();
         sizeValueLabel = new javax.swing.JLabel();
+        installButton = new javax.swing.JButton();
+        statusLabel = new javax.swing.JLabel();
 
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setToolTipText("");
@@ -92,15 +92,6 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 
         componentNameLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         componentNameLabel.setText("jLabel1");
-
-        statusLabel.setText("jLabel2");
-
-        installButton.setText("Install");
-        installButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                installButtonActionPerformed(evt);
-            }
-        });
 
         collapseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -184,6 +175,10 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 
         sizeValueLabel.setText("jLabel6");
 
+        installButton.setText("Install");
+
+        statusLabel.setText("jLabel2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -215,44 +210,41 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
                                 .addComponent(typeLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(typeValueLabel)))
-                        .addGap(50, 50, 50)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(installButton)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(statusLabel)
-                                .addGap(18, 18, 18))))
+                        .addGap(77, 77, 77)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
+                            .addComponent(statusLabel)
+                            .addComponent(installButton)))
                     .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 433, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(92, Short.MAX_VALUE))
+                .addContainerGap(81, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(17, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addGroup(layout.createSequentialGroup()
-                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(componentNameLabel)
-                                .addComponent(statusLabel))
+                            .addComponent(componentNameLabel)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(collapseButton))
                                 .addGroup(layout.createSequentialGroup()
                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                            .addComponent(genderLabel)
-                                            .addComponent(genderValueLabel)
-                                            .addComponent(typeLabel)
-                                            .addComponent(typeValueLabel))
-                                        .addComponent(installButton)))))
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                        .addComponent(genderLabel)
+                                        .addComponent(genderValueLabel)
+                                        .addComponent(typeLabel)
+                                        .addComponent(typeValueLabel)
+                                        .addComponent(installButton))
+                                    .addGap(5, 5, 5))))
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(localeLabel)
                         .addComponent(localeValueLabel)
                         .addComponent(sizeLabel)
-                        .addComponent(sizeValueLabel)))
+                        .addComponent(sizeValueLabel)
+                        .addComponent(statusLabel)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
