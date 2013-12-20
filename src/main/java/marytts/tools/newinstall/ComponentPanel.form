@@ -36,6 +36,7 @@
           <Group type="102" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
+                  <Component id="collapsiblePanel" min="-2" pref="433" max="-2" attributes="0"/>
                   <Group type="102" attributes="0">
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Component id="componentNameLabel" min="-2" max="-2" attributes="0"/>
@@ -70,7 +71,6 @@
                           <Component id="installButton" alignment="2" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
-                  <Component id="collapsiblePanel" min="-2" pref="433" max="-2" attributes="0"/>
               </Group>
               <EmptySpace pref="81" max="32767" attributes="0"/>
           </Group>
@@ -81,30 +81,27 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="32767" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="103" alignment="0" groupAlignment="0" max="-2" attributes="0">
-                      <Group type="102" alignment="0" attributes="0">
-                          <Component id="componentNameLabel" min="-2" max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="102" alignment="1" attributes="0">
-                                  <EmptySpace max="32767" attributes="0"/>
-                                  <Component id="collapseButton" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Group type="102" alignment="0" attributes="0">
-                                  <EmptySpace max="-2" attributes="0"/>
-                                  <Group type="103" groupAlignment="3" attributes="0">
-                                      <Component id="genderLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="genderValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="typeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="typeValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
-                                      <Component id="installButton" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  </Group>
-                                  <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
+                  <Group type="102" alignment="0" attributes="0">
+                      <Component id="componentNameLabel" min="-2" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Group type="102" attributes="0">
+                              <EmptySpace max="-2" attributes="0"/>
+                              <Group type="103" groupAlignment="3" attributes="0">
+                                  <Component id="genderLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="genderValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="typeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="typeValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
+                                  <Component id="installButton" alignment="3" min="-2" max="-2" attributes="0"/>
                               </Group>
                           </Group>
+                          <Group type="102" alignment="1" attributes="0">
+                              <EmptySpace max="32767" attributes="0"/>
+                              <Component id="collapseButton" min="-2" max="-2" attributes="0"/>
+                          </Group>
                       </Group>
-                      <Component id="jSeparator1" min="-2" pref="51" max="-2" attributes="0"/>
                   </Group>
-                  <Group type="103" alignment="0" groupAlignment="3" attributes="0">
+                  <Component id="jSeparator1" min="-2" pref="51" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="localeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="localeValueLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="sizeLabel" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -112,7 +109,7 @@
                       <Component id="statusLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
               </Group>
-              <EmptySpace max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
               <Component id="collapsiblePanel" min="-2" pref="124" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
           </Group>
