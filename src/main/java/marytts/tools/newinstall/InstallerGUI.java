@@ -51,7 +51,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 		initComponents();
 
-		fillComponentGroupPanels(this.installer.getAvailableComponents());
+		fillComponentGroupPanels(this.installer.getAvailableComponents(null, null, null, null, null, true));
 
 		addActionToAdvancedCheckBox();
 		addActionToLogButton();
@@ -397,25 +397,28 @@ public class InstallerGUI extends javax.swing.JFrame {
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				if (e.getStateChange() == ItemEvent.SELECTED) {
-					String locale = localeBox.getSelectedItem().toString();
-					String type = typeBox.getSelectedItem().toString();
-					String gender = genderBox.getSelectedItem().toString();
-					String status = statusBox.getSelectedItem().toString();
-
-					if (locale.equalsIgnoreCase("all")) {
-						locale = null;
-					}
-					if (type.equalsIgnoreCase("all")) {
-						type = null;
-					}
-					if (gender.equalsIgnoreCase("all")) {
-						gender = null;
-					}
-					if (status.equalsIgnoreCase("all")) {
-						status = null;
-					}
-					fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null));
+				String locale = localeBox.getSelectedItem().toString();
+				String type = typeBox.getSelectedItem().toString();
+				String gender = genderBox.getSelectedItem().toString();
+				String status = statusBox.getSelectedItem().toString();
+				
+				if (locale.equalsIgnoreCase("all")) {
+					locale = null;
+				}
+				if (type.equalsIgnoreCase("all")) {
+					type = null;
+				}
+				if (gender.equalsIgnoreCase("all")) {
+					gender = null;
+				}
+				if (status.equalsIgnoreCase("all")) {
+					status = null;
+				}
+				if (InstallerGUI.this.advancedCheckBox.isSelected()) {
+					fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, false));
+				}
+				else {
+					fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, true));
 				}
 			}
 		});
@@ -429,11 +432,35 @@ public class InstallerGUI extends javax.swing.JFrame {
 				logger.debug("Checkbox state has been changed to " + e.getStateChange());
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					InstallerGUI.this.advancedCheckBox.setForeground(Color.BLACK);
+					displayAdvancedComponents(false);
 				} else {
 					InstallerGUI.this.advancedCheckBox.setForeground(Color.lightGray);
+					displayAdvancedComponents(true);
 				}
 			}
 		});
+	}
+
+	protected void displayAdvancedComponents(boolean voiceOnly) {
+
+		String locale = localeBox.getSelectedItem().toString();
+		String type = typeBox.getSelectedItem().toString();
+		String gender = genderBox.getSelectedItem().toString();
+		String status = statusBox.getSelectedItem().toString();
+
+		if (locale.equalsIgnoreCase("all")) {
+			locale = null;
+		}
+		if (type.equalsIgnoreCase("all")) {
+			type = null;
+		}
+		if (gender.equalsIgnoreCase("all")) {
+			gender = null;
+		}
+		if (status.equalsIgnoreCase("all")) {
+			status = null;
+		}
+		fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, voiceOnly));
 	}
 
 	private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_updateButtonActionPerformed

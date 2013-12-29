@@ -11,8 +11,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
@@ -23,7 +21,6 @@ import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ArtifactRevisionId;
-import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.report.ArtifactDownloadReport;
 import org.apache.ivy.core.report.DownloadStatus;
 import org.apache.ivy.core.report.ResolveReport;
@@ -291,7 +288,8 @@ public class Installer {
 	 * @param name
 	 * @return component list
 	 */
-	public List<Component> getAvailableComponents(String locale, String type, String gender, String status, String name) {
+	public List<Component> getAvailableComponents(String locale, String type, String gender, String status, String name,
+			boolean voiceOnly) {
 
 //		/* @formatter:off */
 //		logger.info("Filtering resources by " + ((locale == null) ? "" : "locale=" + locale + ";")
@@ -380,6 +378,15 @@ public class Installer {
 				}
 			}
 		}
+		if (voiceOnly) {
+			logger.info("filtering by component type=" + (voiceOnly ? "voice " : " ") + "component");
+			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
+				Component oneComponent = it.next();
+				if (!(oneComponent instanceof VoiceComponent)) {
+					it.remove();
+				}
+			}
+		}
 
 		return resourcesToBeFiltered;
 	}
@@ -408,12 +415,12 @@ public class Installer {
 		return false;
 	}
 
-	/**
-	 * @return
-	 */
-	public List<Component> getAvailableComponents() {
-		return getAvailableComponents(null, null, null, null, null);
-	}
+	// /**
+	// * @return
+	// */
+	// public List<Component> getAvailableComponents() {
+	// return getAvailableComponents(null, null, null, null, null, false);
+	// }
 
 	/**
 	 * 
