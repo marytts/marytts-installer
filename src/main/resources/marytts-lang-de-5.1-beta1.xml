@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="marytts" module="marytts-lang-de" revision="5.1-beta1" e:locale="de" e:name="de">
+	<info organisation="marytts" module="lang-de" revision="5.1-beta1" e:locale="de" e:name="de">
 		<license name="GNU Lesser General Public License" url="http://www.gnu.org/licenses/lgpl-3.0-standalone.html" />
 		<description>de language component</description>
 	</info>
