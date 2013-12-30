@@ -21,6 +21,7 @@ import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ArtifactRevisionId;
+import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.report.ArtifactDownloadReport;
 import org.apache.ivy.core.report.DownloadStatus;
 import org.apache.ivy.core.report.ResolveReport;
@@ -42,7 +43,7 @@ import com.google.gson.Gson;
 public class Installer {
 
 	private Ivy ivy;
-	// private IvySettings ivySettings;
+	private IvySettings ivySettings;
 	private ResolveOptions resolveOptions;
 	private InstallOptions installOptions;
 
@@ -82,20 +83,13 @@ public class Installer {
 
 		// setup ivy
 
-		IvySettings ivySettings = new IvySettings();
-		ivySettings.setVariable("mary.base", this.maryBasePath);
 		try {
-			logger.debug("Loading ivysettings.xml");
-			ivySettings.load(Resources.getResource("ivysettings.xml"));
+			loadIvySettings();
 			initAttributeValues();
 			logger.debug("Starting ivy resource parse");
-			parseIvyResources(ivySettings);
-			logger.info("Creating new Ivy file");
-			this.ivy = Ivy.newInstance(ivySettings);
-			this.resolveOptions = new ResolveOptions().setOutputReport(false);
-			this.installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
+			parseIvyResources();
+			loadIvy();
 
-			//
 			this.cli.mainEvalCommandLine();
 
 		} catch (IOException ioe) {
@@ -103,6 +97,20 @@ public class Installer {
 		} catch (ParseException pe) {
 			logger.error("Could not access settings file: " + pe.getMessage());
 		}
+	}
+
+	protected void loadIvy() {
+		logger.info("Creating new Ivy file");
+		this.ivy = Ivy.newInstance(this.ivySettings);
+		this.resolveOptions = new ResolveOptions().setOutputReport(false);
+		this.installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
+	}
+
+	protected void loadIvySettings() throws ParseException, IOException {
+		this.ivySettings = new IvySettings();
+		this.ivySettings.setVariable("mary.base", this.maryBasePath);
+		logger.debug("Loading ivysettings.xml");
+		this.ivySettings.load(Resources.getResource("ivysettings.xml"));
 	}
 
 	private void setMaryBase() {
@@ -128,28 +136,41 @@ public class Installer {
 		setMaryBase(maryBase);
 	}
 
-	public void setMaryBase(File maryBase) {
+	/**
+	 * @param maryBase
+	 * @return true if mary path was successfully set, false otherwise
+	 */
+	public boolean setMaryBase(File maryBase) {
+		boolean toReturn;
 		try {
 			maryBase = maryBase.getCanonicalFile();
+			toReturn = true;
 		} catch (IOException ioe) {
 			logger.error("Could not determine path to directory " + maryBase + ": " + ioe + "\n");
+			toReturn = false;
 		}
 		// if this is running from the jar file, back off to directory containing it
 		if (maryBase.isFile()) {
 			logger.debug("Installer is running from jar. Creating directory for setting mary base path");
 			maryBase = maryBase.getParentFile();
+			toReturn = true;
 		}
 		// create directory (with parents, if required)
 		try {
 			FileUtils.forceMkdir(maryBase);
+			toReturn = true;
 		} catch (IOException ioe) {
 			logger.error(ioe.getMessage());
+			toReturn = false;
 		}
 		try {
 			this.maryBasePath = maryBase.getCanonicalPath();
+			toReturn = true;
 		} catch (IOException ioe) {
 			logger.error("Could not determine path to directory " + maryBase + ": " + ioe + "\n");
+			toReturn = false;
 		}
+		return toReturn;
 	}
 
 	/**
@@ -161,15 +182,29 @@ public class Installer {
 
 	public DownloadStatus install(Component component) throws ParseException, IOException {
 		logger.info("Resolving and installing component " + component.getName());
-		ResolveReport resolve = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
+		ResolveReport resolveDependencies = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
+
+		ArtifactDownloadReport[] dependencyReports = resolveDependencies.getAllArtifactsReports();
+		logger.debug("Resolve reports of dependencies");
+		for (int i = 0; i < dependencyReports.length; i++) {
+			// install resolved dependencies
+			ArtifactDownloadReport artifactDownloadReport = dependencyReports[i];
+			ModuleRevisionId mrid = artifactDownloadReport.getArtifact().getModuleRevisionId();
+			logger.debug(artifactDownloadReport);
+
+			ResolveReport installDependencies = this.ivy.install(mrid, "downloaded", "installed", this.installOptions);
+			ArtifactDownloadReport[] installReports = installDependencies.getAllArtifactsReports();
+			logger.debug("Resolve reports of target installation");
+			if (installReports.length > 1) {
+				logger.error("There are " + installReports.length
+						+ " artifacts. There should not be more than one target artifact to be resolved.");
+			}
+			logger.debug(installReports[0]);
+
+		}
+
 		ResolveReport install = this.ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
 				this.installOptions);
-
-		ArtifactDownloadReport[] dependencyReports = resolve.getAllArtifactsReports();
-		logger.debug("Resolve reports of dependencies");
-		for (int i = 0; i < resolve.getAllArtifactsReports().length; i++) {
-			logger.debug(dependencyReports[i]);
-		}
 
 		ArtifactDownloadReport[] installReports = install.getAllArtifactsReports();
 		logger.debug("Resolve reports of target installation");
@@ -202,20 +237,20 @@ public class Installer {
 	 * takes care of storing possible attribute values in a HashMap<br>
 	 * TODO remove repeated code
 	 * 
-	 * @param ivySettings
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	private void parseIvyResources(IvySettings ivySettings) {
+	protected void parseIvyResources() {
 
 		try {
 			List<String> resourcesList = readComponentDescriptorList();
+			this.resources.clear();
 			for (String oneFileName : resourcesList) {
 				logger.debug("Parsing " + oneFileName);
 				if (oneFileName.startsWith("marytts-voice")) {
 
 					URL oneResource = Resources.getResource(oneFileName);
-					ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings,
+					ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
 							oneResource, true);
 					VoiceComponent oneComponent = new VoiceComponent(descriptor);
 
@@ -230,11 +265,13 @@ public class Installer {
 				} else if (oneFileName.startsWith("marytts-lang")) {
 
 					URL oneResource = Resources.getResource(oneFileName);
-					ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(ivySettings,
+					ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
 							oneResource, true);
 					Component oneComponent = new Component(descriptor);
-					String componentJarName = FilenameUtils.removeExtension(oneFileName) + ".jar";
-					oneComponent.setStatus(getResourceStatus(componentJarName));
+					ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
+					String artifactName = artifactRevisionId.getAttribute("organisation") + "-" + artifactRevisionId.getName()
+							+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
+					oneComponent.setStatus(getResourceStatus(artifactName));
 					this.resources.add(oneComponent);
 					storeAttributeValues(oneComponent);
 					logger.info((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
@@ -248,9 +285,9 @@ public class Installer {
 		}
 	}
 
-	private Status getResourceStatus(String componentName) {
+	protected Status getResourceStatus(String componentName) {
 
-		if (new File(this.maryBasePath + "/installed/" + componentName).exists()) {
+		if (new File(this.maryBasePath + "/lib/" + componentName).exists()) {
 			return Status.INSTALLED;
 		}
 		if (new File(this.maryBasePath + "/download/" + componentName).exists()) {
