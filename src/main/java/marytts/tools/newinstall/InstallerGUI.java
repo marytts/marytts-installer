@@ -12,26 +12,33 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
+import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
+import org.apache.ivy.core.module.id.ArtifactRevisionId;
 import org.apache.log4j.Logger;
 
 /**
  * 
  * @author Jonathan
  */
-public class InstallerGUI extends javax.swing.JFrame {
+public class InstallerGUI extends javax.swing.JFrame implements Observer {
 
 	// data
 	private Installer installer;
@@ -381,14 +388,50 @@ public class InstallerGUI extends javax.swing.JFrame {
 						fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 						fileChooser.showOpenDialog(InstallerGUI.this);
 						File maryBasePath = fileChooser.getSelectedFile();
-						InstallerGUI.this.installer.setMaryBase(maryBasePath);
-						InstallerGUI.this.maryPathTextField.setText(InstallerGUI.this.installer.getMaryBasePath());
-						// TODO continue to implement -> what changes does Installer has to go through when marypath is updated?
-						// Rebuild all components from scratch?
+						InstallerGUI.this.maryPathTextField.setText(maryBasePath.getAbsolutePath());
 					}
 				});
 			}
 		});
+	}
+
+	private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_updateButtonActionPerformed
+		String newPath = this.maryPathTextField.getText().trim();
+		String oldPath = this.installer.getMaryBasePath();
+		if (newPath.equalsIgnoreCase(oldPath)) {
+			JOptionPane.showMessageDialog(this, "Nothing to update!", "Mary base path", JOptionPane.INFORMATION_MESSAGE);
+		} else {
+			if (!this.installer.setMaryBase(new File(newPath))) {
+				JOptionPane.showMessageDialog(this, "The specified path contains errors!", "Mary base path",
+						JOptionPane.WARNING_MESSAGE);
+			}
+			resetGlobal();
+			try {
+				this.installer.loadIvySettings();
+				this.installer.loadIvy();
+			} catch (IOException ioe) {
+				logger.error("Could not access settings file: " + ioe.getMessage());
+			} catch (ParseException pe) {
+				logger.error("Could not access settings file: " + pe.getMessage());
+			}
+			this.installer.parseIvyResources();
+			fillComponentGroupPanels(this.installer.getAvailableComponents(null, null, null, null, null, true));
+		}
+	}// GEN-LAST:event_updateButtonActionPerformed
+
+	private void resetGlobal() {
+
+		this.voicesGroupPanel.removeAll();
+		this.voicesGroupPanel.revalidate();
+		this.voicesGroupPanel.repaint();
+		this.genderBox.setSelectedIndex(0);
+		this.statusBox.setSelectedIndex(0);
+		this.localeBox.setSelectedIndex(0);
+		this.typeBox.setSelectedIndex(0);
+		this.advancedCheckBox.setSelected(false);
+		invalidate();
+		validate();
+		repaint();
 	}
 
 	private void addActionToComboBox(final String attribute, final JComboBox comboBox) {
@@ -401,7 +444,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 				String type = typeBox.getSelectedItem().toString();
 				String gender = genderBox.getSelectedItem().toString();
 				String status = statusBox.getSelectedItem().toString();
-				
+
 				if (locale.equalsIgnoreCase("all")) {
 					locale = null;
 				}
@@ -416,8 +459,7 @@ public class InstallerGUI extends javax.swing.JFrame {
 				}
 				if (InstallerGUI.this.advancedCheckBox.isSelected()) {
 					fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, false));
-				}
-				else {
+				} else {
 					fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, true));
 				}
 			}
@@ -463,10 +505,6 @@ public class InstallerGUI extends javax.swing.JFrame {
 		fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, voiceOnly));
 	}
 
-	private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_updateButtonActionPerformed
-
-	}// GEN-LAST:event_updateButtonActionPerformed
-
 	/**
 	 * 
 	 * @param componentList
@@ -483,12 +521,14 @@ public class InstallerGUI extends javax.swing.JFrame {
 			this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
 			logger.debug("voicesGroupPanel has PS: " + this.voicesGroupPanel.getPreferredSize());
 			for (Component oneComponent : componentList) {
+				oneComponent.addObserver(this);
 				ComponentPanel componentPanel;
 				if (oneComponent instanceof VoiceComponent) {
 					componentPanel = new ComponentPanel((VoiceComponent) oneComponent, installer);
 				} else {
 					componentPanel = new ComponentPanel(oneComponent, installer);
 				}
+				componentPanel.setName(oneComponent.getName());
 
 				logger.debug("Created new ComponentPanel for component " + oneComponent.getName()
 						+ " with preferred dimensions: " + componentPanel.getPreferredSize());
@@ -548,6 +588,36 @@ public class InstallerGUI extends javax.swing.JFrame {
 		String maryBasePath = installer.getMaryBasePath();
 		if (maryBasePath != null || !maryBasePath.isEmpty()) {
 			this.maryPathTextField.setText(maryBasePath);
+		}
+	}
+
+	// End of variables declaration//GEN-END:variables
+
+	@Override
+	public void update(Observable o, Object arg) {
+
+		/*
+		 * This method is called the resource status of a Component has changed and is responsible for finding the matching
+		 * ComponentPanel and to change its Status field to the new value.
+		 */
+		Component oneComponent = (Component) o;
+		ModuleDescriptor descriptor = oneComponent.getModuleDescriptor();
+		ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
+		String artifactName = artifactRevisionId.getAttribute("organisation") + "-" + artifactRevisionId.getName() + "-"
+				+ artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
+		String resultString = this.installer.getResourceStatus(artifactName).toString();
+
+		java.awt.Component[] components = this.voicesGroupPanel.getComponents();
+		for (java.awt.Component oneAWTComponent : components) {
+			String componentPanelName = oneAWTComponent.getName();
+			if (oneAWTComponent instanceof ComponentPanel) {
+				if (componentPanelName.equalsIgnoreCase(oneComponent.getName())) {
+					ComponentPanel oneComponentPanel = (ComponentPanel) oneAWTComponent;
+					oneComponentPanel.setResourceStatus(resultString);
+					oneComponentPanel.revalidate();
+					oneComponentPanel.repaint();
+				}
+			}
 		}
 	}
 
