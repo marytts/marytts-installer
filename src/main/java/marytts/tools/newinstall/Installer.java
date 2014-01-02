@@ -16,11 +16,14 @@ import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
+import org.apache.ivy.core.module.descriptor.Artifact;
+import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
+import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ArtifactRevisionId;
+import org.apache.ivy.core.module.id.ModuleId;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.report.ArtifactDownloadReport;
 import org.apache.ivy.core.report.DownloadStatus;
@@ -180,40 +183,52 @@ public class Installer {
 		return this.maryBasePath;
 	}
 
-	public DownloadStatus install(Component component) throws ParseException, IOException {
+	public void install(Component component) throws ParseException, IOException {
+
+		List<String> installedArtifacts = new ArrayList<String>();
+
 		logger.info("Resolving and installing component " + component.getName());
 		ResolveReport resolveDependencies = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
 
 		ArtifactDownloadReport[] dependencyReports = resolveDependencies.getAllArtifactsReports();
-		logger.debug("Resolve reports of dependencies");
+
+		if (dependencyReports[0].getDownloadStatus() == DownloadStatus.SUCCESSFUL) {
+			Artifact art = dependencyReports[0].getArtifact();
+			String artifactName = art.getAttribute("organisation") + "-" + art.getName() + /* "-" + art.getRevision() + */"."
+					+ art.getExt();
+		}
+
 		for (int i = 0; i < dependencyReports.length; i++) {
 			// install resolved dependencies
 			ArtifactDownloadReport artifactDownloadReport = dependencyReports[i];
 			ModuleRevisionId mrid = artifactDownloadReport.getArtifact().getModuleRevisionId();
-			logger.debug(artifactDownloadReport);
-
 			ResolveReport installDependencies = this.ivy.install(mrid, "downloaded", "installed", this.installOptions);
 			ArtifactDownloadReport[] installReports = installDependencies.getAllArtifactsReports();
-			logger.debug("Resolve reports of target installation");
-			if (installReports.length > 1) {
-				logger.error("There are " + installReports.length
-						+ " artifacts. There should not be more than one target artifact to be resolved.");
-			}
-			logger.debug(installReports[0]);
-
 		}
 
 		ResolveReport install = this.ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
 				this.installOptions);
+	}
 
-		ArtifactDownloadReport[] installReports = install.getAllArtifactsReports();
-		logger.debug("Resolve reports of target installation");
-		if (installReports.length > 1) {
-			logger.error("There are " + installReports.length
-					+ " artifacts. There should not be more than one target artifact to be resolved.");
+	public List<String> retrieveDependencies(Component component) {
+
+		List<String> toReturn = new ArrayList<String>();
+		DependencyDescriptor[] dependencies = component.getModuleDescriptor().getDependencies();
+		for (DependencyDescriptor oneDep : dependencies) {
+			ModuleId moduleId = oneDep.getDependencyId();
+			toReturn.add(moduleId.getName());
 		}
-		logger.debug(installReports[0]);
-		return installReports[0].getDownloadStatus();
+		return toReturn;
+	}
+
+	public long getSizeOfComponentByName(String componentName) {
+
+		for (Component oneComponent : this.resources) {
+			if (componentName.equalsIgnoreCase(oneComponent.getName())) {
+				return oneComponent.getSize();
+			}
+		}
+		return 0L;
 	}
 
 	/**
@@ -287,6 +302,7 @@ public class Installer {
 
 	protected Status getResourceStatus(String componentName) {
 
+		// TODO problem ist, dass der deployte name von lang comp mit marytts beginnt, der voice comps aber ohne -> beheben!!
 		if (new File(this.maryBasePath + "/lib/" + componentName).exists()) {
 			return Status.INSTALLED;
 		}
@@ -294,6 +310,16 @@ public class Installer {
 			return Status.DOWNLOADED;
 		}
 		return Status.AVAILABLE;
+	}
+
+	protected void updateResourceStatuses() {
+
+		for (Component oneComponent : this.resources) {
+			ArtifactRevisionId ari = oneComponent.getModuleDescriptor().getAllArtifacts()[0].getId();
+			String artifactName = ari.getAttribute("organisation") + "-" + ari.getName() + "-" + ari.getRevision() + "."
+					+ ari.getExt();
+			oneComponent.setStatus(getResourceStatus(artifactName));
+		}
 	}
 
 	/**
@@ -410,7 +436,7 @@ public class Installer {
 			logger.info("filtering by " + "name=" + name);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
-				if (!oneComponent.getName().equalsIgnoreCase(locale)) {
+				if (!oneComponent.getName().equalsIgnoreCase(name)) {
 					it.remove();
 				}
 			}
