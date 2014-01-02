@@ -6,6 +6,7 @@
 
 package marytts.tools.newinstall;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.text.ParseException;
@@ -17,14 +18,13 @@ import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.ivy.core.report.DownloadStatus;
 import org.apache.log4j.Logger;
 
 /**
  * 
  * @author Jonathan
  */
-public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
+public class ComponentPanel extends JPanel {
 
 	private Installer installer;
 
@@ -40,7 +40,8 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 
 	/**
 	 * Creates new form ComponentPanel
-	 * @param component 
+	 * 
+	 * @param component
 	 * 
 	 * @param installer
 	 *            the installer instance
@@ -176,6 +177,11 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
         sizeValueLabel.setText("jLabel6");
 
         installButton.setText("Install");
+        installButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                installButtonActionPerformed(evt);
+            }
+        });
 
         statusLabel.setText("jLabel2");
 
@@ -250,8 +256,8 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
     }// </editor-fold>//GEN-END:initComponents
 
 	/* @formatter:on */
-	private void installButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jButton1ActionPerformed
 
+	private void installButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_installButtonActionPerformed
 		if (this.component == null) {
 			logger.error("Can not install as component is null!");
 			return;
@@ -260,45 +266,54 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 			return;
 		}
 
-		SwingWorker installThread = new SwingWorker<DownloadStatus, Void>() {
+		SwingWorker installThread = new SwingWorker<Void, Void>() {
 
 			@Override
-			public DownloadStatus doInBackground() {
+			public Void doInBackground() {
 				try {
-					return ComponentPanel.this.installer.install(ComponentPanel.this.component);
+					// ComponentPanel.this.installButton.setEnabled(false);
+					ComponentPanel.this.installButton.setText("Installing ...");
+					// ComponentPanel.this.installButton.setForeground(Color.RED);
+					ComponentPanel.this.installer.install(ComponentPanel.this.component);
 				} catch (ParseException pe) {
 					logger.error("ParseException: " + pe.getMessage());
 				} catch (IOException ioe) {
 					logger.error("IOException: " + ioe.getMessage());
 				}
-				return DownloadStatus.FAILED;
+				return null;
 			}
 
 			@Override
 			public void done() {
-				try {
-					DownloadStatus result = get();
-					String resultString = null;
-					if (result == DownloadStatus.NO) {
-						resultString = "DOWNLOADED";
-					} else if (result == DownloadStatus.FAILED) {
-						resultString = "AVAILABLE";
-					} else if (result == DownloadStatus.SUCCESSFUL) {
-						resultString = "INSTALLED";
-					} else {
-						resultString = "ERROR";
-					}
-					ComponentPanel.this.statusLabel.setText(resultString);
-				} catch (Exception e) {
-					logger.error(e.getMessage());
-				}
+				// try {
+				ComponentPanel.this.installButton.setText("Install");
+				ComponentPanel.this.installButton.setForeground(Color.BLACK);
+				ComponentPanel.this.installer.updateResourceStatuses();
+				// DownloadStatus result = get();
+				// Component component = ComponentPanel.this.component;
+				// ModuleDescriptor descriptor = component.getModuleDescriptor();
+				// ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
+				// String artifactName = artifactRevisionId.getAttribute("organisation") + "-" + artifactRevisionId.getName()
+				// + "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
+				// String resultString = ComponentPanel.this.installer.getResourceStatus(artifactName).toString();
+				// ComponentPanel.this.statusLabel.setText(resultString);
+				// ComponentPanel.this.installer.updateResourceStatuses();
+				// }
+				// catch (Exception e) {
+				// logger.error(e.getMessage());
+				// }
 			}
 		};
 
 		installThread.execute();
-	}// GEN-LAST:event_jButton1ActionPerformed
+	}// GEN-LAST:event_installButtonActionPerformed
 
-	private void collapseButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_jToggleButton1ActionPerformed
+	public void setResourceStatus(String resultString) {
+
+		this.statusLabel.setText(resultString);
+	}
+
+	private void collapseButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_collapseButtonActionPerformed
 
 		if (this.first) {
 			this.collapsedHeight = this.collapseButton.getBounds().y + this.collapseButton.getBounds().height + 4;
@@ -320,7 +335,7 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 		this.repaint();
 		this.getParent().getParent().repaint();
 
-	}// GEN-LAST:event_jToggleButton1ActionPerformed
+	}// GEN-LAST:event_collapseButtonActionPerformed
 
 	private void fillFields(Component component) {
 		this.componentNameLabel.setText(component.getDisplayName());
@@ -343,25 +358,26 @@ public class ComponentPanel extends JPanel /* extends AbstractComponentPanel */{
 		}
 	}
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JToggleButton collapseButton;
-    private javax.swing.JPanel collapsiblePanel;
-    private javax.swing.JLabel componentNameLabel;
-    private javax.swing.JLabel genderLabel;
-    private javax.swing.JLabel genderValueLabel;
-    private javax.swing.JButton installButton;
-    private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JLabel licenseLabel;
-    private javax.swing.JLabel licenseValueLabel;
-    private javax.swing.JLabel localeLabel;
-    private javax.swing.JLabel localeValueLabel;
-    private javax.swing.JLabel sizeLabel;
-    private javax.swing.JLabel sizeValueLabel;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JLabel typeLabel;
-    private javax.swing.JLabel typeValueLabel;
-    private javax.swing.JLabel versionLabel;
-    private javax.swing.JLabel versionValueLabel;
-    // End of variables declaration//GEN-END:variables
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JToggleButton collapseButton;
+	private javax.swing.JPanel collapsiblePanel;
+	private javax.swing.JLabel componentNameLabel;
+	private javax.swing.JLabel genderLabel;
+	private javax.swing.JLabel genderValueLabel;
+	private javax.swing.JButton installButton;
+	private javax.swing.JSeparator jSeparator1;
+	private javax.swing.JTextArea jTextArea1;
+	private javax.swing.JLabel licenseLabel;
+	private javax.swing.JLabel licenseValueLabel;
+	private javax.swing.JLabel localeLabel;
+	private javax.swing.JLabel localeValueLabel;
+	private javax.swing.JLabel sizeLabel;
+	private javax.swing.JLabel sizeValueLabel;
+	private javax.swing.JLabel statusLabel;
+	private javax.swing.JLabel typeLabel;
+	private javax.swing.JLabel typeValueLabel;
+	private javax.swing.JLabel versionLabel;
+	private javax.swing.JLabel versionValueLabel;
+	// End of variables declaration//GEN-END:variables
+
 }

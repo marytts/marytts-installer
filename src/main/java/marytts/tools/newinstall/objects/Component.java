@@ -4,10 +4,10 @@
 package marytts.tools.newinstall.objects;
 
 import java.util.Locale;
+import java.util.Observable;
 
 import marytts.tools.newinstall.Status;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.log4j.Logger;
 
@@ -19,7 +19,7 @@ import com.google.common.collect.ComparisonChain;
  * @author Jonathan
  * 
  */
-public class Component implements Comparable<Component> {
+public class Component extends Observable implements Comparable<Component> {
 
 	private ModuleDescriptor moduleDescriptor;
 	protected String name;
@@ -35,7 +35,7 @@ public class Component implements Comparable<Component> {
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.objects.Component.class.getName());
 
 	public Component(ModuleDescriptor descriptor) {
-		moduleDescriptor = descriptor;
+		this.moduleDescriptor = descriptor;
 		setDescription(descriptor.getDescription());
 		setLicenseName(descriptor.getLicenses()[0].getName());
 		setLicenseShortName(descriptor.getExtraAttribute("license"));
@@ -106,7 +106,7 @@ public class Component implements Comparable<Component> {
 	}
 
 	public ModuleDescriptor getModuleDescriptor() {
-		return moduleDescriptor;
+		return this.moduleDescriptor;
 	}
 
 	/**
@@ -159,7 +159,18 @@ public class Component implements Comparable<Component> {
 	 *            the status to set
 	 */
 	public void setStatus(Status status) {
-		this.status = status;
+
+		// if status has not previously been set, set it
+		if (this.status == null) {
+			this.status = status;
+			// if it is a reset of Status due to Installation of Components, notify GUI to update the appropriate Component Panel
+			// with the new Status
+		} else if (this.status != status) {
+			this.status = status;
+			setChanged();
+			notifyObservers();
+		}
+
 	}
 
 	/**
