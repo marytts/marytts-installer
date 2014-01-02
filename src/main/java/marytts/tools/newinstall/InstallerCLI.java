@@ -2,8 +2,12 @@ package marytts.tools.newinstall;
 
 import java.awt.HeadlessException;
 import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
@@ -15,6 +19,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -34,12 +39,13 @@ public class InstallerCLI {
 	private final static String GUI = "gui";
 	private final static String DEBUG = "debug";
 	private final static String YES = "yes";
+	private final static String INSTALL = "install";
 
 	private CommandLineParser parser;
 	private CommandLine commandLine;
 	private HelpFormatter helper;
 	private Installer installer;
-
+	private boolean assumeYes;
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.InstallerCLI.class.getName());
 
 	private InstallerCLI() {
@@ -48,6 +54,7 @@ public class InstallerCLI {
 	public InstallerCLI(String[] args, Installer installer) {
 
 		this.installer = installer;
+		this.assumeYes = false;
 		logger.debug("Starting InstallerCLI");
 
 		createOptions();
@@ -66,18 +73,20 @@ public class InstallerCLI {
 		this.options = new Options();
 		this.options.addOption("h", HELP, false, "print help");
 		this.options.addOption("y", "yes", false, "always assume yes as an answer to prompts");
+		this.options.addOption(OptionBuilder.withLongOpt("target").hasArg().withDescription("target installation directory")
+				.create());
+		this.options.addOption(OptionBuilder.withLongOpt("debug").withDescription("log in debug mode").create());
 
-		// filtering options
+		// listing options
+		this.options.addOption(OptionBuilder.withLongOpt("list").withDescription("lists components").create());
 		this.options.addOption("n", "name", true, "only with --list: filter by name (also substrings possible");
 		this.options.addOption("l", "locale", true, "only with --list: filter by locale");
 		this.options.addOption("g", "gender", true, "only with --list: filter by gender");
 		this.options.addOption("t", "type", true, "only with --list: filter by voice type (hsmm/unit-selection)");
 		this.options.addOption("s", "status", true, "only with --list: filter by download status");
+		this.options.addOption("a", "advanced", false, "only with --list: list language and marytts components as well");
 
 		this.options.addOption(OptionBuilder.withLongOpt("gui").withDescription("starts GUI").create());
-		this.options.addOption(OptionBuilder.withLongOpt("debug").withDescription("log in debug mode").create());
-		this.options.addOption(OptionBuilder.withLongOpt("list").withDescription("lists components").create());
-		this.options.addOption(OptionBuilder.withLongOpt("target").hasArg().withDescription("target installation directory").create());
 		this.options.addOption(OptionBuilder.withLongOpt("install").hasArg().withDescription("installs <arg> component")
 				.create("i"));
 
@@ -90,7 +99,9 @@ public class InstallerCLI {
 	}
 
 	/**
-	 * Evaluate the commandLine by the means of its options and their arguments
+	 * Evaluate the commandLine by the means of its options and their arguments. Independent of Installer's instantiation, needs
+	 * to be called prior to the instantiation of Installer, as the user might set the mary.base path on the CL which is used for
+	 * Ivy functionality in Installer.java
 	 */
 	private void preEvalCommandLine() {
 		logger.debug("Evaluating the configuration options set on command line: " + this.commandLine);
@@ -101,39 +112,39 @@ public class InstallerCLI {
 		} else if (this.commandLine.hasOption(TARGET)) {
 			this.installer.setMaryBase(new File(getTargetDirectory()));
 		}
+		if (this.commandLine.hasOption(DEBUG)) {
+			Logger.getRootLogger().setLevel(Level.DEBUG);
+		}
+		if (this.commandLine.hasOption(YES)) {
+			this.assumeYes = true;
+		}
 	}
 
 	/**
 	 * public eval command line method. Is called upon completion of Installer construction
 	 */
-	public void mainEvalCommandLine() {
+	protected void mainEvalCommandLine() {
 		if (this.commandLine.hasOption(GUI)) {
 			startGUI();
 		}
-		if (this.commandLine.hasOption(DEBUG)) {
-			Logger.getRootLogger().setLevel(Level.DEBUG);
-		}
-
-		evalListFiltering();
-
-		if (this.commandLine.getOptions().length == 0) {
-			logger.info("no options were given, starting GUI");
-			startGUI();
-		}
-	}
-
-	private void evalListFiltering() {
+		// -- list evalutation
 		// check for right input syntax (--list has to be present when listing constraints are present)
-		if ((this.commandLine.hasOption("n") || this.commandLine.hasOption("l") || this.commandLine.hasOption("g") || this.commandLine
-				.hasOption("t")) && !this.commandLine.hasOption("list")) {
+		else if ((this.commandLine.hasOption("n") || this.commandLine.hasOption("l") || this.commandLine.hasOption("g") || this.commandLine
+				.hasOption("t")) || this.commandLine.hasOption("a") && !this.commandLine.hasOption("list")) {
 			logger.error("Invalid syntax. Please use the following syntax");
 			this.helper.printHelp(MARYTTSINSTALLER, options);
 			return;
 		}
 
-		List<Component> resources = this.installer.getAvailableComponents();
-		// --list: list all components
+		// list all components
 		if (this.commandLine.hasOption("list")) {
+			List<Component> resources;
+			// --list --advanced
+			if (this.commandLine.hasOption("advanced")) {
+				resources = this.installer.getAvailableComponents(null, null, null, null, null, false);
+			} else {
+				resources = this.installer.getAvailableComponents(null, null, null, null, null, true);
+			}
 			String locale = null, type = null, gender = null, status = null, name = null;
 
 			if (this.commandLine.hasOption("locale") || this.commandLine.hasOption('l')) {
@@ -156,10 +167,84 @@ public class InstallerCLI {
 				// --list --name
 				name = this.commandLine.getOptionValue("name");
 			}
-
-			resources = this.installer.getAvailableComponents(locale, type, gender, status, name);
 			printSortedComponents(resources);
+		} else if (this.commandLine.hasOption(INSTALL)) {
+			installComponents();
 		}
+
+		if (this.commandLine.getOptions().length == 0) {
+			logger.info("no options were given, starting GUI");
+			startGUI();
+		}
+	}
+
+	private void installComponents() {
+
+		String componentName = this.commandLine.getOptionValue(INSTALL);
+		try {
+			List<Component> componentInList = this.installer.getAvailableComponents(null, null, null, null, componentName, false);
+			Component component = componentInList.get(0);
+			if (componentInList.isEmpty() || componentInList.size() > 1) {
+				logger.error("\"" + componentName + "\""
+						+ " is not a valid component name. Use --list to see available components!");
+				System.exit(1);
+			} else if (!assumeYes) {
+				List<String> dependencies = this.installer.retrieveDependencies(component);
+
+				StringBuilder sb = new StringBuilder();
+				sb.append("Are you sure you want to install the following components: ");
+				int ctr = 1;
+				sb.append(ctr++ + ". ");
+				sb.append(componentName);
+				if (!dependencies.isEmpty()) {
+					sb.append(", ");
+				}
+				long totalSize = this.installer.getSizeOfComponentByName(formatDescriptorToResourceName(componentName));
+
+				for (String oneDep : dependencies) {
+					String oneDepAsResource = formatDescriptorToResourceName(oneDep);
+					totalSize += this.installer.getSizeOfComponentByName(oneDepAsResource);
+					sb.append(ctr++ + ". ");
+					sb.append(oneDepAsResource);
+					if (dependencies.size() - 1 != dependencies.indexOf(oneDep)) {
+						sb.append(", ");
+					}
+					sb.append(" with total size " + FileUtils.byteCountToDisplaySize(totalSize) + "?");
+				}
+				System.out.println(sb.toString());
+				Scanner scanner = new Scanner(System.in);
+				if (scanner.hasNext()) {
+					if (!(scanner.next().trim().matches("yes||y||YES"))) {
+						System.out.println("Ok, ending installer!");
+						return;
+					}
+				}
+			}
+			this.installer.install(component);
+		} catch (java.text.ParseException e) {
+			logger.error(e.getMessage());
+		} catch (IOException e) {
+			logger.error(e.getMessage());
+		}
+
+	}
+
+	/**
+	 * @param oneDep
+	 * @return
+	 */
+	private static String formatDescriptorToResourceName(String ivyComponentName) {
+		Pattern p = Pattern.compile("(marytts-lang-|marytts-voice-)(.*)");
+		Matcher m = p.matcher(ivyComponentName);
+		String componentName = null;
+		if (m.find()) {
+			componentName = m.group(2);
+		}
+		// TODO workaround for ivy naming issues
+		else {
+			componentName = ivyComponentName;
+		}
+		return componentName;
 	}
 
 	private void startGUI() {
