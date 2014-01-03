@@ -57,6 +57,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		this.installer = installer;
 
 		initComponents();
+		logButton.setVisible(false);
 
 		fillComponentGroupPanels(this.installer.getAvailableComponents(null, null, null, null, null, true));
 
@@ -311,7 +312,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
                 .addComponent(controlsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(voicesScrollPane)
-                .addGap(52, 52, 52)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(advancedCheckBox)
                     .addComponent(logButton))
@@ -591,7 +592,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		}
 	}
 
-	// End of variables declaration//GEN-END:variables
+	// End of variables declaration                   
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -621,27 +622,27 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		}
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JCheckBox advancedCheckBox;
-	private javax.swing.JPanel controlsPanel;
-	private javax.swing.JComboBox genderBox;
-	private javax.swing.JLabel genderLabel;
-	private javax.swing.JPanel genderPanel;
-	private javax.swing.JComboBox localeBox;
-	private javax.swing.JLabel localeLabel;
-	private javax.swing.JPanel localePanel;
-	private javax.swing.JButton logButton;
-	private javax.swing.JButton maryPathButton;
-	private javax.swing.JLabel maryPathLabel;
-	private javax.swing.JTextField maryPathTextField;
-	private javax.swing.JComboBox statusBox;
-	private javax.swing.JLabel statusLabel;
-	private javax.swing.JPanel statusPanel;
-	private javax.swing.JComboBox typeBox;
-	private javax.swing.JLabel typeLabel;
-	private javax.swing.JPanel typePanel;
-	private javax.swing.JButton updateButton;
-	private javax.swing.JPanel voicesGroupPanel;
-	private javax.swing.JScrollPane voicesScrollPane;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JCheckBox advancedCheckBox;
+    private javax.swing.JPanel controlsPanel;
+    private javax.swing.JComboBox genderBox;
+    private javax.swing.JLabel genderLabel;
+    private javax.swing.JPanel genderPanel;
+    private javax.swing.JComboBox localeBox;
+    private javax.swing.JLabel localeLabel;
+    private javax.swing.JPanel localePanel;
+    private javax.swing.JButton logButton;
+    private javax.swing.JButton maryPathButton;
+    private javax.swing.JLabel maryPathLabel;
+    private javax.swing.JTextField maryPathTextField;
+    private javax.swing.JComboBox statusBox;
+    private javax.swing.JLabel statusLabel;
+    private javax.swing.JPanel statusPanel;
+    private javax.swing.JComboBox typeBox;
+    private javax.swing.JLabel typeLabel;
+    private javax.swing.JPanel typePanel;
+    private javax.swing.JButton updateButton;
+    private javax.swing.JPanel voicesGroupPanel;
+    private javax.swing.JScrollPane voicesScrollPane;
+    // End of variables declaration//GEN-END:variables
 }

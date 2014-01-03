@@ -72,7 +72,7 @@
               <Component id="controlsPanel" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" max="-2" attributes="0"/>
               <Component id="voicesScrollPane" max="32767" attributes="0"/>
-              <EmptySpace min="-2" pref="52" max="-2" attributes="0"/>
+              <EmptySpace min="-2" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="advancedCheckBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="logButton" alignment="3" min="-2" max="-2" attributes="0"/>
