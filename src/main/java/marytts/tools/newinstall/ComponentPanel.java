@@ -94,6 +94,7 @@ public class ComponentPanel extends JPanel {
         componentNameLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
         componentNameLabel.setText("jLabel1");
 
+        collapseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/button_icon.png"))); // NOI18N
         collapseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 collapseButtonActionPerformed(evt);
@@ -230,18 +231,15 @@ public class ComponentPanel extends JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(componentNameLabel)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(genderLabel)
-                                    .addComponent(genderValueLabel)
-                                    .addComponent(typeLabel)
-                                    .addComponent(typeValueLabel)
-                                    .addComponent(installButton)))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(collapseButton))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(genderLabel)
+                                .addComponent(genderValueLabel)
+                                .addComponent(typeLabel)
+                                .addComponent(typeValueLabel)
+                                .addComponent(installButton))
+                            .addComponent(collapseButton)))
                     .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(localeLabel)
@@ -358,26 +356,26 @@ public class ComponentPanel extends JPanel {
 		}
 	}
 
-	// Variables declaration - do not modify//GEN-BEGIN:variables
-	private javax.swing.JToggleButton collapseButton;
-	private javax.swing.JPanel collapsiblePanel;
-	private javax.swing.JLabel componentNameLabel;
-	private javax.swing.JLabel genderLabel;
-	private javax.swing.JLabel genderValueLabel;
-	private javax.swing.JButton installButton;
-	private javax.swing.JSeparator jSeparator1;
-	private javax.swing.JTextArea jTextArea1;
-	private javax.swing.JLabel licenseLabel;
-	private javax.swing.JLabel licenseValueLabel;
-	private javax.swing.JLabel localeLabel;
-	private javax.swing.JLabel localeValueLabel;
-	private javax.swing.JLabel sizeLabel;
-	private javax.swing.JLabel sizeValueLabel;
-	private javax.swing.JLabel statusLabel;
-	private javax.swing.JLabel typeLabel;
-	private javax.swing.JLabel typeValueLabel;
-	private javax.swing.JLabel versionLabel;
-	private javax.swing.JLabel versionValueLabel;
-	// End of variables declaration//GEN-END:variables
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JToggleButton collapseButton;
+    private javax.swing.JPanel collapsiblePanel;
+    private javax.swing.JLabel componentNameLabel;
+    private javax.swing.JLabel genderLabel;
+    private javax.swing.JLabel genderValueLabel;
+    private javax.swing.JButton installButton;
+    private javax.swing.JSeparator jSeparator1;
+    private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JLabel licenseLabel;
+    private javax.swing.JLabel licenseValueLabel;
+    private javax.swing.JLabel localeLabel;
+    private javax.swing.JLabel localeValueLabel;
+    private javax.swing.JLabel sizeLabel;
+    private javax.swing.JLabel sizeValueLabel;
+    private javax.swing.JLabel statusLabel;
+    private javax.swing.JLabel typeLabel;
+    private javax.swing.JLabel typeValueLabel;
+    private javax.swing.JLabel versionLabel;
+    private javax.swing.JLabel versionValueLabel;
+    // End of variables declaration//GEN-END:variables
 
 }
