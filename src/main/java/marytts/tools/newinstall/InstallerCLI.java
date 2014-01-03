@@ -3,6 +3,7 @@ package marytts.tools.newinstall;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -404,12 +405,27 @@ public class InstallerCLI {
 	 */
 	private void printSortedComponents(List<Component> resources) {
 
-		System.out.println("listing components:\n\n");
+		List<Component> voiceResources = new ArrayList<Component>();
+		List<Component> otherResources = new ArrayList<Component>();
 
-		Collections.sort(resources);
+		for (Component oneComponent : resources) {
+			if (oneComponent instanceof VoiceComponent) {
+				voiceResources.add(oneComponent);
+			} else {
+				otherResources.add(oneComponent);
+			}
+		}
 
-		printComponents(resources);
+		Collections.sort(voiceResources);
+		System.out.println("Listing voice components:");
+		printComponents(voiceResources);
+		System.out.println("===========================");
 
+		if (!otherResources.isEmpty()) {
+			Collections.sort(otherResources);
+			System.out.println("Listing other components:");
+			printComponents(otherResources);
+		}
 	}
 
 	/**
