@@ -404,7 +404,7 @@ public class InstallerCLI {
 	 */
 	private void printSortedComponents(List<Component> resources) {
 
-		System.out.println("listing voice components:\n\n");
+		System.out.println("listing components:\n\n");
 
 		Collections.sort(resources);
 
@@ -431,7 +431,7 @@ public class InstallerCLI {
 					sb.append("##" + voiceOneComp.getLocale().toString() + " - " + voiceOneComp.getLocale().getDisplayLanguage()
 							+ "##\n");
 				}
-				sb.append("\t" + voiceOneComp.getName() + "\n");
+				sb.append("\t" + "Voice component: " + voiceOneComp.getName() + "\n");
 				sb.append("\t" + "gender: " + voiceOneComp.getGender() + "; ");
 				sb.append("" + "type: " + voiceOneComp.getType() + "; ");
 				sb.append("" + "version: " + voiceOneComp.getVersion() + "; ");
@@ -440,6 +440,17 @@ public class InstallerCLI {
 						+ voiceOneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ") + "");
 				sb.append("\n\n");
 				prevLang = voiceOneComp.getLocale().toString();
+			} else {
+				if (!prevLang.equals(oneComp.getLocale().toString())) {
+					sb.append("##" + oneComp.getLocale().toString() + " - " + oneComp.getLocale().getDisplayLanguage() + "##\n");
+				}
+				sb.append("\t" + "Component: " + oneComp.getName() + "\n");
+				sb.append("\t" + "version: " + oneComp.getVersion() + "; ");
+				sb.append("" + "license name: " + oneComp.getLicenseName() + "\n");
+				sb.append("\t" + "description: " + oneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ")
+						+ "");
+				sb.append("\n\n");
+				prevLang = oneComp.getLocale().toString();
 			}
 		}
 
