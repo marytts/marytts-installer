@@ -39,6 +39,7 @@ public class InstallerCLI {
 	private final static String TARGET = "target";
 	private final static String GUI = "gui";
 	private final static String DEBUG = "debug";
+	private final static String VERBOSE = "verbose";
 	private final static String YES = "yes";
 	private final static String INSTALL = "install";
 
@@ -72,12 +73,14 @@ public class InstallerCLI {
 
 	private void createOptions() {
 		this.options = new Options();
-		this.options.addOption("h", HELP, false, "print help");
+		this.options.addOption("h", "help", false, "print help");
 		this.options.addOption("y", "yes", false, "always assume yes as an answer to prompts");
 		this.options.addOption(OptionBuilder.withLongOpt("target").hasArg().withDescription("target installation directory")
 				.create());
 		this.options.addOption(OptionBuilder.withLongOpt("debug").withDescription("log in debug mode").create());
+		this.options.addOption(OptionBuilder.withLongOpt("verbose").withDescription("log in verbose debug mode").create());
 
+		
 		// listing options
 		this.options.addOption(OptionBuilder.withLongOpt("list").withDescription("lists components").create());
 		this.options.addOption("n", "name", true, "only with --list: filter by name (also substrings possible");
@@ -113,9 +116,6 @@ public class InstallerCLI {
 		} else if (this.commandLine.hasOption(TARGET)) {
 			this.installer.setMaryBase(new File(getTargetDirectory()));
 		}
-		if (this.commandLine.hasOption(DEBUG)) {
-			Logger.getRootLogger().setLevel(Level.DEBUG);
-		}
 		if (this.commandLine.hasOption(YES)) {
 			this.assumeYes = true;
 		}
@@ -125,6 +125,12 @@ public class InstallerCLI {
 	 * public eval command line method. Is called upon completion of Installer construction
 	 */
 	protected void mainEvalCommandLine() {
+		if (this.commandLine.hasOption(DEBUG)) {
+			Logger.getRootLogger().setLevel(Level.DEBUG);
+			this.installer.setIvyLoggingLevel(LogLevel.debug);
+		} else if (this.commandLine.hasOption(VERBOSE)) {
+			this.installer.setIvyLoggingLevel(LogLevel.verbose_debug);
+		}
 		if (this.commandLine.hasOption(GUI)) {
 			startGUI();
 		}

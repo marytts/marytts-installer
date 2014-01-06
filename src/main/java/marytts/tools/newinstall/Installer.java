@@ -19,7 +19,6 @@ import org.apache.commons.io.FileUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.Artifact;
-import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ArtifactRevisionId;
@@ -31,6 +30,7 @@ import org.apache.ivy.core.report.ResolveReport;
 import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
+import org.apache.ivy.util.DefaultMessageLogger;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Charsets;
@@ -105,8 +105,36 @@ public class Installer {
 	protected void loadIvy() {
 		logger.info("Creating new Ivy file");
 		this.ivy = Ivy.newInstance(this.ivySettings);
+		setIvyLoggingLevel(LogLevel.warn);
 		this.resolveOptions = new ResolveOptions().setOutputReport(false);
 		this.installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
+	}
+
+	protected void setIvyLoggingLevel(LogLevel logLevel) {
+		int ivyLevel;
+		switch (logLevel) {
+		case error:
+			ivyLevel = 0;
+			break;
+		case warn:
+			ivyLevel = 1;
+			break;
+		case info:
+			ivyLevel = 2;
+			break;
+		case debug:
+			ivyLevel = 3;
+			break;
+		case verbose_debug:
+			ivyLevel = 4;
+			break;
+		default:
+			ivyLevel = 1;
+			break;
+		}
+		DefaultMessageLogger dml = new DefaultMessageLogger(ivyLevel);
+		dml.setShowProgress(true);
+		this.ivy.getLoggerEngine().setDefaultLogger(dml);
 	}
 
 	protected void loadIvySettings() throws ParseException, IOException {
@@ -187,15 +215,15 @@ public class Installer {
 
 		List<String> installedArtifacts = new ArrayList<String>();
 
-		logger.info("Resolving and installing component " + component.getName());
+		logger.info("IVY: Resolving and installing component " + component.getName());
 		ResolveReport resolveDependencies = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
 
 		ArtifactDownloadReport[] dependencyReports = resolveDependencies.getAllArtifactsReports();
-
 		if (dependencyReports[0].getDownloadStatus() == DownloadStatus.SUCCESSFUL) {
 			Artifact art = dependencyReports[0].getArtifact();
-			String artifactName = art.getAttribute("organisation") + "-" + art.getName() + /* "-" + art.getRevision() + */"."
-					+ art.getExt();
+			// String artifactName = art.getAttribute("organisation") + "-" + art.getName() + "."
+			// + art.getExt();
+			logger.info("IVY: Resolved dependency " + art.getName());
 		}
 
 		for (int i = 0; i < dependencyReports.length; i++) {
@@ -203,11 +231,13 @@ public class Installer {
 			ArtifactDownloadReport artifactDownloadReport = dependencyReports[i];
 			ModuleRevisionId mrid = artifactDownloadReport.getArtifact().getModuleRevisionId();
 			ResolveReport installDependencies = this.ivy.install(mrid, "downloaded", "installed", this.installOptions);
-			ArtifactDownloadReport[] installReports = installDependencies.getAllArtifactsReports();
+			// logging?
+			// ArtifactDownloadReport[] installReports = installDependencies.getAllArtifactsReports();
 		}
 
 		ResolveReport install = this.ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
 				this.installOptions);
+		logger.info("IVY: " + install.getAllArtifactsReports()[0]);
 	}
 
 	public List<String> retrieveDependencies(Component component) {
@@ -275,7 +305,7 @@ public class Installer {
 					oneComponent.setStatus(getResourceStatus(artifactName));
 					this.resources.add(oneComponent);
 					storeAttributeValues(oneComponent);
-					logger.info((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
+					logger.debug((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
 							: "Component ") + oneComponent.getName() + " added to resource list.");
 				} else if (oneFileName.startsWith("marytts-lang")) {
 
@@ -289,7 +319,7 @@ public class Installer {
 					oneComponent.setStatus(getResourceStatus(artifactName));
 					this.resources.add(oneComponent);
 					storeAttributeValues(oneComponent);
-					logger.info((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
+					logger.debug((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
 							: "Component ") + oneComponent.getName() + " added to resource list.");
 				}
 			}
