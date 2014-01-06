@@ -65,8 +65,6 @@ public class ComponentPanel extends JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        componentNameLabel = new javax.swing.JLabel();
-        collapseButton = new javax.swing.JToggleButton();
         jSeparator1 = new javax.swing.JSeparator();
         localeValueLabel = new javax.swing.JLabel();
         localeLabel = new javax.swing.JLabel();
@@ -84,22 +82,14 @@ public class ComponentPanel extends JPanel {
         sizeValueLabel = new javax.swing.JLabel();
         installButton = new javax.swing.JButton();
         statusLabel = new javax.swing.JLabel();
+        componentNameLabel = new javax.swing.JLabel();
+        collapseButton = new javax.swing.JToggleButton();
 
         setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         setToolTipText("");
         setMaximumSize(new java.awt.Dimension(32767, 63));
         setMinimumSize(new java.awt.Dimension(535, 63));
         setPreferredSize(new java.awt.Dimension(535, 63));
-
-        componentNameLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
-        componentNameLabel.setText("jLabel1");
-
-        collapseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/button_icon.png"))); // NOI18N
-        collapseButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                collapseButtonActionPerformed(evt);
-            }
-        });
 
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -186,6 +176,16 @@ public class ComponentPanel extends JPanel {
 
         statusLabel.setText("jLabel2");
 
+        componentNameLabel.setFont(new java.awt.Font("Lucida Grande", 1, 13)); // NOI18N
+        componentNameLabel.setText("jLabel1");
+
+        collapseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/button_icon.png"))); // NOI18N
+        collapseButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                collapseButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -197,8 +197,8 @@ public class ComponentPanel extends JPanel {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(componentNameLabel)
-                            .addComponent(collapseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(collapseButton))
+                        .addGap(12, 12, 12)
                         .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -218,41 +218,46 @@ public class ComponentPanel extends JPanel {
                                 .addComponent(typeLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(typeValueLabel)))
-                        .addGap(77, 77, 77)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(statusLabel)
+                        .addGap(41, 41, 41)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(statusLabel))
                             .addComponent(installButton))))
-                .addContainerGap(81, Short.MAX_VALUE))
+                .addContainerGap(92, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(componentNameLabel)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(22, 22, 22)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(genderLabel)
                                 .addComponent(genderValueLabel)
                                 .addComponent(typeLabel)
-                                .addComponent(typeValueLabel)
-                                .addComponent(installButton))
-                            .addComponent(collapseButton)))
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(localeLabel)
-                        .addComponent(localeValueLabel)
-                        .addComponent(sizeLabel)
-                        .addComponent(sizeValueLabel)
-                        .addComponent(statusLabel)))
+                                .addComponent(typeValueLabel)))
+                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 51, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(localeLabel)
+                            .addComponent(localeValueLabel)
+                            .addComponent(sizeLabel)
+                            .addComponent(sizeValueLabel)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(statusLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(installButton))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(componentNameLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(collapseButton)))
                 .addGap(11, 11, 11)
                 .addComponent(collapsiblePanel, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
     }// </editor-fold>//GEN-END:initComponents
-
 	/* @formatter:on */
 
 	private void installButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_installButtonActionPerformed
