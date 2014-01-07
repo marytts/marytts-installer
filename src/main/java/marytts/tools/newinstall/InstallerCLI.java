@@ -140,7 +140,7 @@ public class InstallerCLI {
 				|| this.commandLine.hasOption("advanced") || this.commandLine.hasOption("status"))
 				&& !this.commandLine.hasOption("list")) {
 			logger.error("Invalid syntax. Please use the following syntax");
-			this.helper.printHelp(MARYTTSINSTALLER, options);
+			this.helper.printHelp(MARYTTSINSTALLER, this.options);
 			return;
 		}
 
@@ -197,28 +197,27 @@ public class InstallerCLI {
 				logger.error("\"" + componentName + "\""
 						+ " is not a valid component name. Use --list to see available components!");
 				System.exit(1);
-			} else if (!assumeYes) {
+			} else if (!this.assumeYes) {
 				List<String> dependencies = this.installer.retrieveDependencies(component);
 
 				StringBuilder sb = new StringBuilder();
-				sb.append("Are you sure you want to install the following components: ");
+				sb.append("\nAre you sure you want to install the following components (yes or y to confirm):\n");
 				int ctr = 1;
 				sb.append(ctr++ + ". ");
 				sb.append(componentName);
-				if (!dependencies.isEmpty()) {
-					sb.append(", ");
-				}
-				long totalSize = this.installer.getSizeOfComponentByName(formatDescriptorToResourceName(componentName));
+				sb.append(" (" + FileUtils.byteCountToDisplaySize(this.installer.getSizeOfComponentByName(componentName)) + ")");
+				sb.append("\n");
 
 				for (String oneDep : dependencies) {
 					String oneDepAsResource = formatDescriptorToResourceName(oneDep);
-					totalSize += this.installer.getSizeOfComponentByName(oneDepAsResource);
 					sb.append(ctr++ + ". ");
 					sb.append(oneDepAsResource);
+					sb.append(" (" + FileUtils.byteCountToDisplaySize(this.installer.getSizeOfComponentByName(oneDepAsResource))
+							+ ")");
+					sb.append("\n");
 					if (dependencies.size() - 1 != dependencies.indexOf(oneDep)) {
 						sb.append(", ");
 					}
-					sb.append(" with total size " + FileUtils.byteCountToDisplaySize(totalSize) + "?");
 				}
 				System.out.println(sb.toString());
 				Scanner scanner = new Scanner(System.in);
@@ -226,6 +225,8 @@ public class InstallerCLI {
 					if (!(scanner.next().trim().matches("yes||y||YES"))) {
 						System.out.println("Ok, ending installer!");
 						return;
+					} else {
+						System.out.println("Ok, installing the specified component(s) ...");
 					}
 				}
 			}
