@@ -80,7 +80,6 @@ public class InstallerCLI {
 		this.options.addOption(OptionBuilder.withLongOpt("debug").withDescription("log in debug mode").create());
 		this.options.addOption(OptionBuilder.withLongOpt("verbose").withDescription("log in verbose debug mode").create());
 
-		
 		// listing options
 		this.options.addOption(OptionBuilder.withLongOpt("list").withDescription("lists components").create());
 		this.options.addOption("n", "name", true, "only with --list: filter by name (also substrings possible");
@@ -136,8 +135,10 @@ public class InstallerCLI {
 		}
 		// -- list evalutation
 		// check for right input syntax (--list has to be present when listing constraints are present)
-		else if ((this.commandLine.hasOption("n") || this.commandLine.hasOption("l") || this.commandLine.hasOption("g") || this.commandLine
-				.hasOption("t")) || this.commandLine.hasOption("a") && !this.commandLine.hasOption("list")) {
+		else if (((this.commandLine.hasOption("name") || this.commandLine.hasOption("locale")
+				|| this.commandLine.hasOption("gender") || this.commandLine.hasOption("type"))
+				|| this.commandLine.hasOption("advanced") || this.commandLine.hasOption("status"))
+				&& !this.commandLine.hasOption("list")) {
 			logger.error("Invalid syntax. Please use the following syntax");
 			this.helper.printHelp(MARYTTSINSTALLER, options);
 			return;
@@ -147,13 +148,13 @@ public class InstallerCLI {
 		if (this.commandLine.hasOption("list")) {
 			List<Component> resources;
 			// --list --advanced
-			if (this.commandLine.hasOption("advanced")) {
-				resources = this.installer.getAvailableComponents(null, null, null, null, null, false);
-			} else {
-				resources = this.installer.getAvailableComponents(null, null, null, null, null, true);
-			}
 			String locale = null, type = null, gender = null, status = null, name = null;
+			boolean voiceOnly = true;
 
+			if (this.commandLine.hasOption("advanced")) {
+				// --list --advanced
+				voiceOnly = false;
+			}
 			if (this.commandLine.hasOption("locale") || this.commandLine.hasOption('l')) {
 				// --list --locale
 				locale = this.commandLine.getOptionValue("locale");
@@ -174,6 +175,7 @@ public class InstallerCLI {
 				// --list --name
 				name = this.commandLine.getOptionValue("name");
 			}
+			resources = this.installer.getAvailableComponents(locale, type, gender, status, name, voiceOnly);
 			printSortedComponents(resources);
 		} else if (this.commandLine.hasOption(INSTALL)) {
 			installComponents();
@@ -423,14 +425,22 @@ public class InstallerCLI {
 		}
 
 		Collections.sort(voiceResources);
-		System.out.println("Listing voice components:");
-		printComponents(voiceResources);
-		System.out.println("===========================");
+		System.out.println("");
+
+		if (!voiceResources.isEmpty()) {
+			System.out.println("Listing voice components:");
+			printComponents(voiceResources);
+			System.out.println("===========================");
+		}
 
 		if (!otherResources.isEmpty()) {
 			Collections.sort(otherResources);
 			System.out.println("Listing other components:");
 			printComponents(otherResources);
+		}
+
+		if (otherResources.isEmpty() && voiceResources.isEmpty()) {
+			System.out.println("No components to display!");
 		}
 	}
 
@@ -457,6 +467,8 @@ public class InstallerCLI {
 				sb.append("\t" + "gender: " + voiceOneComp.getGender() + "; ");
 				sb.append("" + "type: " + voiceOneComp.getType() + "; ");
 				sb.append("" + "version: " + voiceOneComp.getVersion() + "; ");
+				sb.append("" + "status: " + voiceOneComp.getStatus() + "; ");
+				sb.append("" + "size: " + FileUtils.byteCountToDisplaySize(voiceOneComp.getSize()) + "; ");
 				sb.append("" + "license name: " + voiceOneComp.getLicenseName() + "\n");
 				sb.append("\t" + "description: "
 						+ voiceOneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ") + "");
