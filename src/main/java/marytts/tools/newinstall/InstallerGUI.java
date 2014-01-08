@@ -406,7 +406,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 				JOptionPane.showMessageDialog(this, "The specified path contains errors!", "Mary base path",
 						JOptionPane.WARNING_MESSAGE);
 			}
-			resetGlobal();
+			// resetGlobal();
 			try {
 				this.installer.loadIvySettings();
 				this.installer.loadIvy();
@@ -429,7 +429,6 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		this.statusBox.setSelectedIndex(0);
 		this.localeBox.setSelectedIndex(0);
 		this.typeBox.setSelectedIndex(0);
-		this.advancedCheckBox.setSelected(false);
 		invalidate();
 		validate();
 		repaint();
@@ -592,7 +591,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		}
 	}
 
-	// End of variables declaration                   
+	// End of variables declaration
 
 	@Override
 	public void update(Observable o, Object arg) {
@@ -604,7 +603,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		Component oneComponent = (Component) o;
 		ModuleDescriptor descriptor = oneComponent.getModuleDescriptor();
 		ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
-		String artifactName = artifactRevisionId.getAttribute("organisation") + "-" + artifactRevisionId.getName() + "-"
+		String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName() + "-"
 				+ artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
 		String resultString = this.installer.getResourceStatus(artifactName).toString();
 
@@ -622,27 +621,27 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		}
 	}
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBox advancedCheckBox;
-    private javax.swing.JPanel controlsPanel;
-    private javax.swing.JComboBox genderBox;
-    private javax.swing.JLabel genderLabel;
-    private javax.swing.JPanel genderPanel;
-    private javax.swing.JComboBox localeBox;
-    private javax.swing.JLabel localeLabel;
-    private javax.swing.JPanel localePanel;
-    private javax.swing.JButton logButton;
-    private javax.swing.JButton maryPathButton;
-    private javax.swing.JLabel maryPathLabel;
-    private javax.swing.JTextField maryPathTextField;
-    private javax.swing.JComboBox statusBox;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JPanel statusPanel;
-    private javax.swing.JComboBox typeBox;
-    private javax.swing.JLabel typeLabel;
-    private javax.swing.JPanel typePanel;
-    private javax.swing.JButton updateButton;
-    private javax.swing.JPanel voicesGroupPanel;
-    private javax.swing.JScrollPane voicesScrollPane;
-    // End of variables declaration//GEN-END:variables
+	// Variables declaration - do not modify//GEN-BEGIN:variables
+	private javax.swing.JCheckBox advancedCheckBox;
+	private javax.swing.JPanel controlsPanel;
+	private javax.swing.JComboBox genderBox;
+	private javax.swing.JLabel genderLabel;
+	private javax.swing.JPanel genderPanel;
+	private javax.swing.JComboBox localeBox;
+	private javax.swing.JLabel localeLabel;
+	private javax.swing.JPanel localePanel;
+	private javax.swing.JButton logButton;
+	private javax.swing.JButton maryPathButton;
+	private javax.swing.JLabel maryPathLabel;
+	private javax.swing.JTextField maryPathTextField;
+	private javax.swing.JComboBox statusBox;
+	private javax.swing.JLabel statusLabel;
+	private javax.swing.JPanel statusPanel;
+	private javax.swing.JComboBox typeBox;
+	private javax.swing.JLabel typeLabel;
+	private javax.swing.JPanel typePanel;
+	private javax.swing.JButton updateButton;
+	private javax.swing.JPanel voicesGroupPanel;
+	private javax.swing.JScrollPane voicesScrollPane;
+	// End of variables declaration//GEN-END:variables
 }

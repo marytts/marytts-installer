@@ -219,12 +219,12 @@ public class Installer {
 		ResolveReport resolveDependencies = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
 
 		ArtifactDownloadReport[] dependencyReports = resolveDependencies.getAllArtifactsReports();
-		if (dependencyReports[0].getDownloadStatus() == DownloadStatus.SUCCESSFUL) {
-			Artifact art = dependencyReports[0].getArtifact();
-			// String artifactName = art.getAttribute("organisation") + "-" + art.getName() + "."
-			// + art.getExt();
-			logger.info("IVY: Resolved dependency " + art.getName());
-		}
+		// if (dependencyReports[0].getDownloadStatus() == DownloadStatus.SUCCESSFUL) {
+		// Artifact art = dependencyReports[0].getArtifact();
+		// // String artifactName = art.getAttribute("organisation") + "-" + art.getName() + "."
+		// // + art.getExt();
+		// logger.info("IVY: Resolved dependency " + art.getName());
+		// }
 
 		for (int i = 0; i < dependencyReports.length; i++) {
 			// install resolved dependencies
@@ -300,7 +300,7 @@ public class Installer {
 					VoiceComponent oneComponent = new VoiceComponent(descriptor);
 
 					ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
-					String artifactName = artifactRevisionId.getAttribute("organisation") + "-" + artifactRevisionId.getName()
+					String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName()
 							+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
 					oneComponent.setStatus(getResourceStatus(artifactName));
 					this.resources.add(oneComponent);
@@ -314,7 +314,7 @@ public class Installer {
 							oneResource, true);
 					Component oneComponent = new Component(descriptor);
 					ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
-					String artifactName = artifactRevisionId.getAttribute("organisation") + "-" + artifactRevisionId.getName()
+					String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName()
 							+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
 					oneComponent.setStatus(getResourceStatus(artifactName));
 					this.resources.add(oneComponent);
@@ -346,7 +346,7 @@ public class Installer {
 
 		for (Component oneComponent : this.resources) {
 			ArtifactRevisionId ari = oneComponent.getModuleDescriptor().getAllArtifacts()[0].getId();
-			String artifactName = ari.getAttribute("organisation") + "-" + ari.getName() + "-" + ari.getRevision() + "."
+			String artifactName = /* ari.getAttribute("organisation") + "-" + */ari.getName() + "-" + ari.getRevision() + "."
 					+ ari.getExt();
 			oneComponent.setStatus(getResourceStatus(artifactName));
 		}

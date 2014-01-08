@@ -225,9 +225,8 @@ public class InstallerCLI {
 					if (!(scanner.next().trim().matches("yes||y||YES"))) {
 						System.out.println("Ok, ending installer!");
 						return;
-					} else {
-						System.out.println("Ok, installing the specified component(s) ...");
 					}
+					System.out.println("Ok, installing the specified component(s) ...");
 				}
 			}
 			this.installer.install(component);
