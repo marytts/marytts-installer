@@ -407,7 +407,7 @@ public class Installer {
 		}
 
 		// int sizeAfter = resourcesToBeFiltered.size();
-		if (locale != null) {
+		if (locale != null && !locale.equals("all")) {
 			logger.info("filtering by " + "locale=" + locale);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
@@ -423,7 +423,7 @@ public class Installer {
 			// }
 			// sizeBefore = sizeAfter;
 		}
-		if (type != null) {
+		if (type != null && !type.equals("all")) {
 			logger.info("filtering by " + "type=" + type);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
@@ -438,7 +438,7 @@ public class Installer {
 				}
 			}
 		}
-		if (gender != null) {
+		if (gender != null && !gender.equals("all")) {
 			logger.info("filtering by " + "gender=" + gender);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
@@ -453,7 +453,7 @@ public class Installer {
 				}
 			}
 		}
-		if (status != null) {
+		if (status != null && !status.equals("all")) {
 			logger.info("filtering by " + "status=" + status);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
@@ -462,7 +462,7 @@ public class Installer {
 				}
 			}
 		}
-		if (name != null) {
+		if (name != null && !name.equals("all")) {
 			logger.info("filtering by " + "name=" + name);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();

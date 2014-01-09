@@ -416,7 +416,12 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 				logger.error("Could not access settings file: " + pe.getMessage());
 			}
 			this.installer.parseIvyResources();
-			fillComponentGroupPanels(this.installer.getAvailableComponents(null, null, null, null, null, true));
+			String locale = this.localeBox.getSelectedItem().toString();
+			String type = this.typeBox.getSelectedItem().toString();
+			String gender = this.genderBox.getSelectedItem().toString();
+			String status = this.statusBox.getSelectedItem().toString();
+			boolean voiceOnly = !this.advancedCheckBox.isSelected();
+			fillComponentGroupPanels(this.installer.getAvailableComponents(locale, type, gender, status, null, voiceOnly));
 		}
 	}// GEN-LAST:event_updateButtonActionPerformed
 
@@ -445,18 +450,6 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 				String gender = genderBox.getSelectedItem().toString();
 				String status = statusBox.getSelectedItem().toString();
 
-				if (locale.equalsIgnoreCase("all")) {
-					locale = null;
-				}
-				if (type.equalsIgnoreCase("all")) {
-					type = null;
-				}
-				if (gender.equalsIgnoreCase("all")) {
-					gender = null;
-				}
-				if (status.equalsIgnoreCase("all")) {
-					status = null;
-				}
 				if (InstallerGUI.this.advancedCheckBox.isSelected()) {
 					fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, false));
 				} else {
