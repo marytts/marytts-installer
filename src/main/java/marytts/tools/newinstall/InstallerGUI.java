@@ -422,6 +422,12 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 			String status = this.statusBox.getSelectedItem().toString();
 			boolean voiceOnly = !this.advancedCheckBox.isSelected();
 			fillComponentGroupPanels(this.installer.getAvailableComponents(locale, type, gender, status, null, voiceOnly));
+			this.statusBox.removeAllItems();
+			this.statusBox.addItem("all");
+			for (String oneStatus : this.installer.getAttributeValues().get("status")) {
+				this.statusBox.addItem(oneStatus);
+			}
+			this.statusBox.setSelectedIndex(0);
 		}
 	}// GEN-LAST:event_updateButtonActionPerformed
 
@@ -445,15 +451,18 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				String locale = localeBox.getSelectedItem().toString();
-				String type = typeBox.getSelectedItem().toString();
-				String gender = genderBox.getSelectedItem().toString();
-				String status = statusBox.getSelectedItem().toString();
 
-				if (InstallerGUI.this.advancedCheckBox.isSelected()) {
-					fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, false));
-				} else {
-					fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, true));
+				if (e.getStateChange() == ItemEvent.SELECTED) {
+					String locale = localeBox.getSelectedItem().toString();
+					String type = typeBox.getSelectedItem().toString();
+					String gender = genderBox.getSelectedItem().toString();
+					String status = statusBox.getSelectedItem().toString();
+
+					if (InstallerGUI.this.advancedCheckBox.isSelected()) {
+						fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, false));
+					} else {
+						fillComponentGroupPanels(installer.getAvailableComponents(locale, type, gender, status, null, true));
+					}
 				}
 			}
 		});

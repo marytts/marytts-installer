@@ -290,6 +290,7 @@ public class Installer {
 		try {
 			List<String> resourcesList = readComponentDescriptorList();
 			this.resources.clear();
+			initAttributeValues();
 			for (String oneFileName : resourcesList) {
 				logger.debug("Parsing " + oneFileName);
 				if (oneFileName.startsWith("marytts-voice")) {
