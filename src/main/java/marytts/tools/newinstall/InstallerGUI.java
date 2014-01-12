@@ -387,9 +387,14 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 					public void run() {
 						JFileChooser fileChooser = new JFileChooser();
 						fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-						fileChooser.showOpenDialog(InstallerGUI.this);
-						File maryBasePath = fileChooser.getSelectedFile();
-						InstallerGUI.this.maryPathTextField.setText(maryBasePath.getAbsolutePath());
+						int returnVal = fileChooser.showOpenDialog(InstallerGUI.this);
+
+						if (returnVal == JFileChooser.APPROVE_OPTION) {
+							File maryBasePath = fileChooser.getSelectedFile();
+							InstallerGUI.this.maryPathTextField.setText(maryBasePath.getAbsolutePath());
+						} else {
+							logger.debug("Mary base directory change aborted by user.");
+						}
 					}
 				});
 			}
