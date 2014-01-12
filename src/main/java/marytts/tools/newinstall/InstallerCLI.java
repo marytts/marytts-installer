@@ -78,7 +78,7 @@ public class InstallerCLI {
 		this.options.addOption(OptionBuilder.withLongOpt("target").hasArg().withDescription("target installation directory")
 				.create());
 		this.options.addOption(OptionBuilder.withLongOpt("debug").withDescription("log in debug mode").create());
-		this.options.addOption(OptionBuilder.withLongOpt("verbose").withDescription("log in verbose debug mode").create());
+		// this.options.addOption(OptionBuilder.withLongOpt("verbose").withDescription("log in verbose debug mode").create());
 
 		// listing options
 		this.options.addOption(OptionBuilder.withLongOpt("list").withDescription("lists components").create());
