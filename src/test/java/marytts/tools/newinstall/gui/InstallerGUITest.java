@@ -1,9 +1,8 @@
-package guiTest;
+package marytts.tools.newinstall.gui;
 
 import static org.junit.Assert.assertTrue;
-
 import marytts.tools.newinstall.Installer;
-import marytts.tools.newinstall.InstallerGUI;
+import marytts.tools.newinstall.gui.InstallerGUI;
 
 import org.fest.swing.edt.FailOnThreadViolationRepaintManager;
 import org.fest.swing.edt.GuiActionRunner;
@@ -47,7 +46,8 @@ public class InstallerGUITest {
 
 	@Test
 	public void requirePopulated() {
-		if (this.installer.getAvailableComponents() != null) {
+		// needs update with arguments
+		if (this.installer.getAvailableComponents(null, null, null, null, null, false) != null) {
 			assertTrue(this.testFrame.panel("voicesGroupPanel").component().getComponentCount() != 0
 					|| this.testFrame.panel("languagesGroupPanel").component().getComponentCount() != 0);
 		}
