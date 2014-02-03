@@ -44,6 +44,8 @@ public class InstallerCLI {
 	private final static String VERBOSE = "verbose";
 	private final static String YES = "yes";
 	private final static String INSTALL = "install";
+	// TODO testing only
+	private final static String TEST = "test";
 
 	private CommandLineParser parser;
 	private CommandLine commandLine;
@@ -75,6 +77,9 @@ public class InstallerCLI {
 
 	private void createOptions() {
 		this.options = new Options();
+		// TODO testing only
+		this.options.addOption(OptionBuilder.withLongOpt("test").create());
+		
 		this.options.addOption("h", "help", false, "print help");
 		this.options.addOption("y", "yes", false, "always assume yes as an answer to prompts");
 		this.options.addOption(OptionBuilder.withLongOpt("target").hasArg().withDescription("target installation directory")
@@ -126,6 +131,11 @@ public class InstallerCLI {
 	 * public eval command line method. Is called upon completion of Installer construction
 	 */
 	protected void mainEvalCommandLine() {
+		
+		if (this.commandLine.hasOption(TEST)) {
+			return;
+		}
+		
 		if (this.commandLine.hasOption(DEBUG)) {
 			Logger.getRootLogger().setLevel(Level.DEBUG);
 			this.installer.setIvyLoggingLevel(LogLevel.debug);
