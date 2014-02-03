@@ -1,7 +1,7 @@
 /**
  * 
  */
-package marytts.tools.newinstall;
+package marytts.tools.newinstall.gui;
 
 import javax.swing.JFrame;
 

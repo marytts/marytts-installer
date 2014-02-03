@@ -1,4 +1,4 @@
-package marytts.tools.newinstall;
+package marytts.tools.newinstall.enums;
 
 public enum Status {
 

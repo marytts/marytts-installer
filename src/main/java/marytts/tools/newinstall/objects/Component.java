@@ -6,7 +6,7 @@ package marytts.tools.newinstall.objects;
 import java.util.Locale;
 import java.util.Observable;
 
-import marytts.tools.newinstall.Status;
+import marytts.tools.newinstall.enums.Status;
 
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.log4j.Logger;
@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import com.google.common.collect.ComparisonChain;
 
 /**
- * Java object representing marytts voices (components)
+ * Java object representing marytts components
  * 
  * @author Jonathan
  * 
@@ -45,6 +45,8 @@ public class Component extends Observable implements Comparable<Component> {
 		setDisplayNameFromName(descriptor.getExtraAttribute("name"));
 
 		long parsedLong;
+
+		// trying to parse a long number from the String attribute
 		try {
 			parsedLong = Long.parseLong(descriptor.getAllArtifacts()[0].getExtraAttribute("size"));
 		} catch (NumberFormatException nfe) {
@@ -61,11 +63,11 @@ public class Component extends Observable implements Comparable<Component> {
 	 */
 	private void setLocale(Locale locale) {
 
-		if (locale.toString().equalsIgnoreCase("en-us")) {
-			locale = Locale.US;
-		} else if (locale.toString().equalsIgnoreCase("en-gb")) {
-			locale = Locale.UK;
-		}
+		// if (locale.toString().equalsIgnoreCase("en-us")) {
+		// locale = Locale.US;
+		// } else if (locale.toString().equalsIgnoreCase("en-gb")) {
+		// locale = Locale.UK;
+		// }
 		this.locale = locale;
 	}
 

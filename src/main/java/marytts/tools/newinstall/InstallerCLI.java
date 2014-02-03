@@ -10,6 +10,8 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import marytts.tools.newinstall.enums.LogLevel;
+import marytts.tools.newinstall.gui.InstallerGUI;
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 

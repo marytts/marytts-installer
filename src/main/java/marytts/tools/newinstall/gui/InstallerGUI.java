@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package marytts.tools.newinstall;
+package marytts.tools.newinstall.gui;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -27,6 +27,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
+import marytts.tools.newinstall.Installer;
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
@@ -43,7 +44,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 	// data
 	private Installer installer;
 
-	static Logger logger = Logger.getLogger(marytts.tools.newinstall.InstallerGUI.class.getName());
+	static Logger logger = Logger.getLogger(marytts.tools.newinstall.gui.InstallerGUI.class.getName());
 
 	/**
 	 * Creates new form InstallerGUI

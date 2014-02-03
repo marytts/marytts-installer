@@ -4,9 +4,8 @@
  * and open the template in the editor.
  */
 
-package marytts.tools.newinstall;
+package marytts.tools.newinstall.gui;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.io.IOException;
 import java.text.ParseException;
@@ -15,6 +14,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 
+import marytts.tools.newinstall.Installer;
+import marytts.tools.newinstall.enums.Status;
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
@@ -22,6 +23,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
+ * Swing.JPanel used to display one component within the {@link InstallerGUI}
  * 
  * @author Jonathan
  */
@@ -31,13 +33,15 @@ public class ComponentPanel extends JPanel {
 
 	private Component component;
 
+	// used for resizing purposes of the collapse functionality
 	private int collapsedHeight;
-
 	private int uncollapsedHeight;
 
-	private boolean first;
+	// used to check if ComponentPanel is collapsed for the first time, if yes, heights for uncollapsed and for collapsed states
+	// are set
+	private boolean firstCollapse;
 
-	static Logger logger = Logger.getLogger(marytts.tools.newinstall.ComponentPanel.class.getName());
+	static Logger logger = Logger.getLogger(marytts.tools.newinstall.gui.ComponentPanel.class.getName());
 
 	/**
 	 * Creates new form ComponentPanel
@@ -51,7 +55,7 @@ public class ComponentPanel extends JPanel {
 
 		this.component = component;
 		this.installer = installer;
-		this.first = true;
+		this.firstCollapse = true;
 		initComponents();
 		fillFields(component);
 	}
@@ -270,16 +274,19 @@ public class ComponentPanel extends JPanel {
 			return;
 		}
 
+		// a different thread is used for the installation so as to ensure that the GUI stays responsive during the (possibly
+		// long) installation
 		SwingWorker installThread = new SwingWorker<Void, Void>() {
 
 			@Override
 			public Void doInBackground() {
 				try {
+					// if component is already installed, there is no need to reinstall.
 					if (ComponentPanel.this.component.getStatus() == Status.INSTALLED) {
 						String componentName = ComponentPanel.this.component.getName();
 						logger.info(componentName + " is already installed");
-						JOptionPane.showMessageDialog(ComponentPanel.this, "Component is already installed!", "Installing component " + componentName,
-								JOptionPane.INFORMATION_MESSAGE);
+						JOptionPane.showMessageDialog(ComponentPanel.this, "Component is already installed!",
+								"Installing component " + componentName, JOptionPane.INFORMATION_MESSAGE);
 					} else {
 						ComponentPanel.this.installButton.setText("Installing ...");
 						ComponentPanel.this.installer.install(ComponentPanel.this.component);
@@ -294,23 +301,11 @@ public class ComponentPanel extends JPanel {
 
 			@Override
 			public void done() {
-				// try {
 				ComponentPanel.this.installButton.setText("Install");
-				ComponentPanel.this.installButton.setForeground(Color.BLACK);
+				// this method is called to force the installer to check if any new components got installed (which insures also
+				// statuses of resolved dependencies are set correctly). There might be a better way if we could somehow
+				// automatically receive information about which component got installed after the click on the installButton.
 				ComponentPanel.this.installer.updateResourceStatuses();
-				// DownloadStatus result = get();
-				// Component component = ComponentPanel.this.component;
-				// ModuleDescriptor descriptor = component.getModuleDescriptor();
-				// ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
-				// String artifactName = artifactRevisionId.getAttribute("organisation") + "-" + artifactRevisionId.getName()
-				// + "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
-				// String resultString = ComponentPanel.this.installer.getResourceStatus(artifactName).toString();
-				// ComponentPanel.this.statusLabel.setText(resultString);
-				// ComponentPanel.this.installer.updateResourceStatuses();
-				// }
-				// catch (Exception e) {
-				// logger.error(e.getMessage());
-				// }
 			}
 		};
 
@@ -324,10 +319,11 @@ public class ComponentPanel extends JPanel {
 
 	private void collapseButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_collapseButtonActionPerformed
 
-		if (this.first) {
+		// if panel is collapsed for the first time, its uncollapsed and collapsed height are computed.
+		if (this.firstCollapse) {
 			this.collapsedHeight = this.collapseButton.getBounds().y + this.collapseButton.getBounds().height + 4;
 			this.uncollapsedHeight = this.collapsiblePanel.getBounds().y + this.collapsiblePanel.getBounds().height + 4;
-			this.first = false;
+			this.firstCollapse = false;
 		}
 
 		logger.debug("PS before: " + this.getPreferredSize());
@@ -346,6 +342,11 @@ public class ComponentPanel extends JPanel {
 
 	}// GEN-LAST:event_collapseButtonActionPerformed
 
+	/**
+	 * Is called at loading time of this panel. Fills all JLabels and JTextAreas with the necessary information from the component
+	 * 
+	 * @param component
+	 */
 	private void fillFields(Component component) {
 		this.componentNameLabel.setText(component.getDisplayName());
 		this.jTextArea1.setText(component.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
@@ -356,6 +357,7 @@ public class ComponentPanel extends JPanel {
 		this.localeValueLabel.setText(component.getLocale().toString());
 
 		// TODO solve this in a better way
+		// if component is a VoiceComponent
 		if (component instanceof VoiceComponent) {
 			this.typeValueLabel.setText(((VoiceComponent) component).getType());
 			this.genderValueLabel.setText(((VoiceComponent) component).getGender());

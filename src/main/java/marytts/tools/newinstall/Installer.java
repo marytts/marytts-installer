@@ -12,20 +12,20 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
+import marytts.tools.newinstall.enums.LogLevel;
+import marytts.tools.newinstall.enums.Status;
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
-import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ArtifactRevisionId;
 import org.apache.ivy.core.module.id.ModuleId;
 import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.ivy.core.report.ArtifactDownloadReport;
-import org.apache.ivy.core.report.DownloadStatus;
 import org.apache.ivy.core.report.ResolveReport;
 import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.settings.IvySettings;
@@ -38,21 +38,35 @@ import com.google.common.io.Resources;
 import com.google.gson.Gson;
 
 /**
- * 
+ * Main class of the component installer. Both holds the main method and holds data and functionality methods on the component
+ * data
  * 
  * @author Jonathan, Ingmar
  * 
  */
 public class Installer {
 
+	// Ivy instance, used for installation and resolving purposes
 	private Ivy ivy;
+
+	// Java representation of the ivysettings.xml file that holds information about repository structure and location
 	private IvySettings ivySettings;
+
+	// Options passed on to the resolve/install methods of the Ivy object
 	private ResolveOptions resolveOptions;
 	private InstallOptions installOptions;
 
+	// holds all currently available components
 	private List<Component> resources;
+
+	// map storing all possible component values. Used for easy access when GUI sets the filtering options in the comboBoxes
 	private HashMap<String, HashSet<String>> attributeValues;
+
+	// the instance of the command line interface which is created once the installer is started
 	private InstallerCLI cli;
+
+	// holds the directory where marytts should be (preferably: is) installed. This location will be used to put downloaded and
+	// installed components in
 	private String maryBasePath;
 
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.Installer.class.getName());
@@ -68,15 +82,12 @@ public class Installer {
 		this.attributeValues.put("gender", new HashSet<String>());
 	}
 
-	private Installer() {
-
-	}
-
 	public Installer(String[] args) {
 
 		logger.debug("Loading installer.");
 		this.resources = new ArrayList<Component>();
 		this.cli = new InstallerCLI(args, this);
+		initAttributeValues();
 
 		// test if user has specified mary path on command line. If not, determine directory Installer is run from
 		if (this.maryBasePath == null) {
@@ -87,12 +98,18 @@ public class Installer {
 		// setup ivy
 
 		try {
+			// loads ivy settings from resources ivysettings.xml file
 			loadIvySettings();
-			initAttributeValues();
-			logger.debug("Starting ivy resource parse");
-			parseIvyResources();
+
+			// creating a new ivy instance as well as sets necessary options
 			loadIvy();
 
+			logger.debug("Starting ivy resource parse");
+			// parses component descriptors, creates Component objects from them and stores them in this.resources
+			parseIvyResources();
+
+			// once the resources are parsed, Installer passes the workflow on to the command line interface which evaluates
+			// parameters that have been passed on to the Installer
 			this.cli.mainEvalCommandLine();
 
 		} catch (IOException ioe) {
@@ -102,14 +119,29 @@ public class Installer {
 		}
 	}
 
-	protected void loadIvy() {
-		logger.info("Creating new Ivy file");
+	/**
+	 * creates an Ivy instance and sets necessary options
+	 */
+	public void loadIvy() {
+		logger.info("Creating new Ivy instance");
 		this.ivy = Ivy.newInstance(this.ivySettings);
 		setIvyLoggingLevel(LogLevel.warn);
 		this.resolveOptions = new ResolveOptions().setOutputReport(false);
 		this.installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
 	}
 
+	public void loadIvySettings() throws ParseException, IOException {
+		this.ivySettings = new IvySettings();
+		this.ivySettings.setVariable("mary.base", this.maryBasePath);
+		logger.debug("Loading ivysettings.xml");
+		this.ivySettings.load(Resources.getResource("ivysettings.xml"));
+	}
+
+	/**
+	 * Helper method used to manipulate the ivy log level
+	 * 
+	 * @param logLevel
+	 */
 	protected void setIvyLoggingLevel(LogLevel logLevel) {
 		int ivyLevel;
 		switch (logLevel) {
@@ -137,24 +169,15 @@ public class Installer {
 		this.ivy.getLoggerEngine().setDefaultLogger(dml);
 	}
 
-	protected void loadIvySettings() throws ParseException, IOException {
-		this.ivySettings = new IvySettings();
-		this.ivySettings.setVariable("mary.base", this.maryBasePath);
-		logger.debug("Loading ivysettings.xml");
-		this.ivySettings.load(Resources.getResource("ivysettings.xml"));
-	}
-
+	/**
+	 * method to set the maryBasePath variable. Is only called if user didn't manually set a path on the command line and thus
+	 * uses instead the location where the Installer.jar is run from
+	 */
 	private void setMaryBase() {
 		logger.debug("Setting mary base directory");
-		// String userSelection = cli.getTargetDirectory();
 		File maryBase = null;
-		// try {
-		// maryBase = new File(userSelection);
-		// } catch (NullPointerException npe) {
-		// no target directory selected;
 		// fall back to location of this class/jar
 		// from http://stackoverflow.com/a/320595
-		// logger.warn("No directory specified on the command line");
 		URL location = Installer.class.getProtectionDomain().getCodeSource().getLocation();
 		try {
 			logger.debug("Trying to use directory Installer is run from.");
@@ -163,11 +186,12 @@ public class Installer {
 			// TODO Auto-generated catch block
 			logger.error("Could not parse " + location + ": " + use.getMessage() + "\n");
 		}
-		// }
 		setMaryBase(maryBase);
 	}
 
 	/**
+	 * sets a new file path for the marytts base directory.
+	 * 
 	 * @param maryBase
 	 * @return true if mary path was successfully set, false otherwise
 	 */
@@ -211,10 +235,18 @@ public class Installer {
 		return this.maryBasePath;
 	}
 
+	/**
+	 * Installs given component using the ivy instance of this class
+	 * 
+	 * @param component
+	 * @throws ParseException
+	 * @throws IOException
+	 */
 	public void install(Component component) throws ParseException, IOException {
 
-		List<String> installedArtifacts = new ArrayList<String>();
+		// List<String> installedArtifacts = new ArrayList<String>();
 
+		// first resolves component's dependencies
 		logger.info("IVY: Resolving and installing component " + component.getName());
 		ResolveReport resolveDependencies = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
 
@@ -226,6 +258,7 @@ public class Installer {
 		// logger.info("IVY: Resolved dependency " + art.getName());
 		// }
 
+		// if there were dependencies that have been resolved, install these as well (copy from downloaded/ to lib/)
 		for (int i = 0; i < dependencyReports.length; i++) {
 			// install resolved dependencies
 			ArtifactDownloadReport artifactDownloadReport = dependencyReports[i];
@@ -235,11 +268,18 @@ public class Installer {
 			// ArtifactDownloadReport[] installReports = installDependencies.getAllArtifactsReports();
 		}
 
+		// finally install the component itself
 		ResolveReport install = this.ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
 				this.installOptions);
 		logger.info("IVY: " + install.getAllArtifactsReports()[0]);
 	}
 
+	/**
+	 * helper method to get information about dependencies of component prior to its resolution
+	 * 
+	 * @param component
+	 * @return
+	 */
 	public List<String> retrieveDependencies(Component component) {
 
 		List<String> toReturn = new ArrayList<String>();
@@ -251,6 +291,10 @@ public class Installer {
 		return toReturn;
 	}
 
+	/**
+	 * @param componentName
+	 * @return
+	 */
 	public long getSizeOfComponentByName(String componentName) {
 
 		for (Component oneComponent : this.resources) {
@@ -285,11 +329,14 @@ public class Installer {
 	 * @throws ParseException
 	 * @throws IOException
 	 */
-	protected void parseIvyResources() {
+	public void parseIvyResources() {
 
 		try {
 			List<String> resourcesList = readComponentDescriptorList();
+			
+			// as this method can be used to reparse the components, clear the existing ones first
 			this.resources.clear();
+			
 			initAttributeValues();
 			for (String oneFileName : resourcesList) {
 				logger.debug("Parsing " + oneFileName);
@@ -331,7 +378,7 @@ public class Installer {
 		}
 	}
 
-	protected Status getResourceStatus(String componentName) {
+	public Status getResourceStatus(String componentName) {
 
 		// TODO problem ist, dass der deployte name von lang comp mit marytts beginnt, der voice comps aber ohne -> beheben!!
 		if (new File(this.maryBasePath + "/lib/" + componentName).exists()) {
@@ -343,7 +390,7 @@ public class Installer {
 		return Status.AVAILABLE;
 	}
 
-	protected void updateResourceStatuses() {
+	public void updateResourceStatuses() {
 
 		for (Component oneComponent : this.resources) {
 			ArtifactRevisionId ari = oneComponent.getModuleDescriptor().getAllArtifacts()[0].getId();
