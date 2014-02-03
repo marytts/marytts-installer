@@ -456,7 +456,7 @@ public class Installer {
 
 		// int sizeAfter = resourcesToBeFiltered.size();
 		if (locale != null && !locale.equals("all")) {
-			logger.info("filtering by " + "locale=" + locale);
+			logger.debug("filtering by " + "locale=" + locale);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!oneComponent.getLocale().toString().equalsIgnoreCase(locale)) {
@@ -472,7 +472,7 @@ public class Installer {
 			// sizeBefore = sizeAfter;
 		}
 		if (type != null && !type.equals("all")) {
-			logger.info("filtering by " + "type=" + type);
+			logger.debug("filtering by " + "type=" + type);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!(oneComponent instanceof VoiceComponent)) {
@@ -487,7 +487,7 @@ public class Installer {
 			}
 		}
 		if (gender != null && !gender.equals("all")) {
-			logger.info("filtering by " + "gender=" + gender);
+			logger.debug("filtering by " + "gender=" + gender);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!(oneComponent instanceof VoiceComponent)) {
@@ -502,7 +502,7 @@ public class Installer {
 			}
 		}
 		if (status != null && !status.equals("all")) {
-			logger.info("filtering by " + "status=" + status);
+			logger.debug("filtering by " + "status=" + status);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!oneComponent.getStatus().toString().equalsIgnoreCase(status)) {
@@ -511,7 +511,7 @@ public class Installer {
 			}
 		}
 		if (name != null && !name.equals("all")) {
-			logger.info("filtering by " + "name=" + name);
+			logger.debug("filtering by " + "name=" + name);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!oneComponent.getName().equalsIgnoreCase(name)) {
@@ -520,7 +520,7 @@ public class Installer {
 			}
 		}
 		if (voiceOnly) {
-			logger.info("filtering by component type=" + (voiceOnly ? "voice " : " ") + "component");
+			logger.debug("filtering by component type=" + (voiceOnly ? "voice " : " ") + "component");
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!(oneComponent instanceof VoiceComponent)) {
