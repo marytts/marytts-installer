@@ -412,15 +412,6 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 				JOptionPane.showMessageDialog(this, "The specified path contains errors!", "Mary base path",
 						JOptionPane.WARNING_MESSAGE);
 			}
-			// resetGlobal();
-			try {
-				this.installer.loadIvySettings();
-				this.installer.loadIvy();
-			} catch (IOException ioe) {
-				logger.error("Could not access settings file: " + ioe.getMessage());
-			} catch (ParseException pe) {
-				logger.error("Could not access settings file: " + pe.getMessage());
-			}
 			this.installer.parseIvyResources();
 			String locale = this.localeBox.getSelectedItem().toString();
 			String type = this.typeBox.getSelectedItem().toString();
