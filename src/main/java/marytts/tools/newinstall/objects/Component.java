@@ -8,7 +8,12 @@ import java.util.Observable;
 
 import marytts.tools.newinstall.enums.Status;
 
+import org.apache.ivy.core.module.descriptor.Artifact;
+import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
+import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
+import org.apache.ivy.core.module.id.ArtifactRevisionId;
+import org.apache.ivy.core.module.id.ModuleRevisionId;
 import org.apache.log4j.Logger;
 
 import com.google.common.collect.ComparisonChain;
@@ -225,6 +230,30 @@ public class Component extends Observable implements Comparable<Component> {
 			this.displayName = name;
 		}
 	}
+
+	// marytts-lang-en-5.1-beta1.jar
+	// voice-cmu-slt-hsmm-5.1-beta1.jar
+	public String getArtifactName() {
+
+		Artifact artifact = this.moduleDescriptor.getAllArtifacts()[0];
+		StringBuilder sb = new StringBuilder();
+		sb.append(artifact.getAttribute("module")).append("-").append(artifact.getAttribute("revision")).append(".")
+				.append(artifact.getExt());
+
+		return sb.toString();
+	}
+
+	// public String getDependencyArtifact() {
+	//
+	// DependencyDescriptor dependencyDescriptor = this.moduleDescriptor.getDependencies()[0];
+	// DependencyArtifactDescriptor depArtDesc = dependencyDescriptor.getAllDependencyArtifacts()[0];
+	//
+	// StringBuilder sb = new StringBuilder();
+	// sb.append(depArtDesc.getAttribute("module")).append("-").append(depArtDesc.getAttribute("revision")).append(".")
+	// .append(depArtDesc.getExt());
+	//
+	// return sb.toString();
+	// }
 
 	/*
 	 * (non-Javadoc)
