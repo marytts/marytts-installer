@@ -187,6 +187,16 @@ public class Installer {
 			logger.error("Could not parse " + location + ": " + use.getMessage() + "\n");
 		}
 		setMaryBase(maryBase);
+
+		// try {
+		// this.installer.loadIvySettings();
+		// this.installer.loadIvy();
+		// } catch (IOException ioe) {
+		// logger.error("Could not access settings file: " + ioe.getMessage());
+		// } catch (ParseException pe) {
+		// logger.error("Could not access settings file: " + pe.getMessage());
+		// }
+		// this.installer.parseIvyResources();
 	}
 
 	/**
@@ -196,36 +206,53 @@ public class Installer {
 	 * @return true if mary path was successfully set, false otherwise
 	 */
 	public boolean setMaryBase(File maryBase) {
-		boolean toReturn;
+		boolean isSuccessful;
 		try {
 			maryBase = maryBase.getCanonicalFile();
-			toReturn = true;
+			isSuccessful = true;
 		} catch (IOException ioe) {
 			logger.error("Could not determine path to directory " + maryBase + ": " + ioe + "\n");
-			toReturn = false;
+			isSuccessful = false;
 		}
 		// if this is running from the jar file, back off to directory containing it
 		if (maryBase.isFile()) {
 			logger.debug("Installer is running from jar. Creating directory for setting mary base path");
 			maryBase = maryBase.getParentFile();
-			toReturn = true;
+			isSuccessful = true;
 		}
 		// create directory (with parents, if required)
 		try {
 			FileUtils.forceMkdir(maryBase);
-			toReturn = true;
+			isSuccessful = true;
 		} catch (IOException ioe) {
 			logger.error(ioe.getMessage());
-			toReturn = false;
+			isSuccessful = false;
 		}
 		try {
 			this.maryBasePath = maryBase.getCanonicalPath();
-			toReturn = true;
+			isSuccessful = true;
 		} catch (IOException ioe) {
 			logger.error("Could not determine path to directory " + maryBase + ": " + ioe + "\n");
-			toReturn = false;
+			isSuccessful = false;
 		}
-		return toReturn;
+
+		if (isSuccessful) {
+			reloadIvy();
+		}
+
+		return isSuccessful;
+	}
+
+	public void reloadIvy() {
+		try {
+			loadIvySettings();
+			loadIvy();
+			parseIvyResources();
+		} catch (IOException ioe) {
+			logger.error("Could not access settings file: " + ioe.getMessage());
+		} catch (ParseException pe) {
+			logger.error("Could not access settings file: " + pe.getMessage());
+		}
 	}
 
 	/**
@@ -333,10 +360,10 @@ public class Installer {
 
 		try {
 			List<String> resourcesList = readComponentDescriptorList();
-			
+
 			// as this method can be used to reparse the components, clear the existing ones first
 			this.resources.clear();
-			
+
 			initAttributeValues();
 			for (String oneFileName : resourcesList) {
 				logger.debug("Parsing " + oneFileName);
