@@ -44,8 +44,7 @@ public class InstallerCLI {
 	private final static String VERBOSE = "verbose";
 	private final static String YES = "yes";
 	private final static String INSTALL = "install";
-	// TODO testing only
-	private final static String TEST = "test";
+	private final static String NOGUI = "nogui";
 
 	private CommandLineParser parser;
 	private CommandLine commandLine;
@@ -77,9 +76,7 @@ public class InstallerCLI {
 
 	private void createOptions() {
 		this.options = new Options();
-		// TODO testing only
-		this.options.addOption(OptionBuilder.withLongOpt("test").create());
-		
+
 		this.options.addOption("h", "help", false, "print help");
 		this.options.addOption("y", "yes", false, "always assume yes as an answer to prompts");
 		this.options.addOption(OptionBuilder.withLongOpt("target").hasArg().withDescription("target installation directory")
@@ -97,6 +94,8 @@ public class InstallerCLI {
 		this.options.addOption("a", "advanced", false, "only with --list: list language and marytts components as well");
 
 		this.options.addOption(OptionBuilder.withLongOpt("gui").withDescription("starts GUI").create());
+		this.options.addOption(OptionBuilder.withLongOpt("nogui").withDescription("Do not use GUI, force usage of command line.")
+				.create());
 		this.options.addOption(OptionBuilder.withLongOpt("install").hasArg().withDescription("installs <arg> component")
 				.create("i"));
 
@@ -131,11 +130,7 @@ public class InstallerCLI {
 	 * public eval command line method. Is called upon completion of Installer construction
 	 */
 	protected void mainEvalCommandLine() {
-		
-		if (this.commandLine.hasOption(TEST)) {
-			return;
-		}
-		
+
 		if (this.commandLine.hasOption(DEBUG)) {
 			Logger.getRootLogger().setLevel(Level.DEBUG);
 			this.installer.setIvyLoggingLevel(LogLevel.debug);
@@ -144,6 +139,8 @@ public class InstallerCLI {
 		}
 		if (this.commandLine.hasOption(GUI)) {
 			startGUI();
+		} else if (this.commandLine.hasOption(NOGUI)) {
+			// dummy option used to indicate that no GUI is desired -- may be for testing purposes or in case of headless servers
 		}
 		// -- list evalutation
 		// check for right input syntax (--list has to be present when listing constraints are present)
