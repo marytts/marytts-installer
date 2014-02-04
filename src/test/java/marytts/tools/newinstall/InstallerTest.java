@@ -7,8 +7,13 @@ import java.text.ParseException;
 import junit.framework.TestCase;
 import marytts.tools.newinstall.objects.Component;
 
-import org.junit.Before;
+import org.apache.ivy.core.module.descriptor.Artifact;
+import org.junit.After;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
+
+import com.google.common.io.Files;
 
 public class InstallerTest extends TestCase {
 
@@ -16,28 +21,46 @@ public class InstallerTest extends TestCase {
 		super(name);
 	}
 
-	static Installer installer = new Installer(new String[] { "--test" });
+	@Rule
+	public TemporaryFolder tempFolder = new TemporaryFolder();
 
-	@Before
-	public void setUp() throws Exception {
-	}
+	static Installer installer = new Installer(new String[] { "--nogui" });
+
+	// @After
+	// public void tearDown() {
+	//
+	// this.tempFolder.delete();
+	// }
 
 	@Test
 	public void testSetMaryBase() {
 
-		// assertTrue(true);
-		String baseDirClean = "/Users/Jonathan/marytts/marytts-installer/target/classes";
-		assertTrue(installer.setMaryBase(new File(baseDirClean)));
+		Component voiceCompToTest = installer.getAvailableComponents(null, null, null, null, "cmu-slt-hsmm", false).get(0);
+		// Component compToTest = installer.getAvailableComponents(null, null, null, null, "te", false).get(0);
 
-		String baseDirUnk = "/Users/Jonathan/marytts/marytts-installer/target/classe";
-		File baseDirUnkFile = new File(baseDirUnk);
-		baseDirUnkFile.setReadOnly();
-
-		assertTrue(installer.setMaryBase(baseDirUnkFile));
-		Component comp = installer.getAvailableComponents(null, null, null, null, "cmu-slt-hsmm", false).get(0);
 		try {
-			installer.install(comp);
-			assertFalse(new File(baseDirUnk + "/lib/voice-cmu-slt-hsmm-5.1-beta1.jar").exists());
+			File maryBaseDirClean = this.tempFolder.newFolder("maryBaseDirClean");
+			System.out.println(maryBaseDirClean.getAbsolutePath());
+			assertTrue(installer.setMaryBase(maryBaseDirClean));
+			System.out.println(installer.getMaryBasePath());
+			installer.install(voiceCompToTest);
+			assertTrue(new File(maryBaseDirClean + "/lib").exists());
+			assertTrue(new File(maryBaseDirClean + "/installed").exists());
+			assertTrue(new File(maryBaseDirClean + "/download").exists());
+
+			String voiceArtifactName = voiceCompToTest.getArtifactName();
+			// don't yet know how to retrieve artifact of dependency (so far, can only reach to the DependencyDescriptor. The
+			// artifact of the dependency itself is null.
+			// String voiceArtifactDepName = voiceCompToTest.getDependencyArtifact();
+			assertTrue(new File(maryBaseDirClean + "/lib/" + voiceArtifactName).exists());
+			assertTrue(new File(maryBaseDirClean + "/download/" + voiceArtifactName).exists());
+			// assertTrue(new File(maryBaseDirClean + "/lib/" + voiceArtifactDepName).exists());
+
+			Artifact artifactDescriptor = voiceCompToTest.getModuleDescriptor().getMetadataArtifact();
+			String descriptorName = artifactDescriptor.getAttribute("module") + "-" + artifactDescriptor.getAttribute("revision")
+					+ "." + artifactDescriptor.getExt();
+			assertTrue(new File(maryBaseDirClean + "/installed/" + descriptorName).exists());
+			assertTrue(new File(maryBaseDirClean + "/download/" + descriptorName).exists());
 		} catch (IOException e) {
 			assertTrue(true);
 		} catch (ParseException e) {
