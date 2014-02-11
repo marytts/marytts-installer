@@ -10,6 +10,7 @@ import marytts.tools.newinstall.enums.Status;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.ivy.core.module.descriptor.Artifact;
+import org.apache.ivy.core.module.descriptor.License;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.log4j.Logger;
 
@@ -21,112 +22,65 @@ import org.apache.log4j.Logger;
  */
 public class Component extends Observable implements Comparable<Component> {
 
-	private ModuleDescriptor moduleDescriptor;
-	protected String name;
-	protected String version;
-	protected String licenseName;
-	protected String licenseShortName;
-	protected String description;
-	protected Status status;
-	protected long size;
+	private ModuleDescriptor descriptor;
+
+	private Status status;
 
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.objects.Component.class.getName());
 
 	public Component(ModuleDescriptor descriptor) {
-		this.moduleDescriptor = descriptor;
-		setDescription(descriptor.getDescription());
-		setLicenseName(descriptor.getLicenses()[0].getName());
-		setLicenseShortName(descriptor.getExtraAttribute("license"));
-		setVersion(descriptor.getAttribute("revision"));
-		setName(descriptor.getExtraAttribute("name"));
-
-		long parsedLong;
-
-		// trying to parse a long number from the String attribute
-		try {
-			parsedLong = Long.parseLong(descriptor.getAllArtifacts()[0].getExtraAttribute("size"));
-		} catch (NumberFormatException nfe) {
-			logger.error(descriptor.getAllArtifacts()[0].getExtraAttribute("size") + " could not be parsed.");
-			parsedLong = 0L;
-		}
-		setSize(parsedLong);
-
-	}
-
-	/**
-	 * @param version
-	 *            the version to set
-	 */
-	private void setVersion(String version) {
-
-		this.version = version;
-	}
-
-	/**
-	 * @param licenseName
-	 *            the licenseName to set
-	 */
-	private void setLicenseName(String licenseName) {
-
-		this.licenseName = licenseName;
-	}
-
-	/**
-	 * @param description
-	 *            the description to set
-	 */
-	private void setDescription(String description) {
-
-		this.description = description;
-	}
-
-	/**
-	 * @param name
-	 *            the name to set
-	 */
-	private void setName(String name) {
-
-		this.name = name;
+		this.descriptor = descriptor;
 	}
 
 	public ModuleDescriptor getModuleDescriptor() {
-		return this.moduleDescriptor;
+		return this.descriptor;
 	}
 
 	/**
 	 * @return the name
 	 */
 	public String getName() {
+		return descriptor.getExtraAttribute("name");
+	}
 
-		return this.name;
+	/**
+	 * @return the displayName
+	 */
+	public String getDisplayName() {
+		return getName();
 	}
 
 	/**
 	 * @return the version
 	 */
 	public String getVersion() {
-
-		return this.version;
+		return descriptor.getAttribute("revision");
 	}
 
 	/**
 	 * @return the licenseName
 	 */
 	public String getLicenseName() {
+		License[] licenses = descriptor.getLicenses();
+		License license = licenses[0];
+		return license.getName();
+	}
 
-		return this.licenseName;
+	/**
+	 * @return the licenseShortName
+	 */
+	public String getLicenseShortName() {
+		return descriptor.getExtraAttribute("license");
 	}
 
 	/**
 	 * @return the description
 	 */
 	public String getDescription() {
-
-		return this.description;
+		return descriptor.getDescription();
 	}
 
 	public Status getStatus() {
-
 		return this.status;
 	}
 
@@ -135,7 +89,6 @@ public class Component extends Observable implements Comparable<Component> {
 	 *            the status to set
 	 */
 	public void setStatus(Status status) {
-
 		// if status has not previously been set, set it
 		if (this.status == null) {
 			this.status = status;
@@ -150,47 +103,28 @@ public class Component extends Observable implements Comparable<Component> {
 	}
 
 	/**
-	 * @return the licenseShortName
-	 */
-	public String getLicenseShortName() {
-		return this.licenseShortName;
-	}
-
-	/**
-	 * @param licenseShortName
-	 *            the licenseShortName to set
-	 */
-	private void setLicenseShortName(String licenseShortName) {
-		this.licenseShortName = licenseShortName;
-	}
-
-	/**
 	 * @return the size
 	 */
 	public long getSize() {
-		return this.size;
-	}
-
-	/**
-	 * @param size
-	 *            the size to set
-	 */
-	private void setSize(long size) {
-		this.size = size;
-	}
-
-	/**
-	 * @return the displayName
-	 */
-	public String getDisplayName() {
-		return getName();
+		long size = 0;
+		for (Artifact artifact : descriptor.getAllArtifacts()) {
+			String sizeAttribute = artifact.getExtraAttribute("size");
+			// trying to parse a long number from the String attribute
+			try {
+				long parsedSize = Long.parseLong(sizeAttribute);
+				size += parsedSize;
+			} catch (NumberFormatException nfe) {
+				logger.error(descriptor.getAllArtifacts()[0].getExtraAttribute("size") + " could not be parsed.");
+			}
+		}
+		return size;
 	}
 
 	// marytts-lang-en-5.1-beta1.jar
 	// voice-cmu-slt-hsmm-5.1-beta1.jar
 	public String getArtifactName() {
 
-		Artifact artifact = this.moduleDescriptor.getAllArtifacts()[0];
+		Artifact artifact = this.descriptor.getAllArtifacts()[0];
 		StringBuilder sb = new StringBuilder();
 		sb.append(artifact.getAttribute("module")).append("-").append(artifact.getAttribute("revision")).append(".")
 				.append(artifact.getExt());
@@ -220,11 +154,11 @@ public class Component extends Observable implements Comparable<Component> {
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Component: ").append(this.name).append("\n");
-		sb.append("version: ").append(this.version).append("; status: ").append(this.status).append("; size: ")
-				.append(FileUtils.byteCountToDisplaySize(this.size)).append("\n");
-		sb.append("license name: ").append(this.licenseName).append("\n");
-		sb.append("description: ").append(this.description.replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
+		sb.append("Component: ").append(getName()).append("\n");
+		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus()).append("; size: ")
+				.append(FileUtils.byteCountToDisplaySize(getSize())).append("\n");
+		sb.append("license name: ").append(getLicenseName()).append("\n");
+		sb.append("description: ").append(getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
 
 		return sb.toString();
 	}
