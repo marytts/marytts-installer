@@ -23,7 +23,6 @@ public class Component extends Observable implements Comparable<Component> {
 
 	private ModuleDescriptor moduleDescriptor;
 	protected String name;
-	protected String displayName;
 	protected String version;
 	protected String licenseName;
 	protected String licenseShortName;
@@ -40,7 +39,6 @@ public class Component extends Observable implements Comparable<Component> {
 		setLicenseShortName(descriptor.getExtraAttribute("license"));
 		setVersion(descriptor.getAttribute("revision"));
 		setName(descriptor.getExtraAttribute("name"));
-		setDisplayNameFromName(descriptor.getExtraAttribute("name"));
 
 		long parsedLong;
 
@@ -185,21 +183,7 @@ public class Component extends Observable implements Comparable<Component> {
 	 * @return the displayName
 	 */
 	public String getDisplayName() {
-		return this.displayName;
-	}
-
-	/**
-	 * TODO has to be modified once there are mary components as well
-	 * 
-	 * @param displayName
-	 *            the displayName to set
-	 */
-	public void setDisplayNameFromName(String name) {
-		// if (!(this instanceof VoiceComponent)) {
-		// this.displayName = this.getLocale().getDisplayName();
-		// } else {
-		this.displayName = name;
-		// }
+		return getName();
 	}
 
 	// marytts-lang-en-5.1-beta1.jar

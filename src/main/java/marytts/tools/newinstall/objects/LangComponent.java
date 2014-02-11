@@ -36,14 +36,9 @@ public class LangComponent extends Component {
 		this.locale = locale;
 	}
 
-	/**
-	 * 
-	 * @param displayName
-	 *            the displayName to set
-	 */
 	@Override
-	public void setDisplayNameFromName(String name) {
-		this.displayName = this.getLocale().getDisplayName();
+	public String getDisplayName() {
+		return getLocale().getDisplayName();
 	}
 
 	/*
