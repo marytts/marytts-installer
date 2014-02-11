@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import marytts.tools.newinstall.enums.LogLevel;
 import marytts.tools.newinstall.enums.Status;
@@ -35,6 +36,7 @@ import org.apache.ivy.util.DefaultMessageLogger;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
 
@@ -58,7 +60,7 @@ public class Installer {
 	private InstallOptions installOptions;
 
 	// holds all currently available components
-	private List<Component> resources;
+	private Set<Component> resources;
 
 	// map storing all possible component values. Used for easy access when GUI sets the filtering options in the comboBoxes
 	private HashMap<String, HashSet<String>> attributeValues;
@@ -86,7 +88,7 @@ public class Installer {
 	public Installer(String[] args) {
 
 		logger.debug("Loading installer.");
-		this.resources = new ArrayList<Component>();
+		this.resources = Sets.newTreeSet();
 		this.cli = new InstallerCLI(args, this);
 		initAttributeValues();
 
