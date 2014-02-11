@@ -3,6 +3,7 @@
  */
 package marytts.tools.newinstall.objects;
 
+import java.util.Locale;
 import java.util.Observable;
 
 import marytts.tools.newinstall.enums.Status;
@@ -243,6 +244,11 @@ public class Component extends Observable implements Comparable<Component> {
 
 	public int compareTo(Component o) {
 		return this.toComparisonString().compareTo(o.toComparisonString());
+	}
+
+	public Locale getLocale() {
+		// TODO Auto-generated method stub
+		return Locale.getDefault();
 	}
 
 }
