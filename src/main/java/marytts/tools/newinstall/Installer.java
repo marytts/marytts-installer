@@ -62,9 +62,6 @@ public class Installer {
 	// holds all currently available components
 	private Set<Component> resources;
 
-	// map storing all possible component values. Used for easy access when GUI sets the filtering options in the comboBoxes
-	private HashMap<String, HashSet<String>> attributeValues;
-
 	// the instance of the command line interface which is created once the installer is started
 	private InstallerCLI cli;
 
@@ -74,23 +71,11 @@ public class Installer {
 
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.Installer.class.getName());
 
-	/**
-	 * initializes the attribute values to be stored in Installer for later usage in GUI and CLI
-	 */
-	private void initAttributeValues() {
-		this.attributeValues = new HashMap<String, HashSet<String>>();
-		this.attributeValues.put("locale", new HashSet<String>());
-		this.attributeValues.put("status", new HashSet<String>());
-		this.attributeValues.put("type", new HashSet<String>());
-		this.attributeValues.put("gender", new HashSet<String>());
-	}
-
 	public Installer(String[] args) {
 
 		logger.debug("Loading installer.");
 		this.resources = Sets.newTreeSet();
 		this.cli = new InstallerCLI(args, this);
-		initAttributeValues();
 
 		// test if user has specified mary path on command line. If not, determine directory Installer is run from
 		if (this.maryBasePath == null) {
@@ -367,7 +352,6 @@ public class Installer {
 			// as this method can be used to reparse the components, clear the existing ones first
 			this.resources.clear();
 
-			initAttributeValues();
 			for (String oneFileName : resourcesList) {
 				logger.debug("Parsing " + oneFileName);
 				if (oneFileName.startsWith("marytts-voice")) {
@@ -382,7 +366,6 @@ public class Installer {
 							+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
 					oneComponent.setStatus(getResourceStatus(artifactName));
 					this.resources.add(oneComponent);
-					storeAttributeValues(oneComponent);
 					logger.debug((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
 							: "Component ") + oneComponent.getName() + " added to resource list.");
 				} else if (oneFileName.startsWith("marytts-lang")) {
@@ -396,7 +379,6 @@ public class Installer {
 							+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
 					oneComponent.setStatus(getResourceStatus(artifactName));
 					this.resources.add(oneComponent);
-					storeAttributeValues(oneComponent);
 					logger.debug((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
 							: "Component ") + oneComponent.getName() + " added to resource list.");
 				}
@@ -427,27 +409,6 @@ public class Installer {
 			String artifactName = /* ari.getAttribute("organisation") + "-" + */ari.getName() + "-" + ari.getRevision() + "."
 					+ ari.getExt();
 			oneComponent.setStatus(getResourceStatus(artifactName));
-		}
-	}
-
-	/**
-	 * When a {@link Component} or {@link VoiceComponent} is parsed, it's attribute values are extracted and added to a hashMap in
-	 * order for the GUI and the CLI to access these values easily later.
-	 * 
-	 * @param oneComponent
-	 */
-	private void storeAttributeValues(Component oneComponent) {
-
-		logger.debug("Adding component's attribute values to attributeList");
-		this.attributeValues.get("status").add(oneComponent.getStatus().toString());
-		if (oneComponent instanceof VoiceComponent || oneComponent instanceof LangComponent) {
-			VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
-			this.attributeValues.get("locale").add(oneVoiceComponent.getLocale().toString());
-			this.attributeValues.get("type").add(oneVoiceComponent.getType());
-			this.attributeValues.get("gender").add(oneVoiceComponent.getGender());
-		} else if (oneComponent instanceof LangComponent) {
-			LangComponent oneLangComponent = (LangComponent) oneComponent;
-			this.attributeValues.get("locale").add(oneLangComponent.getLocale().toString());
 		}
 	}
 
@@ -561,13 +522,6 @@ public class Installer {
 		}
 
 		return resourcesToBeFiltered;
-	}
-
-	/**
-	 * @return the attributeValues
-	 */
-	public HashMap<String, HashSet<String>> getAttributeValues() {
-		return this.attributeValues;
 	}
 
 	/**

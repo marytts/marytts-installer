@@ -12,8 +12,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.io.IOException;
-import java.text.ParseException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -28,7 +26,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import marytts.tools.newinstall.Installer;
+import marytts.tools.newinstall.enums.Status;
 import marytts.tools.newinstall.objects.Component;
+import marytts.tools.newinstall.objects.LangComponent;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
@@ -421,8 +421,11 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 			fillComponentGroupPanels(this.installer.getAvailableComponents(locale, type, gender, status, null, voiceOnly));
 			this.statusBox.removeAllItems();
 			this.statusBox.addItem("all");
-			for (String oneStatus : this.installer.getAttributeValues().get("status")) {
-				this.statusBox.addItem(oneStatus);
+
+			for (Status oneStatus : Status.values()) {
+				if (!this.installer.getAvailableComponents(null, null, null, oneStatus.toString(), null, false).isEmpty()) {
+					this.statusBox.addItem(Status.AVAILABLE.toString());
+				}
 			}
 			this.statusBox.setSelectedIndex(0);
 		}
@@ -524,6 +527,8 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 				ComponentPanel componentPanel;
 				if (oneComponent instanceof VoiceComponent) {
 					componentPanel = new ComponentPanel((VoiceComponent) oneComponent, installer);
+				} else if (oneComponent instanceof LangComponent) {
+					componentPanel = new ComponentPanel((LangComponent) oneComponent, installer);
 				} else {
 					componentPanel = new ComponentPanel(oneComponent, installer);
 				}
@@ -556,28 +561,53 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 	}
 
 	private void fillComboBoxes() {
-		logger.debug("Filling comboBoxes with data retrieved from installer.getAttributeValues()");
-		HashMap<String, HashSet<String>> attributeValues = this.installer.getAttributeValues();
-		for (Map.Entry<String, HashSet<String>> oneEntry : attributeValues.entrySet()) {
-			JComboBox componentToFill = null;
-			String key = oneEntry.getKey();
-			if (key.equals("gender")) {
-				componentToFill = this.genderBox;
-			} else if (key.equals("locale")) {
-				componentToFill = this.localeBox;
-			} else if (key.equals("status")) {
-				componentToFill = this.statusBox;
-			} else if (key.equals("type")) {
-				componentToFill = this.typeBox;
+		logger.debug("Filling comboBoxes with possible values");
+		List<Component> components = this.installer.getAvailableComponents(null, null, null, null, null, false);
+
+		this.genderBox.addItem("all");
+		this.statusBox.addItem("all");
+		this.localeBox.addItem("all");
+		this.typeBox.addItem("all");
+
+		String status = null, gender = null, locale = null, type = null;
+
+		HashSet<String> genderValues = new HashSet<String>();
+		HashSet<String> statusValues = new HashSet<String>();
+		HashSet<String> localeValues = new HashSet<String>();
+		HashSet<String> typeValues = new HashSet<String>();
+		for (Component oneComponent : components) {
+			status = oneComponent.getStatus().toString();
+			if (statusValues.add(status)) {
+				this.statusBox.addItem(status);
 			}
 
-			componentToFill.addItem("all");
-			for (String oneValue : attributeValues.get(key)) {
-				componentToFill.addItem(oneValue);
-				logger.debug(oneValue + " was added to " + key + " comboBox");
+			if (oneComponent instanceof VoiceComponent) {
+				VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
+				gender = oneVoiceComponent.getGender();
+				if (genderValues.add(gender)) {
+					this.genderBox.addItem(gender);
+				}
+				type = oneVoiceComponent.getType();
+				if (typeValues.add(type)) {
+					this.typeBox.addItem(type);
+				}
+				locale = oneVoiceComponent.getLocale().toString();
+				if (localeValues.add(locale)) {
+					this.localeBox.addItem(locale);
+				}
+			} else if (oneComponent instanceof LangComponent) {
+				LangComponent oneLangComponent = (LangComponent) oneComponent;
+				locale = oneLangComponent.getLocale().toString();
+				if (localeValues.add(locale)) {
+					this.localeBox.addItem(locale);
+				}
 			}
-			componentToFill.setSelectedIndex(0);
 		}
+
+		this.genderBox.setSelectedIndex(0);
+		this.typeBox.setSelectedIndex(0);
+		this.localeBox.setSelectedIndex(0);
+		this.statusBox.setSelectedIndex(0);
 	}
 
 	/**
