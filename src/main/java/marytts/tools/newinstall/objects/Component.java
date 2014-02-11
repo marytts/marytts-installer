@@ -40,7 +40,11 @@ public class Component extends Observable implements Comparable<Component> {
 	 * @return the name
 	 */
 	public String getName() {
-		return descriptor.getExtraAttribute("name");
+		String name = descriptor.getExtraAttribute("name");
+		if (name == null) {
+			name = descriptor.getModuleRevisionId().getName();
+		}
+		return name;
 	}
 
 	/**
