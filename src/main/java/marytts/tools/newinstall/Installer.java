@@ -354,34 +354,22 @@ public class Installer {
 
 			for (String oneFileName : resourcesList) {
 				logger.debug("Parsing " + oneFileName);
+				URL oneResource = Resources.getResource(oneFileName);
+				ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
+						oneResource, true);
+				Component oneComponent = new Component(descriptor);
 				if (oneFileName.startsWith("marytts-voice")) {
-
-					URL oneResource = Resources.getResource(oneFileName);
-					ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
-							oneResource, true);
-					VoiceComponent oneComponent = new VoiceComponent(descriptor);
-
-					ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
-					String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName()
-							+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
-					oneComponent.setStatus(getResourceStatus(artifactName));
-					this.resources.add(oneComponent);
-					logger.debug((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
-							: "Component ") + oneComponent.getName() + " added to resource list.");
+					oneComponent = new VoiceComponent(descriptor);
 				} else if (oneFileName.startsWith("marytts-lang")) {
-
-					URL oneResource = Resources.getResource(oneFileName);
-					ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
-							oneResource, true);
-					Component oneComponent = new Component(descriptor);
-					ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
-					String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName()
-							+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
-					oneComponent.setStatus(getResourceStatus(artifactName));
-					this.resources.add(oneComponent);
-					logger.debug((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent "
-							: "Component ") + oneComponent.getName() + " added to resource list.");
+					oneComponent = new LangComponent(descriptor);
 				}
+				ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
+				String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName()
+						+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
+				oneComponent.setStatus(getResourceStatus(artifactName));
+				this.resources.add(oneComponent);
+				logger.debug((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent " : "Component ")
+						+ oneComponent.getName() + " added to resource list.");
 			}
 		} catch (IOException ioe) {
 			logger.error("Problem reading in file: " + ioe.getMessage());
