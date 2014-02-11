@@ -2,6 +2,7 @@ package marytts.tools.newinstall.objects;
 
 import java.util.Locale;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.log4j.Logger;
 
@@ -82,15 +83,22 @@ public class VoiceComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return "VoiceComponent [gender=" + this.gender + ", type=" + this.type + ", locale=" + this.locale + ", name="
-				+ this.name + ", displayName=" + this.displayName + ", version=" + this.version + ", licenseName="
-				+ this.licenseName + ", licenseShortName=" + this.licenseShortName + ", description=" + this.description
-				+ ", status=" + this.status + ", size=" + this.size + "]";
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Voice component: ").append(this.name).append("\n");
+		sb.append("locale: ").append(this.locale).append("; gender: ").append(this.gender).append("; type: ").append(this.type)
+				.append("\n");
+		sb.append("version: ").append(this.version).append("; status: ").append(this.status).append("; size: ")
+				.append(FileUtils.byteCountToDisplaySize(this.size)).append("\n");
+		sb.append("license name: ").append(this.licenseName).append("\n");
+		sb.append("description: ").append(this.description.replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
+
+		return sb.toString();
 	}
 
 	@Override
 	protected String toComparisonString() {
-		return this.getClass().getName().concat(getLocale().getDisplayName()).concat(getGender()).concat(getDisplayName());
+		return "_".concat(getLocale().getDisplayName()).concat(getGender()).concat(getDisplayName());
 	}
 
 }

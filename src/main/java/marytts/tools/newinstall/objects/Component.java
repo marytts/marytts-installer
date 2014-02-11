@@ -8,9 +8,9 @@ import java.util.Observable;
 
 import marytts.tools.newinstall.enums.Status;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -233,9 +233,16 @@ public class Component extends Observable implements Comparable<Component> {
 	 */
 	@Override
 	public String toString() {
-		return "Component [name=" + this.name + ", version=" + this.version + ", licenseName=" + this.licenseName
-				+ ", licenseShortName=" + this.licenseShortName + ", description=" + this.description + ", status=" + this.status
-				+ ", size=" + this.size + "]";
+
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Component: ").append(this.name).append("\n");
+		sb.append("version: ").append(this.version).append("; status: ").append(this.status).append("; size: ")
+				.append(FileUtils.byteCountToDisplaySize(this.size)).append("\n");
+		sb.append("license name: ").append(this.licenseName).append("\n");
+		sb.append("description: ").append(this.description.replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
+
+		return sb.toString();
 	}
 
 	protected String toComparisonString() {

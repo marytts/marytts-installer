@@ -2,6 +2,7 @@ package marytts.tools.newinstall.objects;
 
 import java.util.Locale;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 
 public class LangComponent extends Component {
@@ -52,10 +53,16 @@ public class LangComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return "LangComponent [locale=" + this.locale + ", name=" + this.name + ", displayName=" + this.displayName
-				+ ", version=" + this.version + ", licenseName=" + this.licenseName + ", licenseShortName="
-				+ this.licenseShortName + ", description=" + this.description + ", status=" + this.status + ", size=" + this.size
-				+ "]";
+		StringBuilder sb = new StringBuilder();
+
+		sb.append("Language component: ").append(this.name).append("\n");
+		sb.append("locale: ").append(this.locale).append("\n");
+		sb.append("version: ").append(this.version).append("; status: ").append(this.status).append("; size: ")
+				.append(FileUtils.byteCountToDisplaySize(this.size)).append("\n");
+		sb.append("license name: ").append(this.licenseName).append("\n");
+		sb.append("description: ").append(this.description.replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
+
+		return sb.toString();
 	}
 
 	@Override
