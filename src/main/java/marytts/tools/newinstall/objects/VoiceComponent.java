@@ -1,5 +1,7 @@
 package marytts.tools.newinstall.objects;
 
+import java.util.Locale;
+
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.log4j.Logger;
 
@@ -9,13 +11,22 @@ public class VoiceComponent extends Component {
 
 	private String gender;
 	private String type;
+	private Locale locale;
 
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.objects.VoiceComponent.class.getName());
 
 	public VoiceComponent(ModuleDescriptor descriptor) {
 		super(descriptor);
+		setLocale(new Locale(descriptor.getExtraAttribute("locale")));
 		setGender(descriptor.getExtraAttribute("gender"));
 		setType(descriptor.getExtraAttribute("type"));
+	}
+
+	/**
+	 * @return the locale
+	 */
+	public Locale getLocale() {
+		return this.locale;
 	}
 
 	/**
@@ -32,6 +43,20 @@ public class VoiceComponent extends Component {
 	public String getType() {
 
 		return this.type;
+	}
+
+	/**
+	 * @param locale
+	 *            the locale to set
+	 */
+	private void setLocale(Locale locale) {
+
+		// if (locale.toString().equalsIgnoreCase("en-us")) {
+		// locale = Locale.US;
+		// } else if (locale.toString().equalsIgnoreCase("en-gb")) {
+		// locale = Locale.UK;
+		// }
+		this.locale = locale;
 	}
 
 	/**
@@ -59,17 +84,19 @@ public class VoiceComponent extends Component {
 	 */
 	@Override
 	public String toString() {
-		return "VoiceComponent [gender=" + this.gender + ", type=" + this.type + ", name=" + this.name + ", locale="
-				+ this.locale + ", version=" + this.version + ", licenseName=" + this.licenseName + ", licenseShortName="
-				+ this.licenseShortName + ", description=" + this.description + ", status=" + this.status + ", size=" + this.size
-				+ "]";
+		return "VoiceComponent [gender=" + this.gender + ", type=" + this.type + ", locale=" + this.locale + ", name="
+				+ this.name + ", displayName=" + this.displayName + ", version=" + this.version + ", licenseName="
+				+ this.licenseName + ", licenseShortName=" + this.licenseShortName + ", description=" + this.description
+				+ ", status=" + this.status + ", size=" + this.size + "]";
 	}
 
 	@Override
 	public int compareTo(Component o) {
+		
+		
 
 		VoiceComponent newO = (VoiceComponent) o;
-		return ComparisonChain.start().compare(super.locale.toString(), newO.getLocale().toString())
+		return ComparisonChain.start().compare(this.locale.toString(), newO.getLocale().toString())
 				.compare(this.gender, newO.getGender()).compare(super.name, newO.getName()).result();
 	}
 

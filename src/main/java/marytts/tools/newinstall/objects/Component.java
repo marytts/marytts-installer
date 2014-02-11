@@ -29,7 +29,6 @@ public class Component extends Observable implements Comparable<Component> {
 	private ModuleDescriptor moduleDescriptor;
 	protected String name;
 	protected String displayName;
-	protected Locale locale;
 	protected String version;
 	protected String licenseName;
 	protected String licenseShortName;
@@ -44,7 +43,6 @@ public class Component extends Observable implements Comparable<Component> {
 		setDescription(descriptor.getDescription());
 		setLicenseName(descriptor.getLicenses()[0].getName());
 		setLicenseShortName(descriptor.getExtraAttribute("license"));
-		setLocale(new Locale(descriptor.getExtraAttribute("locale")));
 		setVersion(descriptor.getAttribute("revision"));
 		setName(descriptor.getExtraAttribute("name"));
 		setDisplayNameFromName(descriptor.getExtraAttribute("name"));
@@ -60,20 +58,6 @@ public class Component extends Observable implements Comparable<Component> {
 		}
 		setSize(parsedLong);
 
-	}
-
-	/**
-	 * @param locale
-	 *            the locale to set
-	 */
-	private void setLocale(Locale locale) {
-
-		// if (locale.toString().equalsIgnoreCase("en-us")) {
-		// locale = Locale.US;
-		// } else if (locale.toString().equalsIgnoreCase("en-gb")) {
-		// locale = Locale.UK;
-		// }
-		this.locale = locale;
 	}
 
 	/**
@@ -122,14 +106,6 @@ public class Component extends Observable implements Comparable<Component> {
 	public String getName() {
 
 		return this.name;
-	}
-
-	/**
-	 * @return the locale
-	 */
-	public Locale getLocale() {
-
-		return this.locale;
 	}
 
 	/**
@@ -224,11 +200,11 @@ public class Component extends Observable implements Comparable<Component> {
 	 *            the displayName to set
 	 */
 	public void setDisplayNameFromName(String name) {
-		if (!(this instanceof VoiceComponent)) {
-			this.displayName = this.getLocale().getDisplayName();
-		} else {
-			this.displayName = name;
-		}
+		// if (!(this instanceof VoiceComponent)) {
+		// this.displayName = this.getLocale().getDisplayName();
+		// } else {
+		this.displayName = name;
+		// }
 	}
 
 	// marytts-lang-en-5.1-beta1.jar
@@ -262,16 +238,15 @@ public class Component extends Observable implements Comparable<Component> {
 	 */
 	@Override
 	public String toString() {
-		return "Component [name=" + this.name + ", locale=" + this.locale + ", version=" + this.version + ", licenseName="
-				+ this.licenseName + ", licenseShortName=" + this.licenseShortName + ", description=" + this.description
-				+ ", status=" + this.status + ", size=" + this.size + "]";
+		return "Component [name=" + this.name + ", version=" + this.version + ", licenseName=" + this.licenseName
+				+ ", licenseShortName=" + this.licenseShortName + ", description=" + this.description + ", status=" + this.status
+				+ ", size=" + this.size + "]";
 	}
 
 	@Override
 	public int compareTo(Component o) {
 
-		return ComparisonChain.start().compare(this.locale.toString(), o.getLocale().toString()).compare(this.name, o.getName())
-				.result();
+		return this.name.compareTo(o.getName());
 	}
 
 }

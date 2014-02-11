@@ -15,6 +15,7 @@ import java.util.List;
 import marytts.tools.newinstall.enums.LogLevel;
 import marytts.tools.newinstall.enums.Status;
 import marytts.tools.newinstall.objects.Component;
+import marytts.tools.newinstall.objects.LangComponent;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.commons.io.FileUtils;
@@ -436,12 +437,15 @@ public class Installer {
 	private void storeAttributeValues(Component oneComponent) {
 
 		logger.debug("Adding component's attribute values to attributeList");
-		this.attributeValues.get("locale").add(oneComponent.getLocale().toString());
 		this.attributeValues.get("status").add(oneComponent.getStatus().toString());
-		if (oneComponent instanceof VoiceComponent) {
+		if (oneComponent instanceof VoiceComponent || oneComponent instanceof LangComponent) {
 			VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
+			this.attributeValues.get("locale").add(oneVoiceComponent.getLocale().toString());
 			this.attributeValues.get("type").add(oneVoiceComponent.getType());
 			this.attributeValues.get("gender").add(oneVoiceComponent.getGender());
+		} else if (oneComponent instanceof LangComponent) {
+			LangComponent oneLangComponent = (LangComponent) oneComponent;
+			this.attributeValues.get("locale").add(oneLangComponent.getLocale().toString());
 		}
 	}
 
@@ -459,14 +463,6 @@ public class Installer {
 	public List<Component> getAvailableComponents(String locale, String type, String gender, String status, String name,
 			boolean voiceOnly) {
 
-//		/* @formatter:off */
-//		logger.info("Filtering resources by " + ((locale == null) ? "" : "locale=" + locale + ";")
-//										      + ((type == null) ? "" : "locale=" + type + ";") 
-//										      + ((gender== null) ? "" : "locale=" + gender + ";")
-//										      + ((status == null) ? "" : "locale=" + status + ";")
-//										      + ((name == null) ? "" : "locale=" + name + ";"));
-//		/* @formatter:on */
-
 		List<Component> resourcesToBeFiltered = new ArrayList<Component>(this.resources);
 
 		// stores the size of the voice component list before filtering.
@@ -481,22 +477,28 @@ public class Installer {
 			return resourcesToBeFiltered;
 		}
 
-		// int sizeAfter = resourcesToBeFiltered.size();
 		if (locale != null && !locale.equals("all")) {
 			logger.debug("filtering by " + "locale=" + locale);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
-				if (!oneComponent.getLocale().toString().equalsIgnoreCase(locale)) {
-					// logger.debug("Removed " + oneComponent + " as its locale=" + locale);
+				if (!(oneComponent instanceof VoiceComponent || oneComponent instanceof LangComponent)) {
+					logger.debug("Removed " + oneComponent + " as it is not a VoiceComponent or LangComponent");
 					it.remove();
+					continue;
+				}
+				if (oneComponent instanceof VoiceComponent) {
+					VoiceComponent oneVoiceComponent = (VoiceComponent) oneComponent;
+					if (!oneVoiceComponent.getLocale().toString().equalsIgnoreCase(locale)) {
+						it.remove();
+					}
+				}
+				if (oneComponent instanceof LangComponent) {
+					LangComponent oneLangComponent = (LangComponent) oneComponent;
+					if (!oneLangComponent.getLocale().toString().equalsIgnoreCase(locale)) {
+						it.remove();
+					}
 				}
 			}
-			// sizeAfter = resourcesToBeFiltered.size();
-			// logger.debug("Resource list size after filtering: " + sizeAfter);
-			// if (sizeBefore == sizeAfter) {
-			// logger.info("Locale didn't affect filtering");
-			// }
-			// sizeBefore = sizeAfter;
 		}
 		if (type != null && !type.equals("all")) {
 			logger.debug("filtering by " + "type=" + type);
