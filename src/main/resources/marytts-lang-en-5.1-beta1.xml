@@ -6,4 +6,7 @@
 	<publications>
 		<artifact e:size="6941600" />
 	</publications>
+	<dependencies>
+		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1" />
+	</dependencies>
 </ivy-module>
