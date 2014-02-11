@@ -91,7 +91,7 @@ public class InstallerCLI {
 		this.options.addOption("g", "gender", true, "only with --list: filter by gender");
 		this.options.addOption("t", "type", true, "only with --list: filter by voice type (hsmm/unit-selection)");
 		this.options.addOption("s", "status", true, "only with --list: filter by download status");
-		this.options.addOption("a", "advanced", false, "only with --list: list language and marytts components as well");
+		this.options.addOption("a", "all", false, "only with --list: list language and marytts components as well");
 
 		this.options.addOption(OptionBuilder.withLongOpt("gui").withDescription("starts GUI").create());
 		this.options.addOption(OptionBuilder.withLongOpt("nogui").withDescription("Do not use GUI, force usage of command line.")
@@ -146,7 +146,7 @@ public class InstallerCLI {
 		// check for right input syntax (--list has to be present when listing constraints are present)
 		else if (((this.commandLine.hasOption("name") || this.commandLine.hasOption("locale")
 				|| this.commandLine.hasOption("gender") || this.commandLine.hasOption("type"))
-				|| this.commandLine.hasOption("advanced") || this.commandLine.hasOption("status"))
+				|| this.commandLine.hasOption("all") || this.commandLine.hasOption("status"))
 				&& !this.commandLine.hasOption("list")) {
 			logger.error("Invalid syntax. Please use the following syntax");
 			this.helper.printHelp(MARYTTSINSTALLER, this.options);
@@ -156,12 +156,12 @@ public class InstallerCLI {
 		// list all components
 		if (this.commandLine.hasOption("list")) {
 			List<Component> resources;
-			// --list --advanced
+			// --list --all
 			String locale = null, type = null, gender = null, status = null, name = null;
 			boolean voiceOnly = true;
 
-			if (this.commandLine.hasOption("advanced")) {
-				// --list --advanced
+			if (this.commandLine.hasOption("all")) {
+				// --list --all
 				voiceOnly = false;
 			}
 			if (this.commandLine.hasOption("locale") || this.commandLine.hasOption('l')) {
