@@ -3,20 +3,14 @@
  */
 package marytts.tools.newinstall.objects;
 
-import java.util.Locale;
 import java.util.Observable;
 
 import marytts.tools.newinstall.enums.Status;
 
 import org.apache.ivy.core.module.descriptor.Artifact;
-import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
-import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
-import org.apache.ivy.core.module.id.ArtifactRevisionId;
-import org.apache.ivy.core.module.id.ModuleRevisionId;
-import org.apache.log4j.Logger;
 
-import com.google.common.collect.ComparisonChain;
+import org.apache.log4j.Logger;
 
 /**
  * Java object representing marytts components
@@ -243,10 +237,12 @@ public class Component extends Observable implements Comparable<Component> {
 				+ ", size=" + this.size + "]";
 	}
 
-	@Override
-	public int compareTo(Component o) {
+	protected String toComparisonString() {
+		return this.getClass().getName().concat(getDisplayName());
+	}
 
-		return this.name.compareTo(o.getName());
+	public int compareTo(Component o) {
+		return this.toComparisonString().compareTo(o.toComparisonString());
 	}
 
 }

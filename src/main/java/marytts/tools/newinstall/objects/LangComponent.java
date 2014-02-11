@@ -4,8 +4,6 @@ import java.util.Locale;
 
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 
-import com.google.common.collect.ComparisonChain;
-
 public class LangComponent extends Component {
 
 	private Locale locale;
@@ -61,11 +59,8 @@ public class LangComponent extends Component {
 	}
 
 	@Override
-	public int compareTo(Component o) {
-
-		LangComponent newO = (LangComponent) o;
-		return ComparisonChain.start().compare(this.locale.toString(), newO.getLocale().toString())
-				.compare(super.name, newO.getName()).result();
+	protected String toComparisonString() {
+		return this.getClass().getName().concat(getLocale().getDisplayName()).concat(getDisplayName());
 	}
 
 }

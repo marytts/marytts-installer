@@ -5,8 +5,6 @@ import java.util.Locale;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.log4j.Logger;
 
-import com.google.common.collect.ComparisonChain;
-
 public class VoiceComponent extends Component {
 
 	private String gender;
@@ -91,13 +89,8 @@ public class VoiceComponent extends Component {
 	}
 
 	@Override
-	public int compareTo(Component o) {
-		
-		
-
-		VoiceComponent newO = (VoiceComponent) o;
-		return ComparisonChain.start().compare(this.locale.toString(), newO.getLocale().toString())
-				.compare(this.gender, newO.getGender()).compare(super.name, newO.getName()).result();
+	protected String toComparisonString() {
+		return this.getClass().getName().concat(getLocale().getDisplayName()).concat(getGender()).concat(getDisplayName());
 	}
 
 }
