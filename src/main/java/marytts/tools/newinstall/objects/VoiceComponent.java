@@ -8,8 +8,6 @@ import org.apache.log4j.Logger;
 
 public class VoiceComponent extends Component {
 
-	private String gender;
-	private String type;
 	private Locale locale;
 
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.objects.VoiceComponent.class.getName());
@@ -17,8 +15,6 @@ public class VoiceComponent extends Component {
 	public VoiceComponent(ModuleDescriptor descriptor) {
 		super(descriptor);
 		setLocale(new Locale(descriptor.getExtraAttribute("locale")));
-		setGender(descriptor.getExtraAttribute("gender"));
-		setType(descriptor.getExtraAttribute("type"));
 	}
 
 	/**
@@ -32,16 +28,14 @@ public class VoiceComponent extends Component {
 	 * @return the gender
 	 */
 	public String getGender() {
-
-		return this.gender;
+		return descriptor.getExtraAttribute("gender");
 	}
 
 	/**
 	 * @return the type
 	 */
 	public String getType() {
-
-		return this.type;
+		return descriptor.getExtraAttribute("type");
 	}
 
 	/**
@@ -58,24 +52,6 @@ public class VoiceComponent extends Component {
 		this.locale = locale;
 	}
 
-	/**
-	 * @param gender
-	 *            the gender to set
-	 */
-	private void setGender(String gender) {
-
-		this.gender = gender;
-	}
-
-	/**
-	 * @param type
-	 *            the type to set
-	 */
-	private void setType(String type) {
-
-		this.type = type;
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -85,13 +61,13 @@ public class VoiceComponent extends Component {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 
-		sb.append("Voice component: ").append(this.name).append("\n");
-		sb.append("locale: ").append(this.locale).append("; gender: ").append(this.gender).append("; type: ").append(this.type)
+		sb.append("Voice component: ").append(getName()).append("\n");
+		sb.append("locale: ").append(getLocale()).append("; gender: ").append(getGender()).append("; type: ").append(getType())
 				.append("\n");
-		sb.append("version: ").append(this.version).append("; status: ").append(this.status).append("; size: ")
-				.append(FileUtils.byteCountToDisplaySize(this.size)).append("\n");
-		sb.append("license name: ").append(this.licenseName).append("\n");
-		sb.append("description: ").append(this.description.replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
+		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus()).append("; size: ")
+				.append(FileUtils.byteCountToDisplaySize(this.getSize())).append("\n");
+		sb.append("license name: ").append(getLicenseName()).append("\n");
+		sb.append("description: ").append(getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
 
 		return sb.toString();
 	}

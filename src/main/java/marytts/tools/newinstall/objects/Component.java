@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  */
 public class Component extends Observable implements Comparable<Component> {
 
-	private ModuleDescriptor descriptor;
+	protected ModuleDescriptor descriptor;
 
 	private Status status;
 
