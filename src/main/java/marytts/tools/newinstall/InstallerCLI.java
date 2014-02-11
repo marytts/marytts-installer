@@ -185,7 +185,7 @@ public class InstallerCLI {
 				name = this.commandLine.getOptionValue("name");
 			}
 			resources = this.installer.getAvailableComponents(locale, type, gender, status, name, voiceOnly);
-			printSortedComponents(resources);
+			printComponents(resources);
 		} else if (this.commandLine.hasOption(INSTALL)) {
 			installComponents();
 		}
@@ -278,44 +278,44 @@ public class InstallerCLI {
 		});
 	}
 
-	/**
-	 * sorts components in resources list by their natural ordering as specified by {@link Component#compareTo(Component)}.
-	 * 
-	 * @param resources
-	 *            holds the voice components that are locally available.
-	 */
-	private void printSortedComponents(List<Component> resources) {
-
-		List<Component> voiceResources = new ArrayList<Component>();
-		List<Component> otherResources = new ArrayList<Component>();
-
-		for (Component oneComponent : resources) {
-			if (oneComponent instanceof VoiceComponent) {
-				voiceResources.add(oneComponent);
-			} else {
-				otherResources.add(oneComponent);
-			}
-		}
-
-		Collections.sort(voiceResources);
-		System.out.println("");
-
-		if (!voiceResources.isEmpty()) {
-			System.out.println("Listing voice components:");
-			printComponents(voiceResources);
-			System.out.println("===========================");
-		}
-
-		if (!otherResources.isEmpty()) {
-			Collections.sort(otherResources);
-			System.out.println("Listing other components:");
-			printComponents(otherResources);
-		}
-
-		if (otherResources.isEmpty() && voiceResources.isEmpty()) {
-			System.out.println("No components to display!");
-		}
-	}
+	// /**
+	// * sorts components in resources list by their natural ordering as specified by {@link Component#compareTo(Component)}.
+	// *
+	// * @param resources
+	// * holds the voice components that are locally available.
+	// */
+	// private void printSortedComponents(List<Component> resources) {
+	//
+	// List<Component> voiceResources = new ArrayList<Component>();
+	// List<Component> otherResources = new ArrayList<Component>();
+	//
+	// for (Component oneComponent : resources) {
+	// if (oneComponent instanceof VoiceComponent) {
+	// voiceResources.add(oneComponent);
+	// } else {
+	// otherResources.add(oneComponent);
+	// }
+	// }
+	//
+	// Collections.sort(voiceResources);
+	// System.out.println("");
+	//
+	// if (!voiceResources.isEmpty()) {
+	// System.out.println("Listing voice components:");
+	// printComponents(voiceResources);
+	// System.out.println("===========================");
+	// }
+	//
+	// if (!otherResources.isEmpty()) {
+	// Collections.sort(otherResources);
+	// System.out.println("Listing other components:");
+	// printComponents(otherResources);
+	// }
+	//
+	// if (otherResources.isEmpty() && voiceResources.isEmpty()) {
+	// System.out.println("No components to display!");
+	// }
+	// }
 
 	/**
 	 * used to format the component list so as to be put out on in the appropriate format when listing components.
@@ -327,38 +327,10 @@ public class InstallerCLI {
 
 		StringBuilder sb = new StringBuilder();
 
-		String prevLang = "";
-		for (Component oneComp : resources) {
-
-			if (oneComp instanceof VoiceComponent) {
-				VoiceComponent voiceOneComp = (VoiceComponent) oneComp;
-				if (!prevLang.equals(voiceOneComp.getLocale().toString())) {
-					sb.append("##" + voiceOneComp.getLocale().toString() + " - " + voiceOneComp.getLocale().getDisplayLanguage()
-							+ "##\n");
-				}
-				sb.append("\t" + "Voice component: " + voiceOneComp.getName() + "\n");
-				sb.append("\t" + "gender: " + voiceOneComp.getGender() + "; ");
-				sb.append("" + "type: " + voiceOneComp.getType() + "; ");
-				sb.append("" + "version: " + voiceOneComp.getVersion() + "; ");
-				sb.append("" + "status: " + voiceOneComp.getStatus() + "; ");
-				sb.append("" + "size: " + FileUtils.byteCountToDisplaySize(voiceOneComp.getSize()) + "; ");
-				sb.append("" + "license name: " + voiceOneComp.getLicenseName() + "\n");
-				sb.append("\t" + "description: "
-						+ voiceOneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ") + "");
-				sb.append("\n\n");
-				prevLang = voiceOneComp.getLocale().toString();
-			} else {
-				if (!prevLang.equals(oneComp.getLocale().toString())) {
-					sb.append("##" + oneComp.getLocale().toString() + " - " + oneComp.getLocale().getDisplayLanguage() + "##\n");
-				}
-				sb.append("\t" + "Component: " + oneComp.getName() + "\n");
-				sb.append("\t" + "version: " + oneComp.getVersion() + "; ");
-				sb.append("" + "license name: " + oneComp.getLicenseName() + "\n");
-				sb.append("\t" + "description: " + oneComp.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " ")
-						+ "");
-				sb.append("\n\n");
-				prevLang = oneComp.getLocale().toString();
-			}
+		sb.append("\nAvailable components:\n\n");
+		
+		for (Component oneComponent : resources) {
+			sb.append(oneComponent.toString()).append("\n\n");
 		}
 
 		sb.append("Total: " + resources.size() + " components");
