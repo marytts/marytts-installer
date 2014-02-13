@@ -201,12 +201,15 @@ public class InstallerCLI {
 		String componentName = this.commandLine.getOptionValue(INSTALL);
 		try {
 			List<Component> componentInList = this.installer.getAvailableComponents(null, null, null, null, componentName, false);
-			Component component = componentInList.get(0);
+			Component component = null;
 			if (componentInList.isEmpty() || componentInList.size() > 1) {
 				logger.error("\"" + componentName + "\""
 						+ " is not a valid component name. Use --list to see available components!");
 				System.exit(1);
-			} else if (!this.assumeYes) {
+			} else {
+				component = componentInList.get(0);
+			}
+			if (!this.assumeYes) {
 				List<String> dependencies = this.installer.retrieveDependencies(component);
 
 				StringBuilder sb = new StringBuilder();
@@ -328,7 +331,7 @@ public class InstallerCLI {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("\nAvailable components:\n\n");
-		
+
 		for (Component oneComponent : resources) {
 			sb.append(oneComponent.toString()).append("\n\n");
 		}
