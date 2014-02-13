@@ -12,10 +12,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -541,20 +539,16 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 
 				this.voicesGroupPanel.add(componentPanel);
 				this.voicesGroupPanel.add(Box.createVerticalGlue());
-
-				// else {
-				// ComponentPanel componentPanel = new ComponentPanel(oneComponent, installer);
-				// logger.debug("Created new ComponentPanel for component " + oneComponent.getName()
-				// + " with preferred dimensions: " + componentPanel.getPreferredSize());
-				// this.languagesGroupPanel.add(componentPanel);
-				// this.languagesGroupPanel.add(Box.createVerticalGlue());
-				// }
 			}
 		}
-		// logger.debug(this.languagesScrollPane.getVerticalScrollBar().getValue()
-		// + " is the position of language pane vertical scroll bar");
-		// this.languagesScrollPane.getVerticalScrollBar().setValue(0);
-		// this.voicesScrollPane.getVerticalScrollBar().setValue(0);
+
+		// needs to be done with invokeLater, otherwise it doesn't work. See
+		// http://stackoverflow.com/questions/1166072/setting-scroll-bar-on-a-jscrollpane
+		javax.swing.SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				InstallerGUI.this.voicesScrollPane.getVerticalScrollBar().setValue(0);
+			}
+		});
 		invalidate();
 		validate();
 		repaint();
