@@ -10,5 +10,6 @@
 	</publications>
 	<dependencies>
 		<dependency org="marytts" name="marytts-lang-en" rev="5.1-beta1" />
+		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1" />
 	</dependencies>
 </ivy-module>

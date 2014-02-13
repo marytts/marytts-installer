@@ -227,9 +227,6 @@ public class InstallerCLI {
 					sb.append(" (" + FileUtils.byteCountToDisplaySize(this.installer.getSizeOfComponentByName(oneDepAsResource))
 							+ ")");
 					sb.append("\n");
-					if (dependencies.size() - 1 != dependencies.indexOf(oneDep)) {
-						sb.append(", ");
-					}
 				}
 				System.out.println(sb.toString());
 				Scanner scanner = new Scanner(System.in);
