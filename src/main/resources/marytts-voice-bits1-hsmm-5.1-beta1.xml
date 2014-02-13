@@ -2,13 +2,14 @@
 	<info organisation="marytts" module="voice-bits1-hsmm" revision="5.1-beta1" e:locale="de" e:name="bits1-hsmm" e:type="hsmm"
 		e:gender="female">
 		<license name="Creative Commons Attribution-NoDerivs 3.0 Unported" url="http://creativecommons.org/licenses/by-nd/3.0/" />
-		<description>A female German Hidden semi-Markov model voice, built from voice recordings provided by the BITS project at the Bavarian Archive of Speech Signals.</description>
+		<description>A female German Hidden semi-Markov model voice, built from voice recordings provided by the BITS project at the
+			Bavarian Archive of Speech Signals.</description>
 	</info>
 	<publications>
 		<artifact e:size="1362565" />
 	</publications>
 	<dependencies>
-		<dependency org="marytts" name="marytts-lang-de" rev="5.1-beta1"/>
-		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1"/>
+		<dependency org="marytts" name="marytts-lang-de" rev="5.1-beta1" />
+		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1" />
 	</dependencies>
 </ivy-module>
