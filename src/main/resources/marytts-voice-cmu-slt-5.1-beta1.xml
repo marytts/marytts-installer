@@ -1,0 +1,17 @@
+<ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
+	<info organisation="marytts" module="voice-cmu-slt" revision="5.1-beta1" e:locale="en-US" e:name="cmu-slt" e:type="unit selection"
+		e:gender="female">
+		<license name="Arctic License" url="http://mary.dfki.de/download/voices/arctic-license.html" />
+		<description>A female US English unit selection model voice, built from voice recordings provided by Carnegie Mellon
+			University.</description>
+	</info>
+	<publications>
+		<artifact e:size="316832" />
+		<artifact e:size="105605247" type="zip"
+			url="http://diax.coli.uni-saarland.de/artifactory/libs-release-local/marytts/voice-cmu-slt/5.1-beta1/voice-cmu-slt-5.1-beta1-data.zip" />
+	</publications>
+	<dependencies>
+		<dependency org="marytts" name="marytts-lang-en" rev="5.1-beta1" />
+		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1" />
+	</dependencies>
+</ivy-module>
