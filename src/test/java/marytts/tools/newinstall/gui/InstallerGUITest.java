@@ -39,12 +39,10 @@ public class InstallerGUITest {
 		this.testFrame.show();
 	}
 
-	@Test
 	public void setUpTest() {
 		this.testFrame.checkBox("advancedCheckBox").requireNotSelected();
 	}
 
-	@Test
 	public void requirePopulated() {
 		// needs update with arguments
 		if (this.installer.getAvailableComponents(null, null, null, null, null, false) != null) {
