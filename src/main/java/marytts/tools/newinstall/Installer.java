@@ -115,8 +115,9 @@ public class Installer {
 	 * creates an Ivy instance and sets necessary options
 	 */
 	public void loadIvy() {
-		logger.info("Creating new Ivy instance");
+		logger.info("Starting Ivy ...");
 		this.ivy = Ivy.newInstance(this.ivySettings);
+		logger.debug("Setting log level to " + this.logLevel.toString());
 		this.ivy.getLoggerEngine().setDefaultLogger(new DefaultMessageLogger(this.logLevel.ordinal()));
 
 		this.resolveOptions = new ResolveOptions().setOutputReport(false);
@@ -126,8 +127,10 @@ public class Installer {
 	public void loadIvySettings() throws ParseException, IOException {
 		this.ivySettings = new IvySettings();
 		this.ivySettings.setVariable("mary.base", this.maryBasePath);
-		logger.debug("Loading ivysettings.xml");
+		logger.debug("Loading ivysettings.xml ...");
 		this.ivySettings.load(Resources.getResource("ivysettings.xml"));
+		logger.debug("New ivySettings: " + this.ivySettings.toString());
+
 	}
 
 	protected void setLogLevel(LogLevel logLevel) {
@@ -135,45 +138,12 @@ public class Installer {
 		this.logLevel = logLevel;
 	}
 
-	// /**
-	// * Helper method used to manipulate the ivy log level
-	// *
-	// * @param logLevel
-	// */
-	// protected void setLogLevel(LogLevel logLevel) {
-	// int ivyLevel;
-	// switch (logLevel) {
-	// case error:
-	// ivyLevel = 0;
-	// break;
-	// case warn:
-	// ivyLevel = 1;
-	// break;
-	// case info:
-	// ivyLevel = 2;
-	// break;
-	// case verbose:
-	// ivyLevel = 3;
-	// break;
-	// case debug:
-	// ivyLevel = 4;
-	// break;
-	// default:
-	// ivyLevel = 1;
-	// break;
-	// }
-	// DefaultMessageLogger dml = new DefaultMessageLogger(ivyLevel);
-	// dml.doProgress();
-	// dml.setShowProgress(true);
-	// this.ivy.getLoggerEngine().setDefaultLogger(dml);
-	// }
-
 	/**
 	 * method to set the maryBasePath variable. Is only called if user didn't manually set a path on the command line and thus
 	 * uses instead the location where the Installer.jar is run from
 	 */
 	private void setMaryBase() {
-		logger.debug("Setting mary base directory");
+		logger.debug("Setting mary base directory ...");
 		File maryBase = null;
 		// fall back to location of this class/jar
 		// from http://stackoverflow.com/a/320595
@@ -182,7 +152,6 @@ public class Installer {
 			logger.debug("Trying to use directory Installer is run from.");
 			maryBase = new File(location.toURI().getPath());
 		} catch (URISyntaxException use) {
-			// TODO Auto-generated catch block
 			logger.error("Could not parse " + location + ": " + use.getMessage() + "\n");
 		}
 		setMaryBase(maryBase);
@@ -236,6 +205,8 @@ public class Installer {
 		}
 
 		if (isSuccessful) {
+
+			logger.debug("(Re)loading Ivy, IvySettings and (re)parsing IvyResources ...");
 			reloadIvy();
 		}
 
@@ -272,9 +243,11 @@ public class Installer {
 
 		// List<String> installedArtifacts = new ArrayList<String>();
 
+		// TODO missing info logging for resolve and install task
 		// first resolves component's dependencies
-		logger.info("IVY: Resolving and installing component " + component.getName());
+		logger.info("Ivy is resolving dependencies for and installing component " + component.getName() + " ...");
 		ResolveReport resolveDependencies = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
+		logger.debug("The ModulDescriptor for the selected component is: " + component.getModuleDescriptor());
 
 		ArtifactDownloadReport[] dependencyReports = resolveDependencies.getAllArtifactsReports();
 		// if (dependencyReports[0].getDownloadStatus() == DownloadStatus.SUCCESSFUL) {
@@ -297,7 +270,7 @@ public class Installer {
 		// finally install the component itself
 		ResolveReport install = this.ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
 				this.installOptions);
-		logger.info("IVY: " + install.getAllArtifactsReports()[0]);
+		logger.info("HERE SHOULD BE LOGGING FOR THE INSTALLATION AND RESOLUTION OF COMPONENTS");
 	}
 
 	/**
