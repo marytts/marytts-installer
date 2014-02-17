@@ -7,8 +7,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -69,42 +67,48 @@ public class Installer {
 	// installed components in
 	private String maryBasePath;
 
+	// holds the logLevel currently used. Used to set Ivy logging once Ivy is started.
+	private LogLevel logLevel;
+
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.Installer.class.getName());
 
 	public Installer(String[] args) {
 
 		logger.debug("Loading installer.");
 		this.resources = Sets.newTreeSet();
+		// default value for logging. may be overwritten by InstallerCLI
+		this.logLevel = LogLevel.info;
 		this.cli = new InstallerCLI(args, this);
 
 		// test if user has specified mary path on command line. If not, determine directory Installer is run from
 		if (this.maryBasePath == null) {
+			// this method will also loadIvySettings(), loadIvy() and parseIvyResources()
 			setMaryBase();
 		}
 		logger.debug("Set mary base path to: " + this.maryBasePath);
 
 		// setup ivy
 
-		try {
-			// loads ivy settings from resources ivysettings.xml file
-			loadIvySettings();
+		// try {
+		// // loads ivy settings from resources ivysettings.xml file
+		// loadIvySettings();
+		//
+		// // creating a new ivy instance as well as sets necessary options
+		// loadIvy();
+		//
+		// logger.debug("Starting ivy resource parse");
+		// // parses component descriptors, creates Component objects from them and stores them in this.resources
+		// parseIvyResources();
 
-			// creating a new ivy instance as well as sets necessary options
-			loadIvy();
+		// once the resources are parsed, Installer passes the workflow on to the command line interface which evaluates
+		// parameters that have been passed on to the Installer
+		this.cli.mainEvalCommandLine();
 
-			logger.debug("Starting ivy resource parse");
-			// parses component descriptors, creates Component objects from them and stores them in this.resources
-			parseIvyResources();
-
-			// once the resources are parsed, Installer passes the workflow on to the command line interface which evaluates
-			// parameters that have been passed on to the Installer
-			this.cli.mainEvalCommandLine();
-
-		} catch (IOException ioe) {
-			logger.error("Could not access settings file: " + ioe.getMessage());
-		} catch (ParseException pe) {
-			logger.error("Could not access settings file: " + pe.getMessage());
-		}
+		// } catch (IOException ioe) {
+		// logger.error("Could not access settings file: " + ioe.getMessage());
+		// } catch (ParseException pe) {
+		// logger.error("Could not access settings file: " + pe.getMessage());
+		// }
 	}
 
 	/**
@@ -113,7 +117,8 @@ public class Installer {
 	public void loadIvy() {
 		logger.info("Creating new Ivy instance");
 		this.ivy = Ivy.newInstance(this.ivySettings);
-		setIvyLoggingLevel(LogLevel.warn);
+		this.ivy.getLoggerEngine().setDefaultLogger(new DefaultMessageLogger(this.logLevel.ordinal()));
+
 		this.resolveOptions = new ResolveOptions().setOutputReport(false);
 		this.installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
 	}
@@ -125,37 +130,43 @@ public class Installer {
 		this.ivySettings.load(Resources.getResource("ivysettings.xml"));
 	}
 
-	/**
-	 * Helper method used to manipulate the ivy log level
-	 * 
-	 * @param logLevel
-	 */
-	protected void setIvyLoggingLevel(LogLevel logLevel) {
-		int ivyLevel;
-		switch (logLevel) {
-		case error:
-			ivyLevel = 0;
-			break;
-		case warn:
-			ivyLevel = 1;
-			break;
-		case info:
-			ivyLevel = 2;
-			break;
-		case debug:
-			ivyLevel = 3;
-			break;
-		case verbose_debug:
-			ivyLevel = 4;
-			break;
-		default:
-			ivyLevel = 1;
-			break;
-		}
-		DefaultMessageLogger dml = new DefaultMessageLogger(ivyLevel);
-		dml.setShowProgress(true);
-		this.ivy.getLoggerEngine().setDefaultLogger(dml);
+	protected void setLogLevel(LogLevel logLevel) {
+
+		this.logLevel = logLevel;
 	}
+
+	// /**
+	// * Helper method used to manipulate the ivy log level
+	// *
+	// * @param logLevel
+	// */
+	// protected void setLogLevel(LogLevel logLevel) {
+	// int ivyLevel;
+	// switch (logLevel) {
+	// case error:
+	// ivyLevel = 0;
+	// break;
+	// case warn:
+	// ivyLevel = 1;
+	// break;
+	// case info:
+	// ivyLevel = 2;
+	// break;
+	// case verbose:
+	// ivyLevel = 3;
+	// break;
+	// case debug:
+	// ivyLevel = 4;
+	// break;
+	// default:
+	// ivyLevel = 1;
+	// break;
+	// }
+	// DefaultMessageLogger dml = new DefaultMessageLogger(ivyLevel);
+	// dml.doProgress();
+	// dml.setShowProgress(true);
+	// this.ivy.getLoggerEngine().setDefaultLogger(dml);
+	// }
 
 	/**
 	 * method to set the maryBasePath variable. Is only called if user didn't manually set a path on the command line and thus

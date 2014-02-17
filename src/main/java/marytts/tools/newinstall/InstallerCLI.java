@@ -3,8 +3,6 @@ package marytts.tools.newinstall;
 import java.awt.HeadlessException;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -13,7 +11,6 @@ import java.util.regex.Pattern;
 import marytts.tools.newinstall.enums.LogLevel;
 import marytts.tools.newinstall.gui.InstallerGUI;
 import marytts.tools.newinstall.objects.Component;
-import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.commons.cli.BasicParser;
 import org.apache.commons.cli.CommandLine;
@@ -42,6 +39,7 @@ public class InstallerCLI {
 	private final static String GUI = "gui";
 	private final static String DEBUG = "debug";
 	private final static String VERBOSE = "verbose";
+	private final static String SILENT = "silent";
 	private final static String YES = "yes";
 	private final static String INSTALL = "install";
 	private final static String NOGUI = "nogui";
@@ -81,8 +79,9 @@ public class InstallerCLI {
 		this.options.addOption("y", "yes", false, "always assume yes as an answer to prompts");
 		this.options.addOption(OptionBuilder.withLongOpt("target").hasArg().withDescription("target installation directory")
 				.create());
+		this.options.addOption(OptionBuilder.withLongOpt("silent").withDescription("only display error messages").create());
+		this.options.addOption(OptionBuilder.withLongOpt("verbose").withDescription("log in verbose mode").create());
 		this.options.addOption(OptionBuilder.withLongOpt("debug").withDescription("log in debug mode").create());
-		// this.options.addOption(OptionBuilder.withLongOpt("verbose").withDescription("log in verbose debug mode").create());
 
 		// listing options
 		this.options.addOption(OptionBuilder.withLongOpt("list").withDescription("lists components").create());
@@ -124,6 +123,14 @@ public class InstallerCLI {
 		if (this.commandLine.hasOption(YES)) {
 			this.assumeYes = true;
 		}
+		if (this.commandLine.hasOption(DEBUG)) {
+			Logger.getRootLogger().setLevel(Level.DEBUG);
+			this.installer.setLogLevel(LogLevel.debug);
+		} else if (this.commandLine.hasOption(VERBOSE)) {
+			this.installer.setLogLevel(LogLevel.verbose);
+		} else if (this.commandLine.hasOption(SILENT)) {
+			this.installer.setLogLevel(LogLevel.error);
+		}
 	}
 
 	/**
@@ -131,12 +138,6 @@ public class InstallerCLI {
 	 */
 	protected void mainEvalCommandLine() {
 
-		if (this.commandLine.hasOption(DEBUG)) {
-			Logger.getRootLogger().setLevel(Level.DEBUG);
-			this.installer.setIvyLoggingLevel(LogLevel.debug);
-		} else if (this.commandLine.hasOption(VERBOSE)) {
-			this.installer.setIvyLoggingLevel(LogLevel.verbose_debug);
-		}
 		if (this.commandLine.hasOption(GUI)) {
 			startGUI();
 		} else if (this.commandLine.hasOption(NOGUI)) {
