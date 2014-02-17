@@ -118,7 +118,9 @@ public class Installer {
 		logger.info("Starting Ivy ...");
 		this.ivy = Ivy.newInstance(this.ivySettings);
 		logger.debug("Setting log level to " + this.logLevel.toString());
-		this.ivy.getLoggerEngine().setDefaultLogger(new DefaultMessageLogger(this.logLevel.ordinal()));
+		DefaultMessageLogger defaultLogger = new DefaultMessageLogger(this.logLevel.ordinal());
+		defaultLogger.setShowProgress(true);
+		this.ivy.getLoggerEngine().setDefaultLogger(defaultLogger);
 
 		this.resolveOptions = new ResolveOptions().setOutputReport(false);
 		this.installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
@@ -129,7 +131,7 @@ public class Installer {
 		this.ivySettings.setVariable("mary.base", this.maryBasePath);
 		logger.debug("Loading ivysettings.xml ...");
 		this.ivySettings.load(Resources.getResource("ivysettings.xml"));
-		logger.debug("New ivySettings: " + this.ivySettings.toString());
+		logger.debug("New ivySettings from " + this.ivySettings.getBaseDir());
 
 	}
 
@@ -149,10 +151,10 @@ public class Installer {
 		// from http://stackoverflow.com/a/320595
 		URL location = Installer.class.getProtectionDomain().getCodeSource().getLocation();
 		try {
-			logger.debug("Trying to use directory Installer is run from.");
+			logger.debug("Setting mary base directory - Trying to use directory Installer is run from.");
 			maryBase = new File(location.toURI().getPath());
 		} catch (URISyntaxException use) {
-			logger.error("Could not parse " + location + ": " + use.getMessage() + "\n");
+			logger.error("Setting mary base directory - Could not parse " + location + ": " + use.getMessage() + "\n");
 		}
 		setMaryBase(maryBase);
 
@@ -179,12 +181,12 @@ public class Installer {
 			maryBase = maryBase.getCanonicalFile();
 			isSuccessful = true;
 		} catch (IOException ioe) {
-			logger.error("Could not determine path to directory " + maryBase + ": " + ioe + "\n");
+			logger.error("Setting mary base directory - Could not determine path to directory " + maryBase + ": " + ioe + "\n");
 			isSuccessful = false;
 		}
 		// if this is running from the jar file, back off to directory containing it
 		if (maryBase.isFile()) {
-			logger.debug("Installer is running from jar. Creating directory for setting mary base path");
+			logger.debug("Setting mary base directory - Installer is running from jar. Creating directory for setting mary base path");
 			maryBase = maryBase.getParentFile();
 			isSuccessful = true;
 		}
@@ -200,7 +202,7 @@ public class Installer {
 			this.maryBasePath = maryBase.getCanonicalPath();
 			isSuccessful = true;
 		} catch (IOException ioe) {
-			logger.error("Could not determine path to directory " + maryBase + ": " + ioe + "\n");
+			logger.error("Setting mary base directory - Could not determine path to directory " + maryBase + ": " + ioe + "\n");
 			isSuccessful = false;
 		}
 
@@ -313,7 +315,7 @@ public class Installer {
 	 */
 	public List<String> readComponentDescriptorList() throws IOException {
 		URL componentListResource = Resources.getResource("component-list.json");
-		logger.debug("reading component descriptor list component-list.json from resources");
+		logger.debug("Reading component descriptor list component-list.json from resources");
 		String componentListJson = Resources.toString(componentListResource, Charsets.UTF_8);
 		String[] componentDescriptors = new Gson().fromJson(componentListJson, String[].class);
 		return Arrays.asList(componentDescriptors);
@@ -337,10 +339,10 @@ public class Installer {
 			this.resources.clear();
 
 			for (String oneFileName : resourcesList) {
-				logger.debug("Parsing " + oneFileName);
 				URL oneResource = Resources.getResource(oneFileName);
 				ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
 						oneResource, true);
+				logger.debug("Parsing " + oneFileName + " into moduleDescriptor: " + descriptor.toString());
 				Component oneComponent = new Component(descriptor);
 				if (oneFileName.startsWith("marytts-voice")) {
 					oneComponent = new VoiceComponent(descriptor);
@@ -350,6 +352,8 @@ public class Installer {
 				ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
 				String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName()
 						+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
+				logger.debug("The artifact name is calulated to be: " + artifactName + " and has the following resource status: "
+						+ getResourceStatus(artifactName));
 				oneComponent.setStatus(getResourceStatus(artifactName));
 				this.resources.add(oneComponent);
 				logger.debug((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent " : "Component ")
@@ -364,7 +368,6 @@ public class Installer {
 
 	public Status getResourceStatus(String componentName) {
 
-		// TODO problem ist, dass der deployte name von lang comp mit marytts beginnt, der voice comps aber ohne -> beheben!!
 		if (new File(this.maryBasePath + "/lib/" + componentName).exists()) {
 			return Status.INSTALLED;
 		}
@@ -376,6 +379,7 @@ public class Installer {
 
 	public void updateResourceStatuses() {
 
+		logger.debug("Updating all resource statuses ... ");
 		for (Component oneComponent : this.resources) {
 			ArtifactRevisionId ari = oneComponent.getModuleDescriptor().getAllArtifacts()[0].getId();
 			String artifactName = /* ari.getAttribute("organisation") + "-" + */ari.getName() + "-" + ari.getRevision() + "."
