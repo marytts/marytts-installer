@@ -32,6 +32,7 @@ import marytts.tools.newinstall.objects.VoiceComponent;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ArtifactRevisionId;
 import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 
 /**
  * 
@@ -42,21 +43,28 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 	// data
 	private Installer installer;
 
+	protected LogViewFrame logViewFrame;
+
 	static Logger logger = Logger.getLogger(marytts.tools.newinstall.gui.InstallerGUI.class.getName());
 
 	/**
 	 * Creates new form InstallerGUI
 	 */
 	public InstallerGUI(Installer installer) {
-		logger.info("Starting InstallerGUI");
+		logger.info("GUI: Starting InstallerGUI");
 		if (installer == null) {
 			logger.error("There is no installer object!");
 			System.exit(1);
 		}
 		this.installer = installer;
+		this.logViewFrame = new LogViewFrame();
+		SwingAppender swingAppender = new SwingAppender(this.logViewFrame);
+		PatternLayout patternLayout = new PatternLayout("[%C{1}] [%p] - %m %n");
+		swingAppender.setLayout(patternLayout);
+		
+		Logger.getRootLogger().addAppender(swingAppender);
 
 		initComponents();
-		logButton.setVisible(false);
 
 		fillComponentGroupPanels(this.installer.getAvailableComponents(null, null, null, null, null, true));
 
@@ -70,6 +78,8 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		addActionToComboBox("status", this.statusBox);
 
 		populateMaryPath();
+		
+
 	}
 
 	/* @formatter:off */
@@ -331,8 +341,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 				logger.debug("GUI: Log View button has been clicked.");
 				java.awt.EventQueue.invokeLater(new Runnable() {
 					public void run() {
-						LogViewFrame logViewFrame = new LogViewFrame();
-						new LogViewFrame().setVisible(true);
+						InstallerGUI.this.logViewFrame.setVisible(true);
 					}
 				});
 			}
