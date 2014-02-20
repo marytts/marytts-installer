@@ -131,7 +131,6 @@ public class Installer {
 		this.ivySettings.setVariable("mary.base", this.maryBasePath);
 		logger.debug("Loading ivysettings.xml ...");
 		this.ivySettings.load(Resources.getResource("ivysettings.xml"));
-		logger.debug("New ivySettings from " + this.ivySettings.getBaseDir());
 
 	}
 
@@ -151,8 +150,8 @@ public class Installer {
 		// from http://stackoverflow.com/a/320595
 		URL location = Installer.class.getProtectionDomain().getCodeSource().getLocation();
 		try {
-			logger.debug("Setting mary base directory - Trying to use directory Installer is run from.");
 			maryBase = new File(location.toURI().getPath());
+			logger.debug("Setting mary base directory - Trying to use directory Installer is run from - " + maryBase);
 		} catch (URISyntaxException use) {
 			logger.error("Setting mary base directory - Could not parse " + location + ": " + use.getMessage() + "\n");
 		}
@@ -403,6 +402,10 @@ public class Installer {
 			boolean voiceOnly) {
 
 		List<Component> resourcesToBeFiltered = new ArrayList<Component>(this.resources);
+		logger.debug("Fetching component list with the following parameters: "
+				+ ((locale != null) ? ("locale=" + locale + " ") : "") + ((type != null) ? ("type=" + type + " ") : "")
+				+ ((gender != null) ? ("gender=" + gender + " ") : "") + ((status != null) ? ("status=" + status + " ") : "")
+				+ ((name != null) ? ("name=" + name + " ") : ""));
 
 		// stores the size of the voice component list before filtering.
 		int sizeBefore = resourcesToBeFiltered.size();
@@ -417,7 +420,6 @@ public class Installer {
 		}
 
 		if (locale != null && !locale.equals("all")) {
-			logger.debug("filtering by " + "locale=" + locale);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!(oneComponent instanceof VoiceComponent || oneComponent instanceof LangComponent)) {
@@ -440,7 +442,6 @@ public class Installer {
 			}
 		}
 		if (type != null && !type.equals("all")) {
-			logger.debug("filtering by " + "type=" + type);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!(oneComponent instanceof VoiceComponent)) {
@@ -455,7 +456,6 @@ public class Installer {
 			}
 		}
 		if (gender != null && !gender.equals("all")) {
-			logger.debug("filtering by " + "gender=" + gender);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!(oneComponent instanceof VoiceComponent)) {
@@ -470,7 +470,6 @@ public class Installer {
 			}
 		}
 		if (status != null && !status.equals("all")) {
-			logger.debug("filtering by " + "status=" + status);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!oneComponent.getStatus().toString().equalsIgnoreCase(status)) {
@@ -479,7 +478,6 @@ public class Installer {
 			}
 		}
 		if (name != null && !name.equals("all")) {
-			logger.debug("filtering by " + "name=" + name);
 			for (it = resourcesToBeFiltered.iterator(); it.hasNext();) {
 				Component oneComponent = it.next();
 				if (!oneComponent.getName().equalsIgnoreCase(name)) {
@@ -516,13 +514,6 @@ public class Installer {
 		}
 		return false;
 	}
-
-	// /**
-	// * @return
-	// */
-	// public List<Component> getAvailableComponents() {
-	// return getAvailableComponents(null, null, null, null, null, false);
-	// }
 
 	/**
 	 * 

@@ -324,50 +324,11 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 
     /* @formatter:on */
 
-	// /**
-	// * @param args
-	// * the command line arguments
-	// */
-	// public static void main(String args[]) {
-
-	/* Set the Nimbus look and feel */
-	// <editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-	/*
-	 * If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel. For details see
-	 * http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
-	 */
-	// try {
-	// for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-	// if ("Nimbus".equals(info.getName())) {
-	// javax.swing.UIManager.setLookAndFeel(info.getClassName());
-	// break;
-	// }
-	// }
-	// } catch (ClassNotFoundException ex) {
-	// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-	// } catch (InstantiationException ex) {
-	// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-	// } catch (IllegalAccessException ex) {
-	// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-	// } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-	// java.util.logging.Logger.getLogger(InstallerGUITmp.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-	// }
-	// </editor-fold>
-
-	/* Create and display the form */
-	// java.awt.EventQueue.invokeLater(new Runnable() {
-	// public void run() {
-	// Installer installer = new Installer();
-	// new InstallerGUITmp(installer).setVisible(true);
-	// }
-	// });
-	// }
-
 	private void addActionToLogButton() {
 		this.logButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				logger.debug("Log View button has been clicked.");
+				logger.debug("GUI: Log View button has been clicked.");
 				java.awt.EventQueue.invokeLater(new Runnable() {
 					public void run() {
 						LogViewFrame logViewFrame = new LogViewFrame();
@@ -390,9 +351,11 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 
 						if (returnVal == JFileChooser.APPROVE_OPTION) {
 							File maryBasePath = fileChooser.getSelectedFile();
+							logger.debug("GUI: The user chose " + maryBasePath.getAbsolutePath()
+									+ " as a new mary base directory path");
 							InstallerGUI.this.maryPathTextField.setText(maryBasePath.getAbsolutePath());
 						} else {
-							logger.debug("Mary base directory change aborted by user.");
+							logger.debug("GUI: Mary base directory change aborted by user.");
 						}
 					}
 				});
@@ -403,45 +366,49 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 	private void updateButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_updateButtonActionPerformed
 		String newPath = this.maryPathTextField.getText().trim();
 		String oldPath = this.installer.getMaryBasePath();
+		logger.debug("GUI: The user pressed the update button for updating the newly set mary base path.");
+		logger.debug("GUI: new path: " + newPath);
+		logger.debug("GUI: old path: " + oldPath);
+
 		if (newPath.equalsIgnoreCase(oldPath)) {
 			JOptionPane.showMessageDialog(this, "Nothing to update!", "Mary base path", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			if (!this.installer.setMaryBase(new File(newPath))) {
 				JOptionPane.showMessageDialog(this, "The specified path contains errors!", "Mary base path",
 						JOptionPane.WARNING_MESSAGE);
-			}
-			this.installer.parseIvyResources();
-			String locale = this.localeBox.getSelectedItem().toString();
-			String type = this.typeBox.getSelectedItem().toString();
-			String gender = this.genderBox.getSelectedItem().toString();
-			String status = this.statusBox.getSelectedItem().toString();
-			boolean voiceOnly = !this.advancedCheckBox.isSelected();
-			fillComponentGroupPanels(this.installer.getAvailableComponents(locale, type, gender, status, null, voiceOnly));
-			this.statusBox.removeAllItems();
-			this.statusBox.addItem("all");
+			} else {
+				String locale = this.localeBox.getSelectedItem().toString();
+				String type = this.typeBox.getSelectedItem().toString();
+				String gender = this.genderBox.getSelectedItem().toString();
+				String status = this.statusBox.getSelectedItem().toString();
+				boolean voiceOnly = !this.advancedCheckBox.isSelected();
+				fillComponentGroupPanels(this.installer.getAvailableComponents(locale, type, gender, status, null, voiceOnly));
+				this.statusBox.removeAllItems();
+				this.statusBox.addItem("all");
 
-			for (Status oneStatus : Status.values()) {
-				if (!this.installer.getAvailableComponents(null, null, null, oneStatus.toString(), null, false).isEmpty()) {
-					this.statusBox.addItem(Status.AVAILABLE.toString());
+				for (Status oneStatus : Status.values()) {
+					if (!this.installer.getAvailableComponents(null, null, null, oneStatus.toString(), null, false).isEmpty()) {
+						this.statusBox.addItem(Status.AVAILABLE.toString());
+					}
 				}
+				this.statusBox.setSelectedIndex(0);
 			}
-			this.statusBox.setSelectedIndex(0);
 		}
 	}// GEN-LAST:event_updateButtonActionPerformed
 
-	private void resetGlobal() {
-
-		this.voicesGroupPanel.removeAll();
-		this.voicesGroupPanel.revalidate();
-		this.voicesGroupPanel.repaint();
-		this.genderBox.setSelectedIndex(0);
-		this.statusBox.setSelectedIndex(0);
-		this.localeBox.setSelectedIndex(0);
-		this.typeBox.setSelectedIndex(0);
-		invalidate();
-		validate();
-		repaint();
-	}
+	// private void resetGlobal() {
+	//
+	// this.voicesGroupPanel.removeAll();
+	// this.voicesGroupPanel.revalidate();
+	// this.voicesGroupPanel.repaint();
+	// this.genderBox.setSelectedIndex(0);
+	// this.statusBox.setSelectedIndex(0);
+	// this.localeBox.setSelectedIndex(0);
+	// this.typeBox.setSelectedIndex(0);
+	// invalidate();
+	// validate();
+	// repaint();
+	// }
 
 	private void addActionToComboBox(final String attribute, final JComboBox comboBox) {
 
@@ -471,7 +438,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		this.advancedCheckBox.addItemListener(new ItemListener() {
 			@Override
 			public void itemStateChanged(ItemEvent e) {
-				logger.debug("Checkbox state has been changed to " + e.getStateChange());
+				logger.debug("GUI: GUI: Checkbox state has been changed to " + e.getStateChange());
 				if (e.getStateChange() == ItemEvent.SELECTED) {
 					InstallerGUI.this.advancedCheckBox.setForeground(Color.BLACK);
 					displayAdvancedComponents(false);
@@ -514,12 +481,12 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 	 */
 	private void fillComponentGroupPanels(List<Component> componentList) {
 
-		logger.debug("(Re)filling component lists");
-		logger.debug("Removing all components from voicesGroupPanel.");
+		logger.debug("GUI: (Re)filling component lists");
+		logger.debug("GUI: Removing all components from voicesGroupPanel.");
 		this.voicesGroupPanel.removeAll();
 		if (!(componentList == null)) {
 			this.voicesGroupPanel.setLayout(new BoxLayout(this.voicesGroupPanel, BoxLayout.Y_AXIS));
-			logger.debug("voicesGroupPanel has PS: " + this.voicesGroupPanel.getPreferredSize());
+			logger.debug("GUI: voicesGroupPanel has PS: " + this.voicesGroupPanel.getPreferredSize());
 			for (Component oneComponent : componentList) {
 				oneComponent.addObserver(this);
 				ComponentPanel componentPanel;
@@ -532,9 +499,9 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 				}
 				componentPanel.setName(oneComponent.getName());
 
-				logger.debug("Created new ComponentPanel for component " + oneComponent.getName()
+				logger.debug("GUI: Created new ComponentPanel for component " + oneComponent.getName()
 						+ " with preferred dimensions: " + componentPanel.getPreferredSize());
-				logger.debug("Created new ComponentPanel for component " + oneComponent.getName() + " with dimensions: "
+				logger.debug("GUI: Created new ComponentPanel for component " + oneComponent.getName() + " with dimensions: "
 						+ componentPanel.getSize());
 
 				this.voicesGroupPanel.add(componentPanel);
@@ -555,7 +522,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 	}
 
 	private void fillComboBoxes() {
-		logger.debug("Filling comboBoxes with possible values");
+		logger.debug("GUI: Filling comboBoxes with possible values");
 		List<Component> components = this.installer.getAvailableComponents(null, null, null, null, null, false);
 
 		this.genderBox.addItem("all");

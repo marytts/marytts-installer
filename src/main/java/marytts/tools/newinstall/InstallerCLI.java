@@ -60,6 +60,8 @@ public class InstallerCLI {
 		this.assumeYes = false;
 		logger.debug("Starting InstallerCLI");
 
+		// create Options necessary for Apache Commons' CLI. Each option represents a possible argument that can be specified on
+		// the CL at start-up of the Installer
 		createOptions();
 		this.parser = new BasicParser();
 		try {
@@ -69,6 +71,13 @@ public class InstallerCLI {
 			this.helper.printHelp(MARYTTSINSTALLER, this.options);
 			System.exit(1);
 		}
+
+		// this is a workaround for a workflow problem regarding start-up of Installer, InstallerGUI and InstallerCLI. When the
+		// InstallerCLI is instantiated, the Installer itself has not been set up yet. This is due to the fact that the
+		// InstallerCLI is called from within the Installer's constructor. Some parameters however must be evaluated before
+		// others. This is the case for parameters doing configurations instead of actually using the Installer's functions (e.g.
+		// setting the debug mode, setting the mary base directory, executing the help command etc.). These are parsed within the
+		// following method.
 		preEvalCommandLine();
 	}
 
@@ -112,9 +121,18 @@ public class InstallerCLI {
 	 * Ivy functionality in Installer.java
 	 */
 	private void preEvalCommandLine() {
-		logger.debug("Evaluating the configuration options set on command line: " + this.commandLine);
+		if (this.commandLine.hasOption(DEBUG)) {
+			Logger.getRootLogger().setLevel(Level.DEBUG);
+			this.installer.setLogLevel(LogLevel.debug);
+		} else if (this.commandLine.hasOption(VERBOSE)) {
+			// TODO this has to be implemented. How to set a verbose mode in Log4j?
+			Logger.getRootLogger().setLevel(Level.DEBUG);
+			this.installer.setLogLevel(LogLevel.verbose);
+		} else if (this.commandLine.hasOption(SILENT)) {
+			Logger.getRootLogger().setLevel(Level.ERROR);
+			this.installer.setLogLevel(LogLevel.error);
+		}
 		if (this.commandLine.hasOption(HELP)) {
-			logger.debug("CL has option HELP");
 			this.helper.printHelp(HELP, this.options);
 			System.exit(0);
 		} else if (this.commandLine.hasOption(TARGET)) {
@@ -123,14 +141,6 @@ public class InstallerCLI {
 		if (this.commandLine.hasOption(YES)) {
 			this.assumeYes = true;
 		}
-		if (this.commandLine.hasOption(DEBUG)) {
-			Logger.getRootLogger().setLevel(Level.DEBUG);
-			this.installer.setLogLevel(LogLevel.debug);
-		} else if (this.commandLine.hasOption(VERBOSE)) {
-			this.installer.setLogLevel(LogLevel.verbose);
-		} else if (this.commandLine.hasOption(SILENT)) {
-			this.installer.setLogLevel(LogLevel.error);
-		}
 	}
 
 	/**
@@ -138,6 +148,7 @@ public class InstallerCLI {
 	 */
 	protected void mainEvalCommandLine() {
 
+		logger.debug("Evaluating the specified content parameters.");
 		if (this.commandLine.hasOption(GUI)) {
 			startGUI();
 		} else if (this.commandLine.hasOption(NOGUI)) {
@@ -200,6 +211,7 @@ public class InstallerCLI {
 	private void installComponents() {
 
 		String componentName = this.commandLine.getOptionValue(INSTALL);
+		logger.debug("Starting installation process of component " + componentName);
 		try {
 			List<Component> componentInList = this.installer.getAvailableComponents(null, null, null, null, componentName, false);
 			Component component = null;
@@ -278,45 +290,6 @@ public class InstallerCLI {
 			}
 		});
 	}
-
-	// /**
-	// * sorts components in resources list by their natural ordering as specified by {@link Component#compareTo(Component)}.
-	// *
-	// * @param resources
-	// * holds the voice components that are locally available.
-	// */
-	// private void printSortedComponents(List<Component> resources) {
-	//
-	// List<Component> voiceResources = new ArrayList<Component>();
-	// List<Component> otherResources = new ArrayList<Component>();
-	//
-	// for (Component oneComponent : resources) {
-	// if (oneComponent instanceof VoiceComponent) {
-	// voiceResources.add(oneComponent);
-	// } else {
-	// otherResources.add(oneComponent);
-	// }
-	// }
-	//
-	// Collections.sort(voiceResources);
-	// System.out.println("");
-	//
-	// if (!voiceResources.isEmpty()) {
-	// System.out.println("Listing voice components:");
-	// printComponents(voiceResources);
-	// System.out.println("===========================");
-	// }
-	//
-	// if (!otherResources.isEmpty()) {
-	// Collections.sort(otherResources);
-	// System.out.println("Listing other components:");
-	// printComponents(otherResources);
-	// }
-	//
-	// if (otherResources.isEmpty() && voiceResources.isEmpty()) {
-	// System.out.println("No components to display!");
-	// }
-	// }
 
 	/**
 	 * used to format the component list so as to be put out on in the appropriate format when listing components.
