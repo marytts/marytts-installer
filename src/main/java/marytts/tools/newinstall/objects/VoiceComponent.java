@@ -64,8 +64,8 @@ public class VoiceComponent extends Component {
 		sb.append("Voice component: ").append(getName()).append("\n");
 		sb.append("locale: ").append(getLocale()).append("; gender: ").append(getGender()).append("; type: ").append(getType())
 				.append("\n");
-		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus()).append("; size: ")
-				.append(FileUtils.byteCountToDisplaySize(this.getSize())).append("\n");
+		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus())/*.append("; size: ")
+				.append(FileUtils.byteCountToDisplaySize(this.getSize()))*/.append("\n");
 		sb.append("license name: ").append(getLicenseName()).append("\n");
 		sb.append("description: ").append(getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
 
