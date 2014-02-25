@@ -9,7 +9,11 @@
 			<artifact name="voice-cmu-slt" type="jar" e:size="316832" />
 			<artifact name="voice-cmu-slt" type="zip" e:classifier="data" e:size="105605247" />
 		</dependency>
-		<dependency org="marytts" name="marytts-lang-en" rev="5.1-beta1" />
-		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1" e:classifier="jar-with-dependencies" />
+		<dependency org="marytts" name="marytts-lang-en" rev="5.1-beta1">
+			<artifact name="marytts-lang-en" type="jar" e:size="6941600" />
+		</dependency>
+		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1">
+			<artifact name="marytts-runtime" type="jar" e:classifer="jar-with-dependencies" e:size="8558200" />
+		</dependency>
 	</dependencies>
 </ivy-module>
