@@ -1,15 +1,14 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="marytts" module="voice-cmu-slt-hsmm" revision="5.1-beta1" e:locale="en-US" e:name="cmu-slt-hsmm" e:type="hsmm"
-		e:gender="female">
+	<info organisation="marytts" module="cmu-slt-hsmm" revision="5.1-beta1" e:locale="en-US" e:type="hsmm" e:gender="female">
 		<license name="Arctic License" url="http://mary.dfki.de/download/voices/arctic-license.html" />
 		<description>A female US English Hidden semi-Markov model voice, built from voice recordings provided by Carnegie Mellon
 			University.</description>
 	</info>
-	<publications>
-		<artifact e:size="1242531" />
-	</publications>
 	<dependencies>
+		<dependency org="marytts" name="voice-cmu-slt-hsmm" rev="5.1-beta1">
+			<artifact name="voice-cmu-slt-hsmm" type="jar" e:size="1242531" />
+		</dependency>
 		<dependency org="marytts" name="marytts-lang-en" rev="5.1-beta1" />
-		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1" />
+		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1" e:classifier="jar-with-dependencies" />
 	</dependencies>
 </ivy-module>
