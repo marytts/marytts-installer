@@ -20,14 +20,15 @@ import marytts.tools.newinstall.objects.VoiceComponent;
 import org.apache.commons.io.FileUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.install.InstallOptions;
+import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ArtifactRevisionId;
 import org.apache.ivy.core.module.id.ModuleId;
-import org.apache.ivy.core.module.id.ModuleRevisionId;
-import org.apache.ivy.core.report.ArtifactDownloadReport;
 import org.apache.ivy.core.report.ResolveReport;
 import org.apache.ivy.core.resolve.ResolveOptions;
+import org.apache.ivy.core.retrieve.RetrieveOptions;
+import org.apache.ivy.core.retrieve.RetrieveReport;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
 import org.apache.ivy.util.DefaultMessageLogger;
@@ -242,35 +243,28 @@ public class Installer {
 	 */
 	public void install(Component component) throws ParseException, IOException {
 
-		// List<String> installedArtifacts = new ArrayList<String>();
-
-		// TODO missing info logging for resolve and install task
-		// first resolves component's dependencies
-		logger.info("Ivy is resolving dependencies for and installing component " + component.getName() + " ...");
-		ResolveReport resolveDependencies = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
+		logger.info("Ivy is installing component " + component.getName() + " and resolving its dependencies ...");
+		// ResolveReport resolveAllDependencies = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
+		ResolveReport resolveReport = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
+		// RetrieveReport retrieveReport = this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(),
+		// new RetrieveOptions());
+		this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(), new RetrieveOptions().setResolveId(resolveReport.getResolveId()));
 		logger.debug("The ModulDescriptor for the selected component is: " + component.getModuleDescriptor());
 
-		ArtifactDownloadReport[] dependencyReports = resolveDependencies.getAllArtifactsReports();
-		// if (dependencyReports[0].getDownloadStatus() == DownloadStatus.SUCCESSFUL) {
-		// Artifact art = dependencyReports[0].getArtifact();
-		// // String artifactName = art.getAttribute("organisation") + "-" + art.getName() + "."
-		// // + art.getExt();
-		// logger.info("IVY: Resolved dependency " + art.getName());
+		// ArtifactDownloadReport[] dependencyReports = resolveAllDependencies.getAllArtifactsReports();
+
+		// for (int i = 0; i < dependencyReports.length; i++) {
+		// install resolved dependencies
+		// ArtifactDownloadReport artifactDownloadReport = dependencyReports[i];
+		// ModuleRevisionId mrid = artifactDownloadReport.getArtifact().getModuleRevisionId();
+		// ResolveReport installDependencies = this.ivy.install(mrid, "downloaded", "installed", this.installOptions);
+		// logging?
+		// ArtifactDownloadReport[] installReports = installDependencies.getAllArtifactsReports();
 		// }
 
-		// if there were dependencies that have been resolved, install these as well (copy from downloaded/ to lib/)
-		for (int i = 0; i < dependencyReports.length; i++) {
-			// install resolved dependencies
-			ArtifactDownloadReport artifactDownloadReport = dependencyReports[i];
-			ModuleRevisionId mrid = artifactDownloadReport.getArtifact().getModuleRevisionId();
-			ResolveReport installDependencies = this.ivy.install(mrid, "downloaded", "installed", this.installOptions);
-			// logging?
-			// ArtifactDownloadReport[] installReports = installDependencies.getAllArtifactsReports();
-		}
-
 		// finally install the component itself
-		ResolveReport install = this.ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
-				this.installOptions);
+		// ResolveReport install = this.ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
+		// this.installOptions);
 		logger.info("HERE SHOULD BE LOGGING FOR THE INSTALLATION AND RESOLUTION OF COMPONENTS");
 	}
 
@@ -285,8 +279,14 @@ public class Installer {
 		List<String> toReturn = new ArrayList<String>();
 		DependencyDescriptor[] dependencies = component.getModuleDescriptor().getDependencies();
 		for (DependencyDescriptor oneDep : dependencies) {
-			ModuleId moduleId = oneDep.getDependencyId();
-			toReturn.add(moduleId.getName());
+			for (DependencyArtifactDescriptor oneDepArtifact : oneDep.getAllDependencyArtifacts()) {
+				String depArtName = oneDepArtifact.getName();
+				String depArtClassifier = oneDepArtifact.getExtraAttribute("classifier");
+				if (depArtClassifier != null) {
+					depArtName = depArtName.concat("-").concat(depArtClassifier);
+				}
+				toReturn.add(depArtName);
+			}
 		}
 		return toReturn;
 	}

@@ -40,11 +40,7 @@ public class Component extends Observable implements Comparable<Component> {
 	 * @return the name
 	 */
 	public String getName() {
-		String name = descriptor.getExtraAttribute("name");
-		if (name == null) {
-			name = descriptor.getModuleRevisionId().getName();
-		}
-		return name;
+		return descriptor.getModuleRevisionId().getName();
 	}
 
 	/**
@@ -159,8 +155,8 @@ public class Component extends Observable implements Comparable<Component> {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Component: ").append(getName()).append("\n");
-		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus()).append("; size: ")
-				.append(FileUtils.byteCountToDisplaySize(getSize())).append("\n");
+		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus())/*.append("; size: ")
+				.append(FileUtils.byteCountToDisplaySize(getSize()))*/.append("\n");
 		sb.append("license name: ").append(getLicenseName()).append("\n");
 		sb.append("description: ").append(getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
 

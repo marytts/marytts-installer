@@ -228,17 +228,14 @@ public class InstallerCLI {
 				StringBuilder sb = new StringBuilder();
 				sb.append("\nAre you sure you want to install the following components (yes or y to confirm):\n");
 				int ctr = 1;
-				sb.append(ctr++ + ". ");
-				sb.append(componentName);
-				sb.append(" (" + FileUtils.byteCountToDisplaySize(this.installer.getSizeOfComponentByName(componentName)) + ")");
-				sb.append("\n");
 
 				for (String oneDep : dependencies) {
 					String oneDepAsResource = formatDescriptorToResourceName(oneDep);
 					sb.append(ctr++ + ". ");
 					sb.append(oneDepAsResource);
-					sb.append(" (" + FileUtils.byteCountToDisplaySize(this.installer.getSizeOfComponentByName(oneDepAsResource))
-							+ ")");
+					// sb.append(" (" +
+					// FileUtils.byteCountToDisplaySize(this.installer.getSizeOfComponentByName(oneDepAsResource))
+					// + ")");
 					sb.append("\n");
 				}
 				System.out.println(sb.toString());
