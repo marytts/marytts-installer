@@ -1,12 +1,14 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="marytts" module="marytts-lang-it" revision="5.1-beta1" e:locale="it" e:name="it">
+	<info organisation="marytts" module="lang-it" revision="5.1-beta1" e:locale="it">
 		<license name="GNU Lesser General Public License" url="http://www.gnu.org/licenses/lgpl-3.0-standalone.html" />
 		<description>it language component</description>
 	</info>
-	<publications>
-		<artifact e:size="2599107" />
-	</publications>
 	<dependencies>
-		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1" />
+		<dependency org="marytts" name="marytts-lang-it" rev="5.1-beta1">
+			<artifact name="marytts-lang-it" type="jar" e:size="2599107" />
+		</dependency>
+		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1">
+			<artifact name="marytts-runtime" type="jar" e:classifer="jar-with-dependencies" e:size="8558200" />
+		</dependency>
 	</dependencies>
 </ivy-module>
