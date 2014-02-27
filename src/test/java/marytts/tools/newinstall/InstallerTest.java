@@ -26,7 +26,7 @@ public class InstallerTest {
 
 	@BeforeClass
 	public static void setUp() throws IOException {
-		maryBaseDir = tempFolder.newFolder("fnord");
+		maryBaseDir = tempFolder.newFolder();
 	}
 
 	@Ignore	
