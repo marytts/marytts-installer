@@ -24,19 +24,18 @@ import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.ivy.core.module.id.ArtifactRevisionId;
-import org.apache.ivy.core.module.id.ModuleId;
 import org.apache.ivy.core.report.ResolveReport;
 import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.retrieve.RetrieveOptions;
-import org.apache.ivy.core.retrieve.RetrieveReport;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
-import org.apache.ivy.plugins.resolver.DependencyResolver;
 import org.apache.ivy.plugins.resolver.RepositoryResolver;
 import org.apache.ivy.util.DefaultMessageLogger;
+import org.apache.ivy.util.filter.ArtifactTypeFilter;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Charsets;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.google.gson.Gson;
@@ -60,6 +59,8 @@ public class Installer {
 	private ResolveOptions resolveOptions;
 	private InstallOptions installOptions;
 
+	private ArtifactTypeFilter jarFilter;
+
 	// holds all currently available components
 	private Set<Component> resources;
 
@@ -79,6 +80,7 @@ public class Installer {
 
 		logger.debug("Loading installer.");
 		this.resources = Sets.newTreeSet();
+		jarFilter = new ArtifactTypeFilter(Lists.newArrayList("jar"));
 		// default value for logging. may be overwritten by InstallerCLI
 		this.logLevel = LogLevel.info;
 		this.cli = new InstallerCLI(args, this);
@@ -255,8 +257,14 @@ public class Installer {
 		String artifactPattern = (String) resolver.getArtifactPatterns().get(0);
 		RetrieveOptions retrieveOptions = new RetrieveOptions();
 		retrieveOptions.setDestIvyPattern(ivyPattern).setDestArtifactPattern(artifactPattern);
+
+		// do not install zip, but leave them in download and unpack them from there
+		retrieveOptions.setArtifactFilter(jarFilter);
+
 		this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(), retrieveOptions);
 		logger.debug("The ModulDescriptor for the selected component is: " + component.getModuleDescriptor());
+
+		// TODO: unzip the zip artifacts
 
 		// ArtifactDownloadReport[] dependencyReports = resolveAllDependencies.getAllArtifactsReports();
 
