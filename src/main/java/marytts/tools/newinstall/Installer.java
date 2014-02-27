@@ -31,6 +31,8 @@ import org.apache.ivy.core.retrieve.RetrieveOptions;
 import org.apache.ivy.core.retrieve.RetrieveReport;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
+import org.apache.ivy.plugins.resolver.DependencyResolver;
+import org.apache.ivy.plugins.resolver.RepositoryResolver;
 import org.apache.ivy.util.DefaultMessageLogger;
 import org.apache.log4j.Logger;
 
@@ -123,7 +125,7 @@ public class Installer {
 		defaultLogger.setShowProgress(true);
 		this.ivy.getLoggerEngine().setDefaultLogger(defaultLogger);
 
-		this.resolveOptions = new ResolveOptions().setOutputReport(false);
+		this.resolveOptions = new ResolveOptions();
 		this.installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
 	}
 
@@ -248,7 +250,12 @@ public class Installer {
 		ResolveReport resolveReport = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
 		// RetrieveReport retrieveReport = this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(),
 		// new RetrieveOptions());
-		this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(), new RetrieveOptions().setResolveId(resolveReport.getResolveId()));
+		RepositoryResolver resolver = (RepositoryResolver) ivy.getSettings().getResolver("installed");
+		String ivyPattern = (String) resolver.getIvyPatterns().get(0);
+		String artifactPattern = (String) resolver.getArtifactPatterns().get(0);
+		RetrieveOptions retrieveOptions = new RetrieveOptions();
+		retrieveOptions.setDestIvyPattern(ivyPattern).setDestArtifactPattern(artifactPattern);
+		this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(), retrieveOptions);
 		logger.debug("The ModulDescriptor for the selected component is: " + component.getModuleDescriptor());
 
 		// ArtifactDownloadReport[] dependencyReports = resolveAllDependencies.getAllArtifactsReports();
