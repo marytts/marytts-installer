@@ -5,7 +5,7 @@
 	</info>
 	<dependencies>
 		<dependency org="marytts" name="marytts-runtime" rev="5.1-beta1">
-			<artifact name="marytts-runtime" type="jar" e:classifer="jar-with-dependencies" e:size="8558200" />
+			<artifact name="marytts-runtime" type="jar" e:classifier="jar-with-dependencies" e:size="8558200" />
 		</dependency>
 	</dependencies>
 </ivy-module>
