@@ -1,15 +1,23 @@
 package marytts.tools.newinstall;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 
 import marytts.tools.newinstall.enums.LogLevel;
 import marytts.tools.newinstall.enums.Status;
@@ -18,8 +26,13 @@ import marytts.tools.newinstall.objects.LangComponent;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.ivy.Ivy;
+import org.apache.ivy.core.IvyPatternHelper;
+import org.apache.ivy.core.cache.RepositoryCacheManager;
 import org.apache.ivy.core.install.InstallOptions;
+import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
@@ -29,9 +42,11 @@ import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.retrieve.RetrieveOptions;
 import org.apache.ivy.core.settings.IvySettings;
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
+import org.apache.ivy.plugins.resolver.DependencyResolver;
 import org.apache.ivy.plugins.resolver.RepositoryResolver;
 import org.apache.ivy.util.DefaultMessageLogger;
 import org.apache.ivy.util.filter.ArtifactTypeFilter;
+import org.apache.ivy.util.filter.Filter;
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Charsets;
@@ -59,7 +74,7 @@ public class Installer {
 	private ResolveOptions resolveOptions;
 	private InstallOptions installOptions;
 
-	private ArtifactTypeFilter jarFilter;
+	private UnzippingArtifactTypeFilter jarFilter;
 
 	// holds all currently available components
 	private Set<Component> resources;
@@ -80,7 +95,7 @@ public class Installer {
 
 		logger.debug("Loading installer.");
 		this.resources = Sets.newTreeSet();
-		jarFilter = new ArtifactTypeFilter(Lists.newArrayList("jar"));
+		jarFilter = new UnzippingArtifactTypeFilter();
 		// default value for logging. may be overwritten by InstallerCLI
 		this.logLevel = LogLevel.info;
 		this.cli = new InstallerCLI(args, this);
@@ -263,23 +278,7 @@ public class Installer {
 
 		this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(), retrieveOptions);
 		logger.debug("The ModulDescriptor for the selected component is: " + component.getModuleDescriptor());
-
-		// TODO: unzip the zip artifacts
-
-		// ArtifactDownloadReport[] dependencyReports = resolveAllDependencies.getAllArtifactsReports();
-
-		// for (int i = 0; i < dependencyReports.length; i++) {
-		// install resolved dependencies
-		// ArtifactDownloadReport artifactDownloadReport = dependencyReports[i];
-		// ModuleRevisionId mrid = artifactDownloadReport.getArtifact().getModuleRevisionId();
-		// ResolveReport installDependencies = this.ivy.install(mrid, "downloaded", "installed", this.installOptions);
-		// logging?
-		// ArtifactDownloadReport[] installReports = installDependencies.getAllArtifactsReports();
-		// }
-
-		// finally install the component itself
-		// ResolveReport install = this.ivy.install(component.getModuleDescriptor().getModuleRevisionId(), "remote", "installed",
-		// this.installOptions);
+		
 		logger.info("HERE SHOULD BE LOGGING FOR THE INSTALLATION AND RESOLUTION OF COMPONENTS");
 	}
 
@@ -539,6 +538,63 @@ public class Installer {
 	 */
 	public static void main(String[] args) {
 		Installer installer = new Installer(args);
+	}
+
+	public class UnzippingArtifactTypeFilter implements Filter {
+
+		@Override
+		public boolean accept(Object object) {
+			if (!(object instanceof Artifact)) {
+				return false;
+			}
+			Artifact artifact = (Artifact) object;
+			if (artifact.getType().equals("jar")) {
+				return true;
+			}
+			if (artifact.getType().equals("zip") && artifact.getExtraAttribute("classifier").equals("data")) {
+				unzip(artifact);
+			}
+			return false;
+		}
+
+		private void unzip(Artifact artifact) {
+
+			RepositoryResolver resolver = (RepositoryResolver) ivy.getSettings().getResolver("installed");
+			String destArtifactPattern = (String) resolver.getArtifactPatterns().get(0);
+
+			String resolvedArtifactPattern = Installer.this.ivySettings.getDefaultCacheArtifactPattern();
+			String resolvedFileName = IvyPatternHelper.substitute(resolvedArtifactPattern, artifact);
+			File resolvedFile = new File(ivySettings.getDefaultResolutionCacheBasedir() + "/" + resolvedFileName);
+			
+			String destPath = FilenameUtils.getFullPath(IvyPatternHelper.substitute(destArtifactPattern, artifact));
+
+			DependencyResolver dependencyResolver = Installer.this.ivySettings.getResolver("installed");
+
+			try {
+				ZipFile zipFile = new ZipFile(resolvedFile);
+				Enumeration<? extends ZipEntry> entries = zipFile.entries();
+				while (entries.hasMoreElements()) {
+					ZipEntry entry = entries.nextElement();
+					File entryDestination = new File(destPath, entry.getName());
+					entryDestination.getParentFile().mkdirs();
+					InputStream in = zipFile.getInputStream(entry);
+					OutputStream out = new FileOutputStream(entryDestination);
+					IOUtils.copy(in, out);
+					IOUtils.closeQuietly(in);
+					IOUtils.closeQuietly(out);
+				}
+			} catch (ZipException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+		}
 	}
 
 }
