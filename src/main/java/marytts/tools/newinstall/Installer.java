@@ -278,8 +278,50 @@ public class Installer {
 
 		this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(), retrieveOptions);
 		logger.debug("The ModulDescriptor for the selected component is: " + component.getModuleDescriptor());
-		
+
 		logger.info("HERE SHOULD BE LOGGING FOR THE INSTALLATION AND RESOLUTION OF COMPONENTS");
+
+		bootstrapMaryInstallation();
+	}
+
+	private void bootstrapMaryInstallation() {
+
+		FileOutputStream outputStream;
+		URL resource;
+
+		try {
+			if (new File(this.maryBasePath + "/LICENSE.txt").exists()) {
+				logger.warn("Not overwriting the already present resource LICENSE.txt");
+			} else {
+				resource = Resources.getResource("LICENSE.txt");
+				outputStream = new FileOutputStream(this.maryBasePath + "/LICENSE.txt");
+				Resources.copy(resource, outputStream);
+			}
+
+			File binDir = new File(this.maryBasePath + "/bin");
+			if (binDir.exists()) {
+				logger.warn("Not overwriting the already present bin directory");
+			} else {
+				FileUtils.forceMkdir(binDir);
+
+				resource = Resources.getResource("marytts-server");
+
+				File maryttsServerFile = new File(binDir + "/marytts-server");
+				outputStream = new FileOutputStream(maryttsServerFile);
+				Resources.copy(resource, outputStream);
+				maryttsServerFile.setExecutable(true);
+
+				resource = Resources.getResource("marytts-server.bat");
+				outputStream = new FileOutputStream(binDir + "/marytts-server.bat");
+				Resources.copy(resource, outputStream);
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
@@ -565,7 +607,7 @@ public class Installer {
 			String resolvedArtifactPattern = Installer.this.ivySettings.getDefaultCacheArtifactPattern();
 			String resolvedFileName = IvyPatternHelper.substitute(resolvedArtifactPattern, artifact);
 			File resolvedFile = new File(ivySettings.getDefaultResolutionCacheBasedir() + "/" + resolvedFileName);
-			
+
 			String destPath = FilenameUtils.getFullPath(IvyPatternHelper.substitute(destArtifactPattern, artifact));
 
 			DependencyResolver dependencyResolver = Installer.this.ivySettings.getResolver("installed");
