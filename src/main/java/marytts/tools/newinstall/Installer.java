@@ -399,7 +399,7 @@ public class Installer {
 			this.resources.clear();
 
 			for (URL oneResource : resourcesList) {
-				String oneFileName = oneResource.getFile();
+				String oneFileName = new File(oneResource.toString()).getName();
 				ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
 						oneResource, true);
 				logger.debug("Parsing " + oneFileName + " into moduleDescriptor: " + descriptor.toString());
