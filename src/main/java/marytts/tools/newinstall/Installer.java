@@ -368,12 +368,17 @@ public class Installer {
 	 * @return List of voice descriptor resources
 	 * @throws IOException
 	 */
-	public List<String> readComponentDescriptorList() throws IOException {
+	public ArrayList<URL> readComponentDescriptorList() throws IOException {
 		URL componentListResource = Resources.getResource("component-list.json");
 		logger.debug("Reading component descriptor list component-list.json from resources");
 		String componentListJson = Resources.toString(componentListResource, Charsets.UTF_8);
 		String[] componentDescriptors = new Gson().fromJson(componentListJson, String[].class);
-		return Arrays.asList(componentDescriptors);
+		ArrayList<URL> resourceList = Lists.newArrayListWithCapacity(componentDescriptors.length);
+		for (String componentDescriptor : componentDescriptors) {
+			URL resource = Resources.getResource(componentDescriptor);
+			resourceList.add(resource);
+		}
+		return resourceList;
 	}
 
 	/**
@@ -388,13 +393,13 @@ public class Installer {
 	public void parseIvyResources() {
 
 		try {
-			List<String> resourcesList = readComponentDescriptorList();
+			List<URL> resourcesList = readComponentDescriptorList();
 
 			// as this method can be used to reparse the components, clear the existing ones first
 			this.resources.clear();
 
-			for (String oneFileName : resourcesList) {
-				URL oneResource = Resources.getResource(oneFileName);
+			for (URL oneResource : resourcesList) {
+				String oneFileName = oneResource.getFile();
 				ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
 						oneResource, true);
 				logger.debug("Parsing " + oneFileName + " into moduleDescriptor: " + descriptor.toString());
