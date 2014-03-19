@@ -3,14 +3,15 @@ package marytts.tools.newinstall;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +31,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.IvyPatternHelper;
-import org.apache.ivy.core.cache.RepositoryCacheManager;
 import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
@@ -45,7 +45,6 @@ import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorParser;
 import org.apache.ivy.plugins.resolver.DependencyResolver;
 import org.apache.ivy.plugins.resolver.RepositoryResolver;
 import org.apache.ivy.util.DefaultMessageLogger;
-import org.apache.ivy.util.filter.ArtifactTypeFilter;
 import org.apache.ivy.util.filter.Filter;
 import org.apache.log4j.Logger;
 
@@ -393,12 +392,16 @@ public class Installer {
 	public void parseIvyResources() {
 
 		try {
-			List<URL> resourcesList = readComponentDescriptorList();
+			List<URL> resourcesURLList = readComponentDescriptorList();
+
+			// checks maryBase/download for the possible case of manually added components and adds them to the set of available
+			// components as well
+			resourcesURLList = addSupplComponents(resourcesURLList);
 
 			// as this method can be used to reparse the components, clear the existing ones first
 			this.resources.clear();
 
-			for (URL oneResource : resourcesList) {
+			for (URL oneResource : resourcesURLList) {
 				String oneFileName = new File(oneResource.toString()).getName();
 				ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
 						oneResource, true);
@@ -424,6 +427,30 @@ public class Installer {
 		} catch (ParseException pe) {
 			logger.error("Problem parsing component file: " + pe.getMessage());
 		}
+	}
+
+	private List<URL> addSupplComponents(List<URL> resourcesURLList) throws MalformedURLException {
+
+		File downloadDir = new File(this.maryBasePath + "/download");
+
+		FilenameFilter filenameFilter = new FilenameFilter() {
+
+			@Override
+			public boolean accept(File dir, String name) {
+
+				if (name.endsWith(".xml")) {
+					return true;
+				}
+				return false;
+			}
+		};
+
+		for (final File oneComponentDescriptorFile : downloadDir.listFiles(filenameFilter)) {
+			URL componentURL = oneComponentDescriptorFile.toURI().toURL();
+			resourcesURLList.add(componentURL);
+		}
+
+		return resourcesURLList;
 	}
 
 	public Status getResourceStatus(String componentName) {
