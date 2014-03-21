@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="marytts" module="cmu-slt" revision="5.1-beta1" e:locale="en-US" e:type="unit selection" e:gender="female">
+	<info organisation="marytts" module="voice-cmu-slt-descriptor" revision="5.1-beta1" e:name="cmu-slt" e:locale="en-US" e:type="unit selection" e:gender="female">
 		<license name="Arctic License" url="http://mary.dfki.de/download/voices/arctic-license.html" />
 		<description>A female US English unit selection model voice, built from voice recordings provided by Carnegie Mellon
 			University.</description>

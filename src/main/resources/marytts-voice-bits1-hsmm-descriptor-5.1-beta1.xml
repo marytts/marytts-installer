@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="marytts" module="bits1-hsmm" revision="5.1-beta1" e:locale="de" e:type="hsmm" e:gender="female">
+	<info organisation="marytts" module="voice-bits1-hsmm-descriptor" revision="5.1-beta1" e:name="bits1-hsmm" e:locale="de" e:type="hsmm" e:gender="female">
 		<license name="Creative Commons Attribution-NoDerivs 3.0 Unported" url="http://creativecommons.org/licenses/by-nd/3.0/" />
 		<description>A female German Hidden semi-Markov model voice, built from voice recordings provided by the BITS project at the
 			Bavarian Archive of Speech Signals.</description>

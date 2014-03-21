@@ -1,5 +1,5 @@
 <ivy-module version="2.0" xmlns:e="http://ant.apache.org/ivy/extra">
-	<info organisation="marytts" module="marytts-runtime" revision="5.1-beta1">
+	<info organisation="marytts" module="marytts-runtime-descriptor" revision="5.1-beta1">
 		<license name="GNU Lesser General Public License" url="http://www.gnu.org/licenses/lgpl-3.0-standalone.html" />
 		<description>MaryTTS runtime system with dependencies</description>
 	</info>
