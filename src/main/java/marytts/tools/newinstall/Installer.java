@@ -31,6 +31,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.IvyPatternHelper;
+import org.apache.ivy.core.cache.RepositoryCacheManager;
 import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
@@ -406,19 +407,31 @@ public class Installer {
 				ModuleDescriptor descriptor = XmlModuleDescriptorParser.getInstance().parseDescriptor(this.ivySettings,
 						oneResource, true);
 				logger.debug("Parsing " + oneFileName + " into moduleDescriptor: " + descriptor.toString());
-				Component oneComponent = new Component(descriptor);
-				if (oneFileName.startsWith("marytts-voice")) {
+				Component oneComponent = null;
+				if (oneFileName.startsWith("voice")) {
 					oneComponent = new VoiceComponent(descriptor);
 				} else if (oneFileName.startsWith("marytts-lang")) {
 					oneComponent = new LangComponent(descriptor);
+				} else if (oneFileName.startsWith("marytts")) {
+					// this last is a workaround to make sure that manually added components' side effects are not parsed as
+					// components (-> resolved-marytts...)
+					oneComponent = new Component(descriptor);
+				} else {
+					// in the above mentioned side-effect cases, a non valid module descriptor was generated. We take the file
+					// names as a hack for sorting them out. Not pretty, but works.
+					continue;
 				}
+
 				ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
 				String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName()
 						+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
 				logger.debug("The artifact name is calulated to be: " + artifactName + " and has the following resource status: "
 						+ getResourceStatus(artifactName));
 				oneComponent.setStatus(getResourceStatus(artifactName));
-				this.resources.add(oneComponent);
+				boolean addStatus = this.resources.add(oneComponent);
+				if (!addStatus) {
+					logger.debug(oneComponent.getName() + " was not added.");
+				}
 				logger.debug((oneComponent.getClass().getSimpleName().equals("VoiceComponent") ? "VoiceComponent " : "Component ")
 						+ oneComponent.getName() + " added to resource list.");
 			}
@@ -429,27 +442,47 @@ public class Installer {
 		}
 	}
 
-	private List<URL> addSupplComponents(List<URL> resourcesURLList) throws MalformedURLException {
+	private List<URL> addSupplComponents(List<URL> resourcesURLList) throws ParseException, IOException {
 
 		File downloadDir = new File(this.maryBasePath + "/download");
-
 		FilenameFilter filenameFilter = new FilenameFilter() {
 
 			@Override
 			public boolean accept(File dir, String name) {
 
-				if (name.endsWith(".xml")) {
+				if (name.endsWith(".xml") && name.contains("descriptor")) {
 					return true;
 				}
 				return false;
 			}
 		};
 
-		for (final File oneComponentDescriptorFile : downloadDir.listFiles(filenameFilter)) {
-			URL componentURL = oneComponentDescriptorFile.toURI().toURL();
-			resourcesURLList.add(componentURL);
-		}
+		XmlModuleDescriptorParser xmlParser = XmlModuleDescriptorParser.getInstance();
+		ModuleDescriptor moduleDescriptor;
+		File[] moduleDescriptorsInCache = downloadDir.listFiles(filenameFilter);
 
+		if (moduleDescriptorsInCache != null) {
+			for (final File oneXMLFile : moduleDescriptorsInCache) {
+				URL xmlURL = oneXMLFile.toURI().toURL();
+				logger.debug(xmlURL);
+
+				try {
+					moduleDescriptor = xmlParser.parseDescriptor(this.ivySettings, xmlURL, true);
+				} catch (ParseException pe) {
+					logger.debug(pe.getMessage());
+					logger.debug(xmlURL + " does not specify a parsable resource. Skipping it ...");
+					continue;
+				}
+
+				if (moduleDescriptor != null) {
+					// Artifact[] allArtifacts = moduleDescriptor.getAllArtifacts();
+					DependencyDescriptor[] dependencies = moduleDescriptor.getDependencies();
+					if (dependencies != null) {
+						resourcesURLList.add(xmlURL);
+					}
+				}
+			}
+		}
 		return resourcesURLList;
 	}
 
