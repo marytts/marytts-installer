@@ -40,7 +40,12 @@ public class Component extends Observable implements Comparable<Component> {
 	 * @return the name
 	 */
 	public String getName() {
-		return descriptor.getModuleRevisionId().getName();
+		
+		String extraNameAttribute = this.descriptor.getExtraAttribute("name");
+		if (extraNameAttribute != null) {
+			return extraNameAttribute;
+		}
+		return this.descriptor.getModuleRevisionId().getName();
 	}
 
 	/**
@@ -54,14 +59,14 @@ public class Component extends Observable implements Comparable<Component> {
 	 * @return the version
 	 */
 	public String getVersion() {
-		return descriptor.getAttribute("revision");
+		return this.descriptor.getAttribute("revision");
 	}
 
 	/**
 	 * @return the licenseName
 	 */
 	public String getLicenseName() {
-		License[] licenses = descriptor.getLicenses();
+		License[] licenses = this.descriptor.getLicenses();
 		License license = licenses[0];
 		return license.getName();
 	}
@@ -70,14 +75,14 @@ public class Component extends Observable implements Comparable<Component> {
 	 * @return the licenseShortName
 	 */
 	public String getLicenseShortName() {
-		return descriptor.getExtraAttribute("license");
+		return this.descriptor.getExtraAttribute("license");
 	}
 
 	/**
 	 * @return the description
 	 */
 	public String getDescription() {
-		return descriptor.getDescription();
+		return this.descriptor.getDescription();
 	}
 
 	public Status getStatus() {
@@ -107,14 +112,14 @@ public class Component extends Observable implements Comparable<Component> {
 	 */
 	public long getSize() {
 		long size = 0;
-		for (Artifact artifact : descriptor.getAllArtifacts()) {
+		for (Artifact artifact : this.descriptor.getAllArtifacts()) {
 			String sizeAttribute = artifact.getExtraAttribute("size");
 			// trying to parse a long number from the String attribute
 			try {
 				long parsedSize = Long.parseLong(sizeAttribute);
 				size += parsedSize;
 			} catch (NumberFormatException nfe) {
-				logger.error(descriptor.getAllArtifacts()[0].getExtraAttribute("size") + " could not be parsed.");
+				logger.error(this.descriptor.getAllArtifacts()[0].getExtraAttribute("size") + " could not be parsed.");
 			}
 		}
 		return size;
@@ -155,8 +160,11 @@ public class Component extends Observable implements Comparable<Component> {
 		StringBuilder sb = new StringBuilder();
 
 		sb.append("Component: ").append(getName()).append("\n");
-		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus())/*.append("; size: ")
-				.append(FileUtils.byteCountToDisplaySize(getSize()))*/.append("\n");
+		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus())/*
+																							 * .append("; size: ")
+																							 * .append(FileUtils
+																							 * .byteCountToDisplaySize(getSize()))
+																							 */.append("\n");
 		sb.append("license name: ").append(getLicenseName()).append("\n");
 		sb.append("description: ").append(getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
 

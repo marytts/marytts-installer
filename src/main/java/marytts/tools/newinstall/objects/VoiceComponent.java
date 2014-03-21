@@ -16,7 +16,20 @@ public class VoiceComponent extends Component {
 		super(descriptor);
 		setLocale(new Locale(descriptor.getExtraAttribute("locale")));
 	}
-
+	
+	/**
+	 * @return the name
+	 */
+	@Override
+	public String getName() {
+		
+		String extraNameAttribute = this.descriptor.getExtraAttribute("name");
+		if (extraNameAttribute != null) {
+			return "voice-".concat(extraNameAttribute);
+		}
+		return this.descriptor.getModuleRevisionId().getName();
+	}
+	
 	/**
 	 * @return the locale
 	 */

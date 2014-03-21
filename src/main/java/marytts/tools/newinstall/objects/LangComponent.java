@@ -15,6 +15,11 @@ public class LangComponent extends Component {
 		// TODO Auto-generated constructor stub
 	}
 
+	public String getName() {
+
+		return "lang-".concat(this.descriptor.getExtraAttribute("locale"));
+	}
+
 	/**
 	 * @return the locale
 	 */
@@ -52,8 +57,11 @@ public class LangComponent extends Component {
 
 		sb.append("Language component: ").append(getName()).append("\n");
 		sb.append("locale: ").append(getLocale()).append("\n");
-		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus())/*.append("; size: ")
-				.append(FileUtils.byteCountToDisplaySize(getSize()))*/.append("\n");
+		sb.append("version: ").append(getVersion()).append("; status: ").append(getStatus())/*
+																							 * .append("; size: ")
+																							 * .append(FileUtils
+																							 * .byteCountToDisplaySize(getSize()))
+																							 */.append("\n");
 		sb.append("license name: ").append(getLicenseName()).append("\n");
 		sb.append("description: ").append(getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
 
