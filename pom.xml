@@ -90,6 +90,7 @@
 							<baseDir>${project.build.outputDirectory}</baseDir>
 							<includes>
 								<include>marytts-*.xml</include>
+								<include>voice-*.xml</include>
 							</includes>
 							<outputFile>${project.build.outputDirectory}/component-list.json</outputFile>
 						</configuration>
