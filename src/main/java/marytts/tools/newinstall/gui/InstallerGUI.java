@@ -395,9 +395,10 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 				this.statusBox.removeAllItems();
 				this.statusBox.addItem("all");
 
+				// this loop is updates possible statuses in the status selection box since after an update, these may change. 
 				for (Status oneStatus : Status.values()) {
 					if (!this.installer.getAvailableComponents(null, null, null, oneStatus.toString(), null, false).isEmpty()) {
-						this.statusBox.addItem(Status.AVAILABLE.toString());
+						this.statusBox.addItem(oneStatus.toString());
 					}
 				}
 				this.statusBox.setSelectedIndex(0);
