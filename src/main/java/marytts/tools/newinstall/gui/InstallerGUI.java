@@ -600,10 +600,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		 * ComponentPanel and to change its Status field to the new value.
 		 */
 		Component oneComponent = (Component) o;
-		ModuleDescriptor descriptor = oneComponent.getModuleDescriptor();
-		ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
-		String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName() + "-"
-				+ artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
+		String artifactName = oneComponent.getArtifactName();
 		String resultString = this.installer.getResourceStatus(artifactName).toString();
 
 		java.awt.Component[] components = this.voicesGroupPanel.getComponents();

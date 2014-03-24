@@ -422,9 +422,7 @@ public class Installer {
 					continue;
 				}
 
-				ArtifactRevisionId artifactRevisionId = descriptor.getAllArtifacts()[0].getId();
-				String artifactName = /* artifactRevisionId.getAttribute("organisation") + "-" + */artifactRevisionId.getName()
-						+ "-" + artifactRevisionId.getRevision() + "." + artifactRevisionId.getExt();
+				String artifactName = oneComponent.getArtifactName();
 				logger.debug("The artifact name is calulated to be: " + artifactName + " and has the following resource status: "
 						+ getResourceStatus(artifactName));
 				oneComponent.setStatus(getResourceStatus(artifactName));
@@ -501,9 +499,7 @@ public class Installer {
 
 		logger.debug("Updating all resource statuses ... ");
 		for (Component oneComponent : this.resources) {
-			ArtifactRevisionId ari = oneComponent.getModuleDescriptor().getAllArtifacts()[0].getId();
-			String artifactName = /* ari.getAttribute("organisation") + "-" + */ari.getName() + "-" + ari.getRevision() + "."
-					+ ari.getExt();
+			String artifactName = oneComponent.getArtifactName();
 			oneComponent.setStatus(getResourceStatus(artifactName));
 		}
 	}

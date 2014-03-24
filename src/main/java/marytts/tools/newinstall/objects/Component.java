@@ -8,7 +8,6 @@ import java.util.Observable;
 
 import marytts.tools.newinstall.enums.Status;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.License;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
@@ -40,7 +39,7 @@ public class Component extends Observable implements Comparable<Component> {
 	 * @return the name
 	 */
 	public String getName() {
-		
+
 		String extraNameAttribute = this.descriptor.getExtraAttribute("name");
 		if (extraNameAttribute != null) {
 			return extraNameAttribute;
@@ -125,14 +124,19 @@ public class Component extends Observable implements Comparable<Component> {
 		return size;
 	}
 
+	public String getExt() {
+		return this.descriptor.getAllArtifacts()[0].getAttribute("ext");
+	}
+
 	// marytts-lang-en-5.1-beta1.jar
 	// voice-cmu-slt-hsmm-5.1-beta1.jar
 	public String getArtifactName() {
 
-		Artifact artifact = this.descriptor.getAllArtifacts()[0];
 		StringBuilder sb = new StringBuilder();
-		sb.append(artifact.getAttribute("module")).append("-").append(artifact.getAttribute("revision")).append(".")
-				.append(artifact.getExt());
+		if (!(this instanceof VoiceComponent)) {
+			sb.append("marytts-");
+		}
+		sb.append(getName()).append("-").append(getVersion()).append(".").append(getExt());
 
 		return sb.toString();
 	}
