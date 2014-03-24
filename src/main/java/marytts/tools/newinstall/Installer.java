@@ -7,7 +7,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
@@ -31,13 +30,11 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.ivy.Ivy;
 import org.apache.ivy.core.IvyPatternHelper;
-import org.apache.ivy.core.cache.RepositoryCacheManager;
 import org.apache.ivy.core.install.InstallOptions;
 import org.apache.ivy.core.module.descriptor.Artifact;
 import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
 import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
-import org.apache.ivy.core.module.id.ArtifactRevisionId;
 import org.apache.ivy.core.report.ResolveReport;
 import org.apache.ivy.core.resolve.ResolveOptions;
 import org.apache.ivy.core.retrieve.RetrieveOptions;
@@ -95,7 +92,7 @@ public class Installer {
 
 		logger.debug("Loading installer.");
 		this.resources = Sets.newTreeSet();
-		jarFilter = new UnzippingArtifactTypeFilter();
+		this.jarFilter = new UnzippingArtifactTypeFilter();
 		// default value for logging. may be overwritten by InstallerCLI
 		this.logLevel = LogLevel.info;
 		this.cli = new InstallerCLI(args, this);
@@ -253,6 +250,21 @@ public class Installer {
 		return this.maryBasePath;
 	}
 
+	public void uninstall(Component component) {
+
+		logger.info("Ivy is uninstalling component " + component.getName());
+
+		String artifactName = component.getArtifactName();
+		File artifactFile = new File(this.maryBasePath + "/lib/" + artifactName);
+		if (artifactFile.exists()) {
+			artifactFile.delete();
+			logger.info(component.getName() + " has successfully been uninstalled");
+		}
+		else {
+			logger.info(component.getName() + " is not installed and can thus not be uninstalled");
+		}
+	}
+
 	/**
 	 * Installs given component using the ivy instance of this class
 	 * 
@@ -267,14 +279,14 @@ public class Installer {
 		ResolveReport resolveReport = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
 		// RetrieveReport retrieveReport = this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(),
 		// new RetrieveOptions());
-		RepositoryResolver resolver = (RepositoryResolver) ivy.getSettings().getResolver("installed");
+		RepositoryResolver resolver = (RepositoryResolver) this.ivy.getSettings().getResolver("installed");
 		String ivyPattern = (String) resolver.getIvyPatterns().get(0);
 		String artifactPattern = (String) resolver.getArtifactPatterns().get(0);
 		RetrieveOptions retrieveOptions = new RetrieveOptions();
 		retrieveOptions.setDestIvyPattern(ivyPattern).setDestArtifactPattern(artifactPattern);
 
 		// do not install zip, but leave them in download and unpack them from there
-		retrieveOptions.setArtifactFilter(jarFilter);
+		retrieveOptions.setArtifactFilter(this.jarFilter);
 
 		this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(), retrieveOptions);
 		logger.debug("The ModulDescriptor for the selected component is: " + component.getModuleDescriptor());
@@ -423,7 +435,7 @@ public class Installer {
 				}
 
 				String artifactName = oneComponent.getArtifactName();
-				logger.debug("The artifact name is calulated to be: " + artifactName + " and has the following resource status: "
+				logger.debug("The artifact name is: " + artifactName + " and has the following resource status: "
 						+ getResourceStatus(artifactName));
 				oneComponent.setStatus(getResourceStatus(artifactName));
 				boolean addStatus = this.resources.add(oneComponent);
@@ -662,12 +674,12 @@ public class Installer {
 
 		private void unzip(Artifact artifact) {
 
-			RepositoryResolver resolver = (RepositoryResolver) ivy.getSettings().getResolver("installed");
+			RepositoryResolver resolver = (RepositoryResolver) Installer.this.ivy.getSettings().getResolver("installed");
 			String destArtifactPattern = (String) resolver.getArtifactPatterns().get(0);
 
 			String resolvedArtifactPattern = Installer.this.ivySettings.getDefaultCacheArtifactPattern();
 			String resolvedFileName = IvyPatternHelper.substitute(resolvedArtifactPattern, artifact);
-			File resolvedFile = new File(ivySettings.getDefaultResolutionCacheBasedir() + "/" + resolvedFileName);
+			File resolvedFile = new File(Installer.this.ivySettings.getDefaultResolutionCacheBasedir() + "/" + resolvedFileName);
 
 			String destPath = FilenameUtils.getFullPath(IvyPatternHelper.substitute(destArtifactPattern, artifact));
 

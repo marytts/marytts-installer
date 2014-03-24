@@ -42,6 +42,7 @@ public class InstallerCLI {
 	private final static String SILENT = "silent";
 	private final static String YES = "yes";
 	private final static String INSTALL = "install";
+	private final static String UNINSTALL = "uninstall";
 	private final static String NOGUI = "nogui";
 
 	private CommandLineParser parser;
@@ -105,6 +106,8 @@ public class InstallerCLI {
 		this.options.addOption(OptionBuilder.withLongOpt("nogui").withDescription("Do not use GUI, force usage of command line.")
 				.create());
 		this.options.addOption(OptionBuilder.withLongOpt("install").hasArg().withDescription("installs <arg> component")
+				.create("i"));
+		this.options.addOption(OptionBuilder.withLongOpt("uninstall").hasArg().withDescription("uninstalls <arg> component")
 				.create("i"));
 
 		this.helper = new HelpFormatter();
@@ -200,6 +203,8 @@ public class InstallerCLI {
 			printComponents(resources);
 		} else if (this.commandLine.hasOption(INSTALL)) {
 			installComponents();
+		} else if (this.commandLine.hasOption(UNINSTALL)) {
+			uninstallComponents();
 		}
 
 		if (this.commandLine.getOptions().length == 0) {
@@ -208,20 +213,26 @@ public class InstallerCLI {
 		}
 	}
 
+	private void uninstallComponents() {
+
+		String componentName = this.commandLine.getOptionValue(UNINSTALL);
+
+		Component component = fetchComponent(componentName);
+
+		if (!this.assumeYes) {
+			logger.info("user prompt");
+		}
+		this.installer.uninstall(component);
+
+	}
+
 	private void installComponents() {
 
 		String componentName = this.commandLine.getOptionValue(INSTALL);
 		logger.debug("Starting installation process of component " + componentName);
 		try {
-			List<Component> componentInList = this.installer.getAvailableComponents(null, null, null, null, componentName, false);
-			Component component = null;
-			if (componentInList.isEmpty() || componentInList.size() > 1) {
-				logger.error("\"" + componentName + "\""
-						+ " is not a valid component name. Use --list to see available components!");
-				System.exit(1);
-			} else {
-				component = componentInList.get(0);
-			}
+			Component component = fetchComponent(componentName);
+
 			if (!this.assumeYes) {
 				List<String> dependencies = this.installer.retrieveDependencies(component);
 
@@ -255,6 +266,18 @@ public class InstallerCLI {
 			logger.error(e.getMessage());
 		}
 
+	}
+
+	private Component fetchComponent(String componentName) {
+		List<Component> componentInList = this.installer.getAvailableComponents(null, null, null, null, componentName, false);
+		Component component = null;
+		if (componentInList.isEmpty() || componentInList.size() > 1) {
+			logger.error("\"" + componentName + "\"" + " is not a valid component name. Use --list to see available components!");
+			System.exit(1);
+		} else {
+			component = componentInList.get(0);
+		}
+		return component;
 	}
 
 	/**
