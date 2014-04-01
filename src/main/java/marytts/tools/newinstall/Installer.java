@@ -255,13 +255,27 @@ public class Installer {
 		logger.info("Ivy is uninstalling component " + component.getName());
 
 		String artifactName = component.getArtifactName();
+		// URL resource = Resources.getResource(null, "META-INF/services/marytts.config.MaryConfig");
+
 		File artifactFile = new File(this.maryBasePath + "/lib/" + artifactName);
 		if (artifactFile.exists()) {
 			artifactFile.delete();
 			logger.info(component.getName() + " has successfully been uninstalled");
+		} else {
+			logger.info(component.getName() + " is not installed and thus can not be uninstalled");
 		}
-		else {
-			logger.info(component.getName() + " is not installed and can thus not be uninstalled");
+
+		try {
+			// this is the string without "voice" prefix. This is a workaround to fetching the component name from the config file
+			// which is located in the jar.
+			String pureCompName = component.getModuleDescriptor().getExtraAttribute("name");
+			if (component instanceof VoiceComponent) {
+				if (((VoiceComponent) component).getType().equals("unit selection")) {
+					FileUtils.deleteDirectory(new File(this.maryBasePath + "/lib/voices/" + pureCompName));
+				}
+			}
+		} catch (IOException e) {
+			logger.warn("Failure while removing data for unit selection voice " + component.getName());
 		}
 	}
 
@@ -425,7 +439,7 @@ public class Installer {
 				} else if (oneFileName.startsWith("marytts-lang")) {
 					oneComponent = new LangComponent(descriptor);
 				} else if (oneFileName.startsWith("marytts")) {
-					// this last is a workaround to make sure that manually added components' side effects are not parsed as
+					// this last is a workaround to make sure that ivy's side effect xmls are not parsed as
 					// components (-> resolved-marytts...)
 					oneComponent = new Component(descriptor);
 				} else {
@@ -460,7 +474,9 @@ public class Installer {
 			@Override
 			public boolean accept(File dir, String name) {
 
-				if (name.endsWith(".xml") && name.contains("descriptor")) {
+				// TODO this filter is messy! only use as workaround till clean way is found for filtering our moduleDescriptors
+				// from the ones that are automatically created
+				if (name.endsWith(".xml") && name.contains("descriptor") && !name.startsWith("resolved")) {
 					return true;
 				}
 				return false;
