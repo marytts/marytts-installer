@@ -29,8 +29,6 @@ import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.LangComponent;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
-import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
-import org.apache.ivy.core.module.id.ArtifactRevisionId;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
@@ -380,30 +378,30 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		logger.debug("GUI: new path: " + newPath);
 		logger.debug("GUI: old path: " + oldPath);
 
-		if (newPath.equalsIgnoreCase(oldPath)) {
-			JOptionPane.showMessageDialog(this, "Nothing to update!", "Mary base path", JOptionPane.INFORMATION_MESSAGE);
+		// if (newPath.equalsIgnoreCase(oldPath)) {
+		// JOptionPane.showMessageDialog(this, "Nothing to update!", "Mary base path", JOptionPane.INFORMATION_MESSAGE);
+		// } else {
+		if (!this.installer.setMaryBase(new File(newPath))) {
+			JOptionPane.showMessageDialog(this, "The specified path contains errors!", "Mary base path",
+					JOptionPane.WARNING_MESSAGE);
 		} else {
-			if (!this.installer.setMaryBase(new File(newPath))) {
-				JOptionPane.showMessageDialog(this, "The specified path contains errors!", "Mary base path",
-						JOptionPane.WARNING_MESSAGE);
-			} else {
-				String locale = this.localeBox.getSelectedItem().toString();
-				String type = this.typeBox.getSelectedItem().toString();
-				String gender = this.genderBox.getSelectedItem().toString();
-				String status = this.statusBox.getSelectedItem().toString();
-				boolean voiceOnly = !this.advancedCheckBox.isSelected();
-				fillComponentGroupPanels(this.installer.getAvailableComponents(locale, type, gender, status, null, voiceOnly));
-				this.statusBox.removeAllItems();
-				this.statusBox.addItem("all");
+			String locale = this.localeBox.getSelectedItem().toString();
+			String type = this.typeBox.getSelectedItem().toString();
+			String gender = this.genderBox.getSelectedItem().toString();
+			String status = this.statusBox.getSelectedItem().toString();
+			boolean voiceOnly = !this.advancedCheckBox.isSelected();
+			fillComponentGroupPanels(this.installer.getAvailableComponents(locale, type, gender, status, null, voiceOnly));
+			this.statusBox.removeAllItems();
+			this.statusBox.addItem("all");
 
-				// this loop is updates possible statuses in the status selection box since after an update, these may change.
-				for (Status oneStatus : Status.values()) {
-					if (!this.installer.getAvailableComponents(null, null, null, oneStatus.toString(), null, false).isEmpty()) {
-						this.statusBox.addItem(oneStatus.toString());
-					}
+			// this loop is updates possible statuses in the status selection box since after an update, these may change.
+			for (Status oneStatus : Status.values()) {
+				if (!this.installer.getAvailableComponents(null, null, null, oneStatus.toString(), null, false).isEmpty()) {
+					this.statusBox.addItem(oneStatus.toString());
 				}
-				this.statusBox.setSelectedIndex(0);
 			}
+			this.statusBox.setSelectedIndex(0);
+			// }
 		}
 	}// GEN-LAST:event_updateButtonActionPerformed
 
