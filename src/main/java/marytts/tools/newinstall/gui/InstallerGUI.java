@@ -61,7 +61,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		SwingAppender swingAppender = new SwingAppender(this.logViewFrame);
 		PatternLayout patternLayout = new PatternLayout("[%C{1}] [%p] - %m %n");
 		swingAppender.setLayout(patternLayout);
-		
+
 		Logger.getRootLogger().addAppender(swingAppender);
 
 		initComponents();
@@ -75,10 +75,11 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 		addActionToComboBox("locale", this.localeBox);
 		addActionToComboBox("type", this.typeBox);
 		addActionToComboBox("gender", this.genderBox);
-		addActionToComboBox("status", this.statusBox);
+		// addActionToComboBox("status", this.statusBox);
+		this.statusBox.setVisible(false);
+		this.statusLabel.setVisible(false);
 
 		populateMaryPath();
-		
 
 	}
 
@@ -395,7 +396,7 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 				this.statusBox.removeAllItems();
 				this.statusBox.addItem("all");
 
-				// this loop is updates possible statuses in the status selection box since after an update, these may change. 
+				// this loop is updates possible statuses in the status selection box since after an update, these may change.
 				for (Status oneStatus : Status.values()) {
 					if (!this.installer.getAvailableComponents(null, null, null, oneStatus.toString(), null, false).isEmpty()) {
 						this.statusBox.addItem(oneStatus.toString());
@@ -596,13 +597,12 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 
-		/*
-		 * This method is called the resource status of a Component has changed and is responsible for finding the matching
-		 * ComponentPanel and to change its Status field to the new value.
-		 */
+		// This method is called when the resource status of a Component has changed and is responsible for finding the matching
+		// ComponentPanel and to change its Status field to the new value.
+
 		Component oneComponent = (Component) o;
 		String artifactName = oneComponent.getArtifactName();
-		String resultString = this.installer.getResourceStatus(artifactName).toString();
+		String newStatus = this.installer.getResourceStatus(artifactName).toString();
 
 		java.awt.Component[] components = this.voicesGroupPanel.getComponents();
 		for (java.awt.Component oneAWTComponent : components) {
@@ -610,12 +610,13 @@ public class InstallerGUI extends javax.swing.JFrame implements Observer {
 			if (oneAWTComponent instanceof ComponentPanel) {
 				if (componentPanelName.equalsIgnoreCase(oneComponent.getName())) {
 					ComponentPanel oneComponentPanel = (ComponentPanel) oneAWTComponent;
-					oneComponentPanel.setResourceStatus(resultString);
+					oneComponentPanel.setResourceStatus(newStatus);
 					oneComponentPanel.revalidate();
 					oneComponentPanel.repaint();
 				}
 			}
 		}
+
 	}
 
 	// Variables declaration - do not modify//GEN-BEGIN:variables

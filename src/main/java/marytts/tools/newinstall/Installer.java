@@ -525,11 +525,12 @@ public class Installer {
 
 	public void updateResourceStatuses() {
 
-		logger.debug("Updating all resource statuses ... ");
+		logger.debug("Updating all resource statuses ...");
 		for (Component oneComponent : this.resources) {
 			String artifactName = oneComponent.getArtifactName();
 			oneComponent.setStatus(getResourceStatus(artifactName));
 		}
+		logger.debug("Updating all resource statuses ... done");
 	}
 
 	/**
