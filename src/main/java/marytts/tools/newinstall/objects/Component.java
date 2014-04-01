@@ -130,13 +130,23 @@ public class Component extends Observable implements Comparable<Component> {
 
 	// marytts-lang-en-5.1-beta1.jar
 	// voice-cmu-slt-hsmm-5.1-beta1.jar
+	// marytts-runtime-5.1-beta1-jar-with-dependencies.jar
 	public String getArtifactName() {
 
 		StringBuilder sb = new StringBuilder();
 		if (!(this instanceof VoiceComponent)) {
 			sb.append("marytts-");
 		}
-		sb.append(getName()).append("-").append(getVersion()).append(".").append(getExt());
+		sb.append(getName()).append("-").append(getVersion());
+
+		// if a component like marytts-runtime-5.1-beta1-jar-with-dependencies.jar has a classifier in its name, it has to be
+		// added to the artifactName
+		String classifier = getModuleDescriptor().getDependencies()[0].getAllDependencyArtifacts()[0]
+				.getExtraAttribute("classifier");
+		if (classifier != null) {
+			sb.append("-").append(classifier);
+		}
+		sb.append(".").append(getExt());
 
 		return sb.toString();
 	}
