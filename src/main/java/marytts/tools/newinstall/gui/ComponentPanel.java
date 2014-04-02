@@ -19,7 +19,6 @@ import marytts.tools.newinstall.enums.Status;
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -85,7 +84,7 @@ public class ComponentPanel extends JPanel {
         jTextArea1 = new javax.swing.JTextArea();
         sizeLabel = new javax.swing.JLabel();
         sizeValueLabel = new javax.swing.JLabel();
-        installButton = new javax.swing.JButton();
+        unInstallButton = new javax.swing.JButton();
         statusLabel = new javax.swing.JLabel();
         componentNameLabel = new javax.swing.JLabel();
         collapseButton = new javax.swing.JToggleButton();
@@ -172,8 +171,8 @@ public class ComponentPanel extends JPanel {
 
         sizeValueLabel.setText("jLabel6");
 
-        installButton.setText("Install");
-        installButton.addActionListener(new java.awt.event.ActionListener() {
+        unInstallButton.setText("Install");
+        unInstallButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 installButtonActionPerformed(evt);
             }
@@ -228,7 +227,7 @@ public class ComponentPanel extends JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(18, 18, 18)
                                 .addComponent(statusLabel))
-                            .addComponent(installButton))))
+                            .addComponent(unInstallButton))))
                 .addContainerGap(92, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -253,7 +252,7 @@ public class ComponentPanel extends JPanel {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(statusLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(installButton))
+                        .addComponent(unInstallButton))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(componentNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -267,49 +266,70 @@ public class ComponentPanel extends JPanel {
 
 	private void installButtonActionPerformed(java.awt.event.ActionEvent evt) {// GEN-FIRST:event_installButtonActionPerformed
 		if (this.component == null) {
-			logger.error("Can not install as component is null!");
+			logger.error("Can not (un)install as component is null!");
 			return;
 		} else if (this.installer == null) {
-			logger.error("Can not install as installer instance is null");
+			logger.error("Can not (un)install as installer instance is null");
 			return;
 		}
 
-		// a different thread is used for the installation so as to ensure that the GUI stays responsive during the (possibly
-		// long) installation
-		SwingWorker installThread = new SwingWorker<Void, Void>() {
+		if (this.unInstallButton.getText().equals("Install")) {
+			// a different thread is used for the installation so as to ensure that the GUI stays responsive during the (possibly
+			// long) installation
+			SwingWorker installThread = new SwingWorker<Void, Void>() {
 
-			@Override
-			public Void doInBackground() {
-				try {
-					// if component is already installed, there is no need to reinstall.
-					if (ComponentPanel.this.component.getStatus() == Status.INSTALLED) {
-						String componentName = ComponentPanel.this.component.getName();
-						logger.info(componentName + " is already installed");
-						JOptionPane.showMessageDialog(ComponentPanel.this, "Component is already installed!",
-								"Installing component " + componentName, JOptionPane.INFORMATION_MESSAGE);
-					} else {
-						ComponentPanel.this.installButton.setText("Installing ...");
-						ComponentPanel.this.installer.install(ComponentPanel.this.component);
+				@Override
+				public Void doInBackground() {
+					try {
+						// if component is already installed, there is no need to reinstall.
+						if (ComponentPanel.this.component.getStatus() == Status.INSTALLED) {
+							String componentName = ComponentPanel.this.component.getName();
+							logger.info(componentName + " is already installed");
+							JOptionPane.showMessageDialog(ComponentPanel.this, "Component is already installed!",
+									"Installing component " + componentName, JOptionPane.INFORMATION_MESSAGE);
+						} else {
+							ComponentPanel.this.unInstallButton.setText("Installing ...");
+							ComponentPanel.this.installer.install(ComponentPanel.this.component);
+							ComponentPanel.this.unInstallButton.setText("Uninstall");
+							ComponentPanel.this.installer.updateResourceStatuses();
+						}
+					} catch (ParseException pe) {
+						logger.error("ParseException: " + pe.getMessage());
+					} catch (IOException ioe) {
+						logger.error("IOException: " + ioe.getMessage());
 					}
-				} catch (ParseException pe) {
-					logger.error("ParseException: " + pe.getMessage());
-				} catch (IOException ioe) {
-					logger.error("IOException: " + ioe.getMessage());
+					return null;
 				}
-				return null;
-			}
+			};
 
-			@Override
-			public void done() {
-				ComponentPanel.this.installButton.setText("Install");
-				// this method is called to force the installer to check if any new components got installed (which insures also
-				// statuses of resolved dependencies are set correctly). There might be a better way if we could somehow
-				// automatically receive information about which component got installed after the click on the installButton.
-				ComponentPanel.this.installer.updateResourceStatuses();
-			}
-		};
+			installThread.execute();
 
-		installThread.execute();
+		} else if (this.unInstallButton.getText().equals("Uninstall")) {
+			// a different thread is used for the installation so as to ensure that the GUI stays responsive during the (possibly
+			// long) installation
+			SwingWorker uninstallThread = new SwingWorker<Void, Void>() {
+
+				@Override
+				public Void doInBackground() {
+					// if component is already installed, there is no need to reinstall.
+					if (ComponentPanel.this.component.getStatus() != Status.INSTALLED) {
+						String componentName = ComponentPanel.this.component.getName();
+						logger.info(componentName + " is not installed");
+						JOptionPane.showMessageDialog(ComponentPanel.this, "Component is not installed!", "Installing component "
+								+ componentName, JOptionPane.INFORMATION_MESSAGE);
+					} else {
+						ComponentPanel.this.unInstallButton.setText("Uninstalling ...");
+						ComponentPanel.this.installer.uninstall(ComponentPanel.this.component);
+						ComponentPanel.this.unInstallButton.setText("Install");
+						ComponentPanel.this.installer.updateResourceStatuses();
+					}
+					return null;
+				}
+			};
+			uninstallThread.execute();
+		} else {
+			logger.warn("\"" + this.unInstallButton.getText() + "\" is not a valid option");
+		}
 	}// GEN-LAST:event_installButtonActionPerformed
 
 	public void setResourceStatus(String resultString) {
@@ -375,7 +395,7 @@ public class ComponentPanel extends JPanel {
 	private javax.swing.JLabel componentNameLabel;
 	private javax.swing.JLabel genderLabel;
 	private javax.swing.JLabel genderValueLabel;
-	private javax.swing.JButton installButton;
+	private javax.swing.JButton unInstallButton;
 	private javax.swing.JSeparator jSeparator1;
 	private javax.swing.JTextArea jTextArea1;
 	private javax.swing.JLabel licenseLabel;
