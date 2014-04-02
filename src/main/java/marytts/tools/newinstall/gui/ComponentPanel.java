@@ -19,6 +19,7 @@ import marytts.tools.newinstall.enums.Status;
 import marytts.tools.newinstall.objects.Component;
 import marytts.tools.newinstall.objects.VoiceComponent;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -380,7 +381,7 @@ public class ComponentPanel extends JPanel {
 		this.jTextArea1.setText(component.getDescription().replaceAll("[\\t\\n]", " ").replaceAll("( )+", " "));
 		this.versionValueLabel.setText(component.getVersion());
 		this.licenseValueLabel.setText(component.getLicenseName());
-		// this.sizeValueLabel.setText(FileUtils.byteCountToDisplaySize(component.getSize()));
+		this.sizeValueLabel.setText(FileUtils.byteCountToDisplaySize(component.getSize()));
 		this.statusLabel.setText(component.getStatus().toString());
 		this.localeValueLabel.setText(component.getLocale().toString());
 

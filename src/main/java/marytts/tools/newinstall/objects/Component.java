@@ -9,6 +9,8 @@ import java.util.Observable;
 import marytts.tools.newinstall.enums.Status;
 
 import org.apache.ivy.core.module.descriptor.Artifact;
+import org.apache.ivy.core.module.descriptor.DependencyArtifactDescriptor;
+import org.apache.ivy.core.module.descriptor.DependencyDescriptor;
 import org.apache.ivy.core.module.descriptor.License;
 import org.apache.ivy.core.module.descriptor.ModuleDescriptor;
 import org.apache.log4j.Logger;
@@ -111,11 +113,15 @@ public class Component extends Observable implements Comparable<Component> {
 	 */
 	public long getSize() {
 		long size = 0;
-		for (Artifact artifact : this.descriptor.getAllArtifacts()) {
-			String sizeAttribute = artifact.getExtraAttribute("size");
-			// trying to parse a long number from the String attribute
+
+		DependencyDescriptor[] dependencies = this.descriptor.getDependencies();
+
+		DependencyDescriptor depDescriptor = dependencies[0];
+		DependencyArtifactDescriptor[] dependencyArtifacts = depDescriptor.getAllDependencyArtifacts();
+		for (DependencyArtifactDescriptor oneDepArt : dependencyArtifacts) {
+			String artifactSize = oneDepArt.getExtraAttribute("size");
 			try {
-				long parsedSize = Long.parseLong(sizeAttribute);
+				long parsedSize = Long.parseLong(artifactSize);
 				size += parsedSize;
 			} catch (NumberFormatException nfe) {
 				logger.error(this.descriptor.getAllArtifacts()[0].getExtraAttribute("size") + " could not be parsed.");
