@@ -57,6 +57,10 @@ public class ComponentPanel extends JPanel {
 		this.firstCollapse = true;
 		initComponents();
 		fillFields(component);
+
+		if (this.component.getStatus() == Status.INSTALLED) {
+			this.unInstallButton.setText("Uninstall");
+		}
 	}
 
 	/* @formatter:off
