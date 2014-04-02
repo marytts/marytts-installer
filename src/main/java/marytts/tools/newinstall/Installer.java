@@ -67,10 +67,6 @@ public class Installer {
 	// Java representation of the ivysettings.xml file that holds information about repository structure and location
 	private IvySettings ivySettings;
 
-	// Options passed on to the resolve/install methods of the Ivy object
-	private ResolveOptions resolveOptions;
-	private InstallOptions installOptions;
-
 	private UnzippingArtifactTypeFilter jarFilter;
 
 	// holds all currently available components
@@ -138,9 +134,6 @@ public class Installer {
 		DefaultMessageLogger defaultLogger = new DefaultMessageLogger(this.logLevel.ordinal());
 		defaultLogger.setShowProgress(true);
 		this.ivy.getLoggerEngine().setDefaultLogger(defaultLogger);
-
-		this.resolveOptions = new ResolveOptions();
-		this.installOptions = new InstallOptions().setOverwrite(true).setTransitive(true);
 	}
 
 	public void loadIvySettings() throws ParseException, IOException {
@@ -148,7 +141,6 @@ public class Installer {
 		this.ivySettings.setVariable("mary.base", this.maryBasePath);
 		logger.debug("Loading ivysettings.xml ...");
 		this.ivySettings.load(Resources.getResource("ivysettings.xml"));
-
 	}
 
 	protected void setLogLevel(LogLevel logLevel) {
@@ -288,9 +280,12 @@ public class Installer {
 	 */
 	public void install(Component component) throws ParseException, IOException {
 
+		// need to reload ivy due to bug in retrieving. If ivy is not reloaded at this point, componenents installed second in one
+		// run of the GUI installer are only downloaded (resolved), not installed (retrieved)
+		// loadIvy();
 		logger.info("Ivy is installing component " + component.getName() + " and resolving its dependencies ...");
 		// ResolveReport resolveAllDependencies = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
-		ResolveReport resolveReport = this.ivy.resolve(component.getModuleDescriptor(), this.resolveOptions);
+		this.ivy.resolve(component.getModuleDescriptor(), new ResolveOptions());
 		// RetrieveReport retrieveReport = this.ivy.retrieve(component.getModuleDescriptor().getModuleRevisionId(),
 		// new RetrieveOptions());
 		RepositoryResolver resolver = (RepositoryResolver) this.ivy.getSettings().getResolver("installed");
