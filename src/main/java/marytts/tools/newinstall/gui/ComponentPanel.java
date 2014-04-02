@@ -288,8 +288,10 @@ public class ComponentPanel extends JPanel {
 							JOptionPane.showMessageDialog(ComponentPanel.this, "Component is already installed!",
 									"Installing component " + componentName, JOptionPane.INFORMATION_MESSAGE);
 						} else {
+							ComponentPanel.this.unInstallButton.setEnabled(false);
 							ComponentPanel.this.unInstallButton.setText("Installing ...");
 							ComponentPanel.this.installer.install(ComponentPanel.this.component);
+							ComponentPanel.this.unInstallButton.setEnabled(true);
 							ComponentPanel.this.unInstallButton.setText("Uninstall");
 							ComponentPanel.this.installer.updateResourceStatuses();
 						}
@@ -318,8 +320,10 @@ public class ComponentPanel extends JPanel {
 						JOptionPane.showMessageDialog(ComponentPanel.this, "Component is not installed!", "Installing component "
 								+ componentName, JOptionPane.INFORMATION_MESSAGE);
 					} else {
+						ComponentPanel.this.unInstallButton.setEnabled(false);
 						ComponentPanel.this.unInstallButton.setText("Uninstalling ...");
 						ComponentPanel.this.installer.uninstall(ComponentPanel.this.component);
+						ComponentPanel.this.unInstallButton.setEnabled(true);
 						ComponentPanel.this.unInstallButton.setText("Install");
 						ComponentPanel.this.installer.updateResourceStatuses();
 					}
