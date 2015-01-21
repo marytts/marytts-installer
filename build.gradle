@@ -1,3 +1,29 @@
+repositories {
+    jcenter()
+    maven {
+        url 'http://oss.jfrog.org/artifactory/libs-release'
+    }
+}
+
+configurations {
+    create('cmu-slt-hsmm') {
+        description = 'A female US English HSMM voice, built from recordings provided by Carnegie Mellon University'
+    }
+}
+
+dependencies {
+    'cmu-slt-hsmm' 'de.dfki.mary:voice-cmu-slt-hsmm:5.1.1'
+}
+
+configurations.each { conf ->
+    tasks.create(conf.name, Copy) {
+        group 'Install'
+        description conf.description
+        from conf
+        into 'lib'
+    }
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion '2.2.1'
     scriptFile 'marytts'

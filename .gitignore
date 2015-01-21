@@ -1,5 +1,7 @@
 # Gradle
 .gradle/
+wrapper/
+lib/
 
 # IDEA
 .idea/
