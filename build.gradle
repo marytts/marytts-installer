@@ -1,0 +1,9 @@
+task wrapper(type: Wrapper) {
+    gradleVersion '2.2.1'
+    scriptFile 'marytts'
+    archiveBase 'PROJECT'
+    archivePath 'lib'
+    distributionBase 'PROJECT'
+    distributionPath 'lib'
+    init.dependsOn it
+}
