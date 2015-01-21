@@ -24,6 +24,12 @@ configurations.each { conf ->
     }
 }
 
+task server(type: JavaExec) {
+    description 'Start the MaryTTS server'
+    classpath 'lib/*'
+    main 'marytts.server.Mary'
+}
+
 task wrapper(type: Wrapper) {
     gradleVersion '2.2.1'
     scriptFile 'marytts'

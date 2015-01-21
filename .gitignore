@@ -1,3 +1,6 @@
+# MaryTTS
+log/
+
 # Gradle
 .gradle/
 wrapper/
