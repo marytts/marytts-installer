@@ -1,7 +1,7 @@
 repositories {
     jcenter()
     maven {
-        url 'http://oss.jfrog.org/artifactory/libs-release'
+        url 'https://oss.jfrog.org/artifactory/repo'
     }
 }
 
