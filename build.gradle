@@ -3,6 +3,10 @@ repositories {
     maven {
         url 'https://oss.jfrog.org/artifactory/repo'
     }
+    ivy {
+        url 'http://mary.dfki.de/repo'
+        layout 'maven'
+    }
 }
 
 configurations {
