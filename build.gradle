@@ -33,6 +33,13 @@ configurations.each { conf ->
         description conf.description
         from conf
         into 'lib'
+        filesMatching '*.zip', { zip ->
+            copy {
+                from zipTree(zip.file)
+                into rootDir
+            }
+            zip.exclude()
+        }
     }
 }
 
