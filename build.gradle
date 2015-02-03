@@ -10,13 +10,21 @@ repositories {
 }
 
 configurations {
+    create('bits3') {
+        description = 'A male German unit selection voice, built from voice recordings provided by the BITS project at the Bavarian Archive of Speech Signals'
+    }
+    create('bits3-hsmm') {
+        description = 'A male German hidden semi-Markov model voice, built from voice recordings provided by the BITS project at the Bavarian Archive of Speech Signals'
+    }
     create('cmu-slt-hsmm') {
         description = 'A female US English HSMM voice, built from recordings provided by Carnegie Mellon University'
     }
 }
 
 dependencies {
-    'cmu-slt-hsmm' 'de.dfki.mary:voice-cmu-slt-hsmm:5.1.1'
+    'bits3' 'de.dfki.mary:voice-bits3:5.1.2', 'de.dfki.mary:voice-bits3:5.1.2:data@zip'
+    'bits3-hsmm' 'de.dfki.mary:voice-bits3-hsmm:5.1.2'
+    'cmu-slt-hsmm' 'de.dfki.mary:voice-cmu-slt-hsmm:5.1.2'
 }
 
 configurations.each { conf ->
