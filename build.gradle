@@ -53,6 +53,7 @@ task server(type: JavaExec) {
     description 'Start the MaryTTS server'
     classpath 'lib/*'
     main 'marytts.server.Mary'
+    systemProperties System.properties
 }
 
 task wrapper(type: Wrapper) {
