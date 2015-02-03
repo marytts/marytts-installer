@@ -37,8 +37,14 @@ configurations.each { conf ->
             copy {
                 from zipTree(zip.file)
                 into rootDir
+                eachFile {
+                    logger.info "Unpack\t$it.name"
+                }
             }
             zip.exclude()
+        }
+        eachFile {
+            logger.info "Copy\t$it.name"
         }
     }
 }
