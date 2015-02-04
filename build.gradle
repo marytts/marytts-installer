@@ -32,11 +32,11 @@ configurations.each { conf ->
         group 'Install'
         description conf.description
         from conf
-        into 'lib'
+        into buildDir
         filesMatching '*.zip', { zip ->
             copy {
                 from zipTree(zip.file)
-                into rootDir
+                into buildDir
                 eachFile {
                     logger.info "Unpack\t$it.name"
                 }
@@ -51,7 +51,8 @@ configurations.each { conf ->
 
 task server(type: JavaExec) {
     description 'Start the MaryTTS server'
-    classpath 'lib/*'
+    classpath "$buildDir/*"
+    workingDir buildDir
     main 'marytts.server.Mary'
     systemProperties System.properties
 }
