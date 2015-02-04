@@ -1,2 +1,3 @@
 rootProject.name = 'MaryTTS'
 include new File('install').name
+include new File('uninstall').name
