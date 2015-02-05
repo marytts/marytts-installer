@@ -4,7 +4,7 @@ log/
 # Gradle
 .gradle/
 wrapper/
-build/
+installed/
 
 # IDEA
 .idea/
