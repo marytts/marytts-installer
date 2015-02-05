@@ -1,4 +1,5 @@
 buildDir 'installed'
+version '5.1.2'
 
 subprojects {
     repositories {
