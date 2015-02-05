@@ -27,11 +27,11 @@ subprojects {
                 copy {
                     from zipTree(zip.file)
                     into rootProject.buildDir
-                    eachFile { logger.info "Unpack\t$it.name" }
+                    eachFile { logger.lifecycle "Unpack\t$it.name" }
                 }
                 zip.exclude()
             }
-            eachFile { logger.info "Copy\t$it.name" }
+            eachFile { logger.lifecycle "Copy\t$it.name" }
         }
     }
 }
@@ -58,6 +58,6 @@ distributions.main {
             into buildDir.name
             exclude distsDir.name, 'install'
         }
-        eachFile { logger.info "Pack\t$it.name" }
+        eachFile { logger.lifecycle "Pack\t$it.name" }
     }
 }
