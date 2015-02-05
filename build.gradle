@@ -29,9 +29,7 @@ subprojects {
         'bits3-hsmm' 'de.dfki.mary:voice-bits3-hsmm:5.1.2'
         'cmu-slt-hsmm' 'de.dfki.mary:voice-cmu-slt-hsmm:5.1.2'
     }
-}
 
-project(':install') {
     configurations.each { conf ->
         tasks.create(conf.name, Copy) {
             group 'Install'
@@ -42,15 +40,11 @@ project(':install') {
                 copy {
                     from zipTree(zip.file)
                     into rootProject.buildDir
-                    eachFile {
-                        logger.info "Unpack\t$it.name"
-                    }
+                    eachFile { logger.info "Unpack\t$it.name" }
                 }
                 zip.exclude()
             }
-            eachFile {
-                logger.info "Copy\t$it.name"
-            }
+            eachFile { logger.info "Copy\t$it.name" }
         }
     }
 }
