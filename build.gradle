@@ -53,49 +53,6 @@ project(':install') {
     }
 }
 
-project(':uninstall') {
-    configurations.each { conf ->
-        conf.transitive = false
-        copy {
-            from conf
-            into rootDir
-            eachFile { f ->
-                def filesToDelete = []
-                def installedFile = new File(rootProject.buildDir, f.name)
-                if (installedFile.exists()) {
-                    filesToDelete << installedFile
-                } else if (installedFile.name.endsWith('.zip')) {
-                    copy {
-                        from zipTree(f.file)
-                        into rootProject.buildDir
-                        eachFile {
-                            def fileToDelete = new File("$rootProject.buildDir/$it.path")
-                            if (fileToDelete.exists()) {
-                                filesToDelete << fileToDelete
-                            }
-                            it.exclude()
-                        }
-                    }
-                }
-                if (filesToDelete) {
-                    def taskName = "remove-$conf.name"
-                    def deleteTask
-                    try {
-                        deleteTask = tasks.getByName(taskName)
-                    } catch (UnknownTaskException e) {
-                        tasks.create(taskName, Delete) {
-                            group 'Uninstall'
-                        }
-                        deleteTask = tasks.getByName(taskName)
-                    }
-                    deleteTask.delete filesToDelete
-                }
-                f.exclude()
-            }
-        }
-    }
-}
-
 task server(type: JavaExec) {
     description 'Start the MaryTTS server'
     classpath "$buildDir/*"
