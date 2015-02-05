@@ -1,10 +1,14 @@
-# Maven
-target/
+# MaryTTS
+log/
 
-# Eclipse
-.settings/
-.project
-.classpath
+# Gradle
+.gradle/
+wrapper/
+installed/
+
+# IDEA
+.idea/
+*.iml
 
 # OSX
 .DS_Store

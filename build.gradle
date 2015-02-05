@@ -1,0 +1,49 @@
+buildDir 'installed'
+
+subprojects {
+    repositories {
+        jcenter()
+        maven {
+            url 'https://oss.jfrog.org/artifactory/repo'
+        }
+        ivy {
+            url 'http://mary.dfki.de/repo'
+            layout 'maven'
+        }
+    }
+
+    apply from: "$rootDir/components.gradle"
+
+    configurations.each { conf ->
+        tasks.create(conf.name, Copy) {
+            group 'Install'
+            description conf.description
+            from conf
+            into rootProject.buildDir
+            filesMatching '*.zip', { zip ->
+                copy {
+                    from zipTree(zip.file)
+                    into rootProject.buildDir
+                    eachFile { logger.info "Unpack\t$it.name" }
+                }
+                zip.exclude()
+            }
+            eachFile { logger.info "Copy\t$it.name" }
+        }
+    }
+}
+
+task server(type: JavaExec) {
+    group 'Runtime'
+    description 'Start the MaryTTS server'
+    classpath "$buildDir/*"
+    workingDir buildDir
+    main 'marytts.server.Mary'
+    systemProperties System.properties
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion '2.2.1'
+    scriptFile 'marytts'
+    init.dependsOn it
+}
