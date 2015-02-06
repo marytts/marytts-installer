@@ -1,3 +1,5 @@
+defaultTasks 'server'
+
 apply plugin: 'distribution'
 
 buildDir 'installed'
