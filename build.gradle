@@ -39,7 +39,7 @@ subprojects {
 task server(type: JavaExec) {
     group 'Runtime'
     description 'Start the MaryTTS server'
-    classpath "$buildDir/*"
+    classpath buildDir.exists() ? buildDir.listFiles() : buildDir
     workingDir buildDir
     main 'marytts.server.Mary'
     systemProperties System.properties
