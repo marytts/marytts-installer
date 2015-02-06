@@ -39,7 +39,7 @@ subprojects {
 task server(type: JavaExec) {
     group 'Runtime'
     description 'Start the MaryTTS server'
-    def jarFiles = buildDir.exists() ? buildDir.listFiles('*.jar') : null
+    def jarFiles = buildDir.exists() ? buildDir.listFiles() : null
     if (jarFiles) {
         classpath jarFiles
     }
