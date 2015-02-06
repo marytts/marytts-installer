@@ -39,10 +39,16 @@ subprojects {
 task server(type: JavaExec) {
     group 'Runtime'
     description 'Start the MaryTTS server'
-    classpath buildDir.exists() ? buildDir.listFiles() : buildDir
+    def jarFiles = buildDir.exists() ? buildDir.listFiles('*.jar') : null
+    if (jarFiles) {
+        classpath jarFiles
+    }
     workingDir buildDir
     main 'marytts.server.Mary'
     systemProperties System.properties
+    doFirst {
+        assert jarFiles, "No jar files found in \"$buildDir.name/\" directory! Please install a MaryTTS voice first"
+    }
 }
 
 task wrapper(type: Wrapper) {
