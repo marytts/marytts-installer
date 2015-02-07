@@ -17,13 +17,21 @@ subprojects {
         }
     }
 
-    apply from: "$rootDir/components.gradle"
+    new groovy.json.JsonSlurper().parse(file("$rootDir/components.json")).each { voice ->
+        configurations.create voice.name
 
-    configurations.each { conf ->
-        tasks.create(conf.name, Copy) {
+        voice.files.each {
+            def dep = "$voice.group:$voice.artifact:$voice.version"
+            if (it.name.endsWith('.zip')) {
+                dep += ":data@zip"
+            }
+            dependencies.add voice.name, dep
+        }
+
+        tasks.create(voice.name, Copy) {
             group 'Install'
-            description conf.description
-            from conf
+            description voice.description
+            from configurations.getByName(voice.name)
             into rootProject.buildDir
             filesMatching '*.zip', { zip ->
                 copy {

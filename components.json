@@ -1,0 +1,702 @@
+[
+  {
+    "artifact": "voice-bits1-hsmm",
+    "description": "A female German hidden semi-Markov model voice, built from voice recordings provided by the BITS project at the Bavarian Archive of Speech Signals",
+    "files": [
+      {
+        "md5": "c0bf9d0ce45eb65503b16690699e809c",
+        "name": "voice-bits1-hsmm-5.1.2.jar",
+        "size": 1362934
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "de",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "bits1-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-bits3",
+    "description": "A male German unit selection voice, built from voice recordings provided by the BITS project at the Bavarian Archive of Speech Signals",
+    "files": [
+      {
+        "md5": "332805c0a8eb0e72e884c05fa714646f",
+        "name": "voice-bits3-5.1.2.jar",
+        "size": 663628
+      },
+      {
+        "md5": "332805c0a8eb0e72e884c05fa714646f",
+        "name": "voice-bits3-5.1.2-data.zip",
+        "size": 277592493
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "de",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "bits3",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-bits3-hsmm",
+    "description": "A male German hidden semi-Markov model voice, built from voice recordings provided by the BITS project at the Bavarian Archive of Speech Signals",
+    "files": [
+      {
+        "md5": "8f949873abc3f83149f36bfb32e3422a",
+        "name": "voice-bits3-hsmm-5.1.2.jar",
+        "size": 1559254
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "de",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "bits3-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-cmu-bdl-hsmm",
+    "description": "A male US English hidden semi-Markov model voice, built from recordings provided by Carnegie Mellon University",
+    "files": [
+      {
+        "md5": "1aa77890fc8f1c41302e942167e11ef8",
+        "name": "voice-cmu-bdl-hsmm-5.1.2.jar",
+        "size": 1019615
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Arctic License",
+      "url": "http://mary.dfki.de/download/arctic-license.html"
+    },
+    "name": "cmu-bdl-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-cmu-nk",
+    "description": "A female Telugu unit selection voice built from voice recordings provided by IIIT Hyderabad and Carnegie Mellon University",
+    "files": [
+      {
+        "md5": "9ca6f53385559a15f0625059c43916cf",
+        "name": "voice-cmu-nk-5.1.2.jar",
+        "size": 2548831
+      },
+      {
+        "md5": "9ca6f53385559a15f0625059c43916cf",
+        "name": "voice-cmu-nk-5.1.2-data.zip",
+        "size": 493342774
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "te",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "cmu-nk",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-cmu-nk-hsmm",
+    "description": "A female Telugu hidden semi-Markov model voice built from voice recordings provided by IIIT Hyderabad and Carnegie Mellon University",
+    "files": [
+      {
+        "md5": "6583e47e42c76e99f5859efeea020b8f",
+        "name": "voice-cmu-nk-hsmm-5.1.2.jar",
+        "size": 3399477
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "te",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "cmu-nk-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-cmu-rms-hsmm",
+    "description": "A male US English hidden semi-Markov model voice, built from recordings provided by Carnegie Mellon University",
+    "files": [
+      {
+        "md5": "83a77287d3728f0482ab752d42086736",
+        "name": "voice-cmu-rms-hsmm-5.1.2.jar",
+        "size": 1030159
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Arctic License",
+      "url": "http://mary.dfki.de/download/arctic-license.html"
+    },
+    "name": "cmu-rms-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-cmu-slt",
+    "description": "A female US English unit selection voice, built from recordings provided by Carnegie Mellon University",
+    "files": [
+      {
+        "md5": "8a4e14c2afb4c76b0d3cb1cc755cf01b",
+        "name": "voice-cmu-slt-5.1.2.jar",
+        "size": 315932
+      },
+      {
+        "md5": "8a4e14c2afb4c76b0d3cb1cc755cf01b",
+        "name": "voice-cmu-slt-5.1.2-data.zip",
+        "size": 105605739
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Arctic License",
+      "url": "http://mary.dfki.de/download/arctic-license.html"
+    },
+    "name": "cmu-slt",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-obadiah",
+    "description": "A male British English expressive unit selection voice: Gloomy Obadiah",
+    "files": [
+      {
+        "md5": "46c2b5bcacbdd6ce3f82e9ef8b5b62ad",
+        "name": "voice-dfki-obadiah-5.1.2.jar",
+        "size": 367693
+      },
+      {
+        "md5": "46c2b5bcacbdd6ce3f82e9ef8b5b62ad",
+        "name": "voice-dfki-obadiah-5.1.2-data.zip",
+        "size": 146075917
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-obadiah",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-obadiah-hsmm",
+    "description": "A male British English hidden semi-Markov model voice",
+    "files": [
+      {
+        "md5": "eb40d3caa530c48ea168a091eb0ea71b",
+        "name": "voice-dfki-obadiah-hsmm-5.1.2.jar",
+        "size": 1218834
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-obadiah-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-ot",
+    "description": "A male Turkish unit selection voice",
+    "files": [
+      {
+        "md5": "7782f937a9f6494cc3f196b23044d12e",
+        "name": "voice-dfki-ot-5.1.2.jar",
+        "size": 503723
+      },
+      {
+        "md5": "7782f937a9f6494cc3f196b23044d12e",
+        "name": "voice-dfki-ot-5.1.2-data.zip",
+        "size": 157297461
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "tr",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-ot",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-ot-hsmm",
+    "description": "A male Turkish hidden semi-Markov model voice",
+    "files": [
+      {
+        "md5": "3f40846a972cf501ed8b56effd5f65ff",
+        "name": "voice-dfki-ot-hsmm-5.1.2.jar",
+        "size": 1368682
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "tr",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-ot-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-pavoque-neutral",
+    "description": "A male German unit selection voice",
+    "files": [
+      {
+        "md5": "5a598fbac3f5ed1bbc2f25086ad39522",
+        "name": "voice-dfki-pavoque-neutral-5.1.2.jar",
+        "size": 1286423
+      },
+      {
+        "md5": "5a598fbac3f5ed1bbc2f25086ad39522",
+        "name": "voice-dfki-pavoque-neutral-5.1.2-data.zip",
+        "size": 444804525
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "de",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-pavoque-neutral",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-pavoque-neutral-hsmm",
+    "description": "A male German hidden semi-Markov model voice",
+    "files": [
+      {
+        "md5": "ef90a1d91645b8734119fb814ff1d1af",
+        "name": "voice-dfki-pavoque-neutral-hsmm-5.1.2.jar",
+        "size": 2837265
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "de",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-pavoque-neutral-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-pavoque-styles",
+    "description": "A male German unit selection voice with expressive styles \"happy\", \"sad\", \"angry\", and \"poker\"",
+    "files": [
+      {
+        "md5": "841ca80635aa76c4813f66a0277ac9a7",
+        "name": "voice-dfki-pavoque-styles-5.1.2.jar",
+        "size": 1912873
+      },
+      {
+        "md5": "841ca80635aa76c4813f66a0277ac9a7",
+        "name": "voice-dfki-pavoque-styles-5.1.2-data.zip",
+        "size": 690254767
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "de",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-pavoque-styles",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-poppy",
+    "description": "A female British English expressive unit selection voice: Cheerful Poppy",
+    "files": [
+      {
+        "md5": "0c4972cb64dc7e097e6e9fe58cbff475",
+        "name": "voice-dfki-poppy-5.1.2.jar",
+        "size": 290860
+      },
+      {
+        "md5": "0c4972cb64dc7e097e6e9fe58cbff475",
+        "name": "voice-dfki-poppy-5.1.2-data.zip",
+        "size": 99037408
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-poppy",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-poppy-hsmm",
+    "description": "A female British English hidden semi-Markov model voice",
+    "files": [
+      {
+        "md5": "8c1828337c80ee343e104dd461cb3669",
+        "name": "voice-dfki-poppy-hsmm-5.1.2.jar",
+        "size": 1018207
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-poppy-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-prudence",
+    "description": "A female British English expressive unit selection voice: Pragmatic Prudence",
+    "files": [
+      {
+        "md5": "1f2be8951ad1b98ae75453c0e7a2f3e6",
+        "name": "voice-dfki-prudence-5.1.2.jar",
+        "size": 680088
+      },
+      {
+        "md5": "1f2be8951ad1b98ae75453c0e7a2f3e6",
+        "name": "voice-dfki-prudence-5.1.2-data.zip",
+        "size": 250180251
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-prudence",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-prudence-hsmm",
+    "description": "A female British English hidden semi-Markov model voice",
+    "files": [
+      {
+        "md5": "e5486ecea3a41347bbb6e0ff15663b66",
+        "name": "voice-dfki-prudence-hsmm-5.1.2.jar",
+        "size": 1562875
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-prudence-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-spike",
+    "description": "A male British English expressive unit selection voice: Aggressive Spike",
+    "files": [
+      {
+        "md5": "647d5cce65b29ffbc6e2c91c12f11c71",
+        "name": "voice-dfki-spike-5.1.2.jar",
+        "size": 394384
+      },
+      {
+        "md5": "647d5cce65b29ffbc6e2c91c12f11c71",
+        "name": "voice-dfki-spike-5.1.2-data.zip",
+        "size": 135783153
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-spike",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-dfki-spike-hsmm",
+    "description": "A male British English hidden semi-Markov model voice",
+    "files": [
+      {
+        "md5": "c247194430f51d97f9f185ba79eea9aa",
+        "name": "voice-dfki-spike-hsmm-5.1.2.jar",
+        "size": 1085841
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "dfki-spike-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-enst-camille",
+    "description": "A female French unit selection voice, built at T\u00e9l\u00e9com ParisTech (ENST) using data recorded by Camille Dianoux",
+    "files": [
+      {
+        "md5": "c79be6c475a8d3822099214216973956",
+        "name": "voice-enst-camille-5.1.2.jar",
+        "size": 459549
+      },
+      {
+        "md5": "c79be6c475a8d3822099214216973956",
+        "name": "voice-enst-camille-5.1.2-data.zip",
+        "size": 183022399
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "fr",
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-sa-3.0.html"
+    },
+    "name": "enst-camille",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-enst-camille-hsmm",
+    "description": "A female French hidden semi-Markov model voice, built at T\u00e9l\u00e9com ParisTech (ENST) using data recorded by Camille Dianoux",
+    "files": [
+      {
+        "md5": "fa5173adae8509f7e7fd798f5c525b33",
+        "name": "voice-enst-camille-hsmm-5.1.2.jar",
+        "size": 1521125
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "fr",
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-sa-3.0.html"
+    },
+    "name": "enst-camille-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-enst-dennys-hsmm",
+    "description": "A male Qu\u00e9b\u00e9cois French hidden semi-Markov model voice, built at T\u00e9l\u00e9com ParisTech (ENST)",
+    "files": [
+      {
+        "md5": "b16010daf5a3680ab5a979a4600ee82b",
+        "name": "voice-enst-dennys-hsmm-5.1.2.jar",
+        "size": 1678888
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "fr",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "enst-dennys-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-istc-lucia-hsmm",
+    "description": "Italian female Hidden semi-Markov model voice kindly made available by Fabio Tesser",
+    "files": [
+      {
+        "md5": "a9f0418fb1724595575ccb42ebc0316a",
+        "name": "voice-istc-lucia-hsmm-5.1.2.jar",
+        "size": 1469103
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "it",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "istc-lucia-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-upmc-jessica",
+    "description": "A female French unit selection voice, built at ISIR (UPMC) using data recorded by Jessica Durand",
+    "files": [
+      {
+        "md5": "91f4e2db73cc2ca79cd1e5558cfbe02d",
+        "name": "voice-upmc-jessica-5.1.2.jar",
+        "size": 335012
+      },
+      {
+        "md5": "91f4e2db73cc2ca79cd1e5558cfbe02d",
+        "name": "voice-upmc-jessica-5.1.2-data.zip",
+        "size": 126510826
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "fr",
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-sa-3.0.html"
+    },
+    "name": "upmc-jessica",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-upmc-jessica-hsmm",
+    "description": "A female French hidden semi-Markov model voice, built at ISIR (UPMC) using data recorded by Jessica Durand",
+    "files": [
+      {
+        "md5": "79e648565a8a3f405fe6f274f0611bd7",
+        "name": "voice-upmc-jessica-hsmm-5.1.2.jar",
+        "size": 1121545
+      }
+    ],
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "fr",
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-sa-3.0.html"
+    },
+    "name": "upmc-jessica-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-upmc-pierre",
+    "description": "A male French unit selection voice, built at ISIR (UPMC) using data recorded by Pierre Chauvin",
+    "files": [
+      {
+        "md5": "bfb747a8f62318c8e967625cd6ef68e5",
+        "name": "voice-upmc-pierre-5.1.2.jar",
+        "size": 459085
+      },
+      {
+        "md5": "bfb747a8f62318c8e967625cd6ef68e5",
+        "name": "voice-upmc-pierre-5.1.2-data.zip",
+        "size": 171320145
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "fr",
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-sa-3.0.html"
+    },
+    "name": "upmc-pierre",
+    "type": "unit selection",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-upmc-pierre-hsmm",
+    "description": "A male French hidden semi-Markov model voice, built at ISIR (UPMC) using data recorded by Pierre Chauvin",
+    "files": [
+      {
+        "md5": "c1e4467d61dfa8c3edd61eb197739659",
+        "name": "voice-upmc-pierre-hsmm-5.1.2.jar",
+        "size": 1559928
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "fr",
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-sa-3.0.html"
+    },
+    "name": "upmc-pierre-hsmm",
+    "type": "hsmm",
+    "version": "5.1.2"
+  },
+  {
+    "artifact": "voice-voxforge-ru-nsh",
+    "description": "Russian male voice kindly made available by Nickolay V. Shmyrev",
+    "files": [
+      {
+        "md5": "68d863f380086fbeb37224e7d740a37e",
+        "name": "voice-voxforge-ru-nsh-5.1.2.jar",
+        "size": 440433
+      },
+      {
+        "md5": "68d863f380086fbeb37224e7d740a37e",
+        "name": "voice-voxforge-ru-nsh-5.1.2-data.zip",
+        "size": 174694751
+      }
+    ],
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "ru",
+    "license": {
+      "name": "Creative Commons Attribution-NoDerivs 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-nd-3.0.html"
+    },
+    "name": "voxforge-ru-nsh",
+    "type": "unit selection",
+    "version": "5.1.2"
+  }
+]
