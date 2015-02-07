@@ -17,6 +17,10 @@ subprojects {
             url 'http://mary.dfki.de/repo'
             layout 'maven'
         }
+        ivy {
+            url 'https://dl.dropboxusercontent.com/u/77978669/repo'
+            layout 'maven'
+        }
     }
 
     new groovy.json.JsonSlurper().parse(file("$rootDir/components.json")).each { voice ->
