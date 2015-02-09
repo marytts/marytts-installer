@@ -66,8 +66,12 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
                 zip.exclude()
             }
             eachFile {
-                verify it
-                logger.lifecycle "Copy\t$it.name"
+                if (file("$rootProject.buildDir/$it.name").exists()) {
+                    it.exclude()
+                } else {
+                    verify it
+                    logger.lifecycle "Copy\t$it.name"
+                }
             }
             rootProject.tasks.getByName(voice.name).dependsOn it
         }
