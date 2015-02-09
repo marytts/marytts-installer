@@ -27,9 +27,9 @@ subprojects {
 
         configurations.create voice.name
 
-        voice.files.each {
+        voice.files.keySet().each { name ->
             def dep = "$voice.group:$voice.artifact:$voice.version"
-            if (it.name.endsWith('.zip')) {
+            if (name.endsWith('.zip')) {
                 dep += ":data@zip"
             }
             dependencies.add voice.name, dep
