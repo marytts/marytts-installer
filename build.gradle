@@ -37,6 +37,12 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             dependencies.marytts dependency
         }
 
+        configurations.marytts.resolutionStrategy.eachDependency {
+            if (it.requested.group == 'de.dfki.mary' && it.requested.name.startsWith('marytts-')) {
+                it.useVersion version
+            }
+        }
+
         def verify = {
             if (voice.files[it.name] && !(rootProject.properties['verify'] && !rootProject.verify.toBoolean())) {
                 def expected = voice.files[it.name].sha1
