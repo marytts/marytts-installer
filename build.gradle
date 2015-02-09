@@ -35,12 +35,22 @@ subprojects {
             dependencies.add voice.name, dep
         }
 
+        def verify = {
+            if (voice.files[it.name] && !(rootProject.properties['verify'] && !rootProject.verify.toBoolean())) {
+                def expected = voice.files[it.name].sha1
+                def actual = it.file.parentFile.name
+                logger.lifecycle "Verify\t$it.name"
+                assert expected == actual, "Checksum failed for $it.name: $it.file.path"
+            }
+        }
+
         tasks.create(voice.name, Copy) {
             group 'Install'
             description voice.description
             from configurations.getByName(voice.name)
             into rootProject.buildDir
             filesMatching '*.zip', { zip ->
+                verify zip
                 copy {
                     from zipTree(zip.file)
                     into rootProject.buildDir
@@ -48,7 +58,10 @@ subprojects {
                 }
                 zip.exclude()
             }
-            eachFile { logger.lifecycle "Copy\t$it.name" }
+            eachFile {
+                verify it
+                logger.lifecycle "Copy\t$it.name"
+            }
         }
     }
 }
