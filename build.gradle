@@ -73,6 +73,12 @@ task server(type: JavaExec) {
     workingDir buildDir
     main 'marytts.server.Mary'
     systemProperties System.properties
+    if (logger.isEnabled(LogLevel.INFO)) {
+        systemProperties << ['log4j.logger.marytts': 'INFO,stderr']
+    }
+    if (logger.isEnabled(LogLevel.DEBUG)) {
+        systemProperties << ['log4j.logger.marytts': 'DEBUG,stderr']
+    }
     doFirst {
         assert jarFiles: "No jar files found in \"$buildDir.name\" directory! Please install a MaryTTS voice first"
     }
