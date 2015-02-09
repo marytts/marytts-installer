@@ -18,17 +18,23 @@ subprojects {
             layout 'maven'
         }
     }
+}
 
-    new groovy.json.JsonSlurper().parse(file("$rootDir/components.json")).each { voice ->
+new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
+    task(voice.name) {
+        group 'Install'
+        description voice.description
+    }
 
-        configurations.create voice.name
+    project(":$voice.name") {
+        configurations.create 'marytts'
 
         voice.files.keySet().each { name ->
-            def dep = "$voice.group:$voice.artifact:$voice.version"
+            def dependency = "$voice.group:$voice.artifact:$voice.version"
             if (name.endsWith('.zip')) {
-                dep += ":data@zip"
+                dependency += ":data@zip"
             }
-            dependencies.add voice.name, dep
+            dependencies.marytts dependency
         }
 
         def verify = {
@@ -40,10 +46,9 @@ subprojects {
             }
         }
 
-        tasks.create(voice.name, Copy) {
-            group 'Install'
+        task install(type: Copy) {
             description voice.description
-            from configurations.getByName(voice.name)
+            from configurations.marytts
             into rootProject.buildDir
             filesMatching '*.zip', { zip ->
                 verify zip
@@ -58,6 +63,7 @@ subprojects {
                 verify it
                 logger.lifecycle "Copy\t$it.name"
             }
+            rootProject.tasks.getByName(voice.name).dependsOn it
         }
     }
 }

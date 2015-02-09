@@ -1,2 +1,4 @@
 rootProject.name = 'MaryTTS'
-include new File('install').name
+new groovy.json.JsonSlurper().parse(file("$rootDir/components.json")).each {
+    include new File(it.name).name
+}
