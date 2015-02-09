@@ -1,7 +1,3 @@
-defaultTasks 'server'
-
-apply plugin: 'distribution'
-
 buildDir 'installed'
 allprojects {
     version '5.1.2'
@@ -40,7 +36,7 @@ subprojects {
                 def expected = voice.files[it.name].sha1
                 def actual = it.file.parentFile.name
                 logger.lifecycle "Verify\t$it.name"
-                assert expected == actual, "Checksum failed for $it.name: $it.file.path"
+                assert expected == actual: "Checksum failed for $it.name"
             }
         }
 
@@ -69,6 +65,7 @@ subprojects {
 task server(type: JavaExec) {
     group 'Runtime'
     description 'Start the MaryTTS server'
+    defaultTasks.add it.name
     def jarFiles = buildDir.exists() ? buildDir.listFiles() : null
     if (jarFiles) {
         classpath jarFiles
@@ -77,7 +74,7 @@ task server(type: JavaExec) {
     main 'marytts.server.Mary'
     systemProperties System.properties
     doFirst {
-        assert jarFiles, "No jar files found in \"$buildDir.name/\" directory! Please install a MaryTTS voice first"
+        assert jarFiles: "No jar files found in \"$buildDir.name\" directory! Please install a MaryTTS voice first"
     }
 }
 
@@ -86,6 +83,8 @@ task wrapper(type: Wrapper) {
     scriptFile 'marytts'
     init.dependsOn it
 }
+
+apply plugin: 'distribution'
 
 distributions.main {
     contents {
