@@ -60,6 +60,7 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
         task verify {
             description "Verify SHA-1 checksum of downloaded files for $voice.name"
             dependsOn payload
+            outputs.upToDateWhen { gradle.taskGraph.hasTask(install) }
             doLast {
                 payload.files.keySet().each {
                     if (voice.files[it.name]) {
