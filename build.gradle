@@ -89,6 +89,17 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             }
             rootProject.tasks.getByName(voice.name).dependsOn it
         }
+
+        task uninstall(dependsOn: payload) << {
+            payload.files.each { source, targets ->
+                targets.each { target ->
+                    if (target.isFile() && voice.files.containsKey(source.name)) {
+                        logger.lifecycle "Delete\t$target.name"
+                        delete target
+                    }
+                }
+            }
+        }
     }
 }
 
