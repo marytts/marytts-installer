@@ -76,7 +76,7 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             description voice.description
             from configurations.marytts
             into rootProject.buildDir
-            if (!(rootProject.properties['verify'] && !rootProject.verify.toBoolean())) {
+            if (!rootProject.hasProperty('noverify')) {
                 dependsOn verify
             }
             filesMatching '*.zip', { zip ->
