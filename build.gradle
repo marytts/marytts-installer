@@ -43,6 +43,15 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             }
         }
 
+        task info(group: 'Help', description: "Display details") << {
+            println "Gender\t$voice.gender"
+            println "Language\t$voice.language"
+            println "Type\t$voice.type"
+            println "Download size\t${voice.files.values().sum { it.size }}"
+            println "License\t$voice.license.name, see $voice.license.url"
+            println "Description\t$voice.description"
+        }
+
         task payload(type: Copy) {
             from configurations.marytts
             into rootProject.buildDir
