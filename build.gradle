@@ -43,6 +43,20 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             }
         }
 
+        task payload(type: Copy) {
+            from configurations.marytts
+            into rootProject.buildDir
+            outputs.upToDateWhen { false }
+            ext.files = [:]
+            eachFile { source ->
+                files[source.file] = source.name.endsWith('.zip') ?
+                        new java.util.zip.ZipFile(source.file).entries().collect {
+                            new File(destinationDir, it.name)
+                        } : [new File(destinationDir, source.name)]
+                source.exclude()
+            }
+        }
+
         def verify = {
             if (voice.files[it.name] && !(rootProject.properties['verify'] && !rootProject.verify.toBoolean())) {
                 def expected = voice.files[it.name].sha1
