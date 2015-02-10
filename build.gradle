@@ -1,7 +1,5 @@
 buildDir 'installed'
-allprojects {
-    version '5.1.2'
-}
+allprojects { version '5.1.2' }
 
 subprojects {
     repositories {
@@ -21,10 +19,7 @@ subprojects {
 }
 
 new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
-    task(voice.name) {
-        group 'Install'
-        description voice.description
-    }
+    task(voice.name, group: 'Install', description: voice.description)
 
     project(":$voice.name") {
         configurations.create 'marytts'
@@ -66,24 +61,19 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             }
         }
 
-        task verify {
-            description "Verify SHA-1 checksum of downloaded files for $voice.name"
-            dependsOn payload
-            outputs.upToDateWhen { gradle.taskGraph.hasTask(install) }
-            doLast {
-                payload.files.keySet().each {
-                    if (voice.files[it.name]) {
-                        def expected = voice.files[it.name].sha1
-                        def actual = it.parentFile.name.padLeft(40, '0')
-                        logger.lifecycle "Verify\t$it.name"
-                        assert expected == actual: "Checksum failed for $it.name"
-                    }
+        task verify(dependsOn: payload, description: "Verify SHA-1 checksum of downloaded files for $voice.name") << {
+            payload.files.keySet().each {
+                if (voice.files[it.name]) {
+                    def expected = voice.files[it.name].sha1
+                    def actual = it.parentFile.name.padLeft(40, '0')
+                    logger.lifecycle "Verify\t$it.name"
+                    assert expected == actual: "Checksum failed for $it.name"
                 }
             }
         }
+        verify.outputs.upToDateWhen { gradle.taskGraph.hasTask(install) }
 
-        task install(type: Copy) {
-            description voice.description
+        task install(type: Copy, description: voice.description) {
             from configurations.marytts
             into rootProject.buildDir
             if (!rootProject.hasProperty('noverify')) {
@@ -129,9 +119,7 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
     }
 }
 
-task server(type: JavaExec) {
-    group 'Runtime'
-    description 'Start the MaryTTS server'
+task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS server') {
     defaultTasks.add it.name
     def jarFiles = buildDir.exists() ? buildDir.listFiles() : null
     if (jarFiles) {
@@ -158,7 +146,6 @@ task wrapper(type: Wrapper) {
 }
 
 apply plugin: 'distribution'
-
 distributions.main {
     contents {
         from rootDir, { exclude file('.gitignore').canRead() ? file('.gitignore').readLines() : buildDir.name }
