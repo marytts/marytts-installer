@@ -60,7 +60,7 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
         def verify = {
             if (voice.files[it.name] && !(rootProject.properties['verify'] && !rootProject.verify.toBoolean())) {
                 def expected = voice.files[it.name].sha1
-                def actual = it.file.parentFile.name
+                def actual = it.file.parentFile.name.padLeft(40, '0')
                 logger.lifecycle "Verify\t$it.name"
                 assert expected == actual: "Checksum failed for $it.name"
             }
