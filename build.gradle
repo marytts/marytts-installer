@@ -57,12 +57,18 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             }
         }
 
-        def verify = {
-            if (voice.files[it.name] && !(rootProject.properties['verify'] && !rootProject.verify.toBoolean())) {
-                def expected = voice.files[it.name].sha1
-                def actual = it.file.parentFile.name.padLeft(40, '0')
-                logger.lifecycle "Verify\t$it.name"
-                assert expected == actual: "Checksum failed for $it.name"
+        task verify {
+            description "Verify SHA-1 checksum of downloaded files for $voice.name"
+            dependsOn payload
+            doLast {
+                payload.files.keySet().each {
+                    if (voice.files[it.name]) {
+                        def expected = voice.files[it.name].sha1
+                        def actual = it.parentFile.name.padLeft(40, '0')
+                        logger.lifecycle "Verify\t$it.name"
+                        assert expected == actual: "Checksum failed for $it.name"
+                    }
+                }
             }
         }
 
@@ -70,8 +76,10 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             description voice.description
             from configurations.marytts
             into rootProject.buildDir
+            if (!(rootProject.properties['verify'] && !rootProject.verify.toBoolean())) {
+                dependsOn verify
+            }
             filesMatching '*.zip', { zip ->
-                verify zip
                 copy {
                     from zipTree(zip.file)
                     into rootProject.buildDir
@@ -83,7 +91,6 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
                 if (file("$rootProject.buildDir/$it.name").exists()) {
                     it.exclude()
                 } else {
-                    verify it
                     logger.lifecycle "Copy\t$it.name"
                 }
             }
