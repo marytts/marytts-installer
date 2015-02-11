@@ -19,8 +19,6 @@ subprojects {
 }
 
 new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
-    task(voice.name, group: 'Install', description: voice.description)
-
     project(":$voice.name") {
         configurations.create 'marytts'
 
@@ -100,7 +98,6 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
                 }
             }
         }
-        rootProject.tasks.getByName(voice.name).dependsOn install
 
         task uninstall(dependsOn: payload, description: "Remove the files for $voice.name from \"$rootProject.buildDir.name\" directory") << {
             payload.files.each { source, targets ->
@@ -122,6 +119,8 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             }
         }
     }
+
+    task(voice.name, dependsOn: ":$voice.name:install", group: 'Install', description: voice.description)
 }
 
 task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS server') {
