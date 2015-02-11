@@ -73,29 +73,34 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
         }
         verify.outputs.upToDateWhen { gradle.taskGraph.hasTask(install) }
 
-        task install(type: Copy, description: voice.description) {
-            from configurations.marytts
-            into rootProject.buildDir
-            if (!rootProject.hasProperty('noverify')) {
-                dependsOn verify
-            }
-            filesMatching '*.zip', { zip ->
-                copy {
-                    from zipTree(zip.file)
-                    into rootProject.buildDir
-                    eachFile { logger.lifecycle "Unpack\t$it.name" }
-                }
-                zip.exclude()
-            }
-            eachFile {
-                if (file("$rootProject.buildDir/$it.name").exists()) {
-                    it.exclude()
+        task install(dependsOn: rootProject.hasProperty('noverify') ? payload : verify, description: voice.description) << {
+            payload.files.keySet().each { source ->
+                if (source.name.endsWith('.zip')) {
+                    copy {
+                        from zipTree(source)
+                        into rootProject.buildDir
+                        eachFile {
+                            def target = new File(rootProject.buildDir, it.path)
+                            if (!target.exists() || rootProject.hasProperty('force')) {
+                                logger.lifecycle "Unpack\t$it.name"
+                            } else {
+                                it.exclude()
+                            }
+                        }
+                    }
                 } else {
-                    logger.lifecycle "Copy\t$it.name"
+                    def target = new File(rootProject.buildDir, source.name)
+                    if (!target.exists() || rootProject.hasProperty('force')) {
+                        logger.lifecycle "Copy\t$source.name"
+                        copy {
+                            from source
+                            into rootProject.buildDir
+                        }
+                    }
                 }
             }
-            rootProject.tasks.getByName(voice.name).dependsOn it
         }
+        rootProject.tasks.getByName(voice.name).dependsOn install
 
         task uninstall(dependsOn: payload, description: "Remove the files for $voice.name from \"$rootProject.buildDir.name\" directory") << {
             payload.files.each { source, targets ->
