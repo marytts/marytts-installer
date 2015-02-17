@@ -18,6 +18,7 @@ subprojects {
     }
 }
 
+project(':install').task('*', group: 'Install', description: 'Install all available voices (Caution: this will take a long time!)')
 new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
     project(":$voice.name") {
         configurations.create 'marytts'
@@ -120,7 +121,10 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
         }
     }
 
-    task(voice.name, dependsOn: ":$voice.name:install", group: 'Install', description: voice.description)
+    project(':install') {
+        task(voice.name, dependsOn: ":$voice.name:install", group: 'Install', description: "Alias for \":$voice.name:install\"")
+        tasks.getByName('*').dependsOn voice.name
+    }
 }
 
 task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS server') {
