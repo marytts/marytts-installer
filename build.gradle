@@ -127,6 +127,10 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
     }
 }
 
+task list(description: 'List all available voices') << {
+    project(':install').tasks.grep { it.group == 'Install' }.each { println "$it.name\t$it.description" }
+}
+
 task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS server') {
     defaultTasks.add it.name
     def jarFiles = buildDir.exists() ? buildDir.listFiles() : null
