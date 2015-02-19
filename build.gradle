@@ -133,9 +133,8 @@ task list(description: 'List all available voices') << {
 
 task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS server') {
     defaultTasks.add it.name
-    def jarFiles = buildDir.exists() ? buildDir.listFiles() : null
-    if (jarFiles) {
-        classpath jarFiles
+    if (!buildDir.exists()) {
+        dependsOn ':cmu-slt-hsmm:install'
     }
     workingDir buildDir
     main 'marytts.server.Mary'
@@ -147,7 +146,9 @@ task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS se
         systemProperties << ['log4j.logger.marytts': 'DEBUG,stderr']
     }
     doFirst {
+        def jarFiles = buildDir.exists() ? buildDir.listFiles() : null
         assert jarFiles: "No jar files found in \"$buildDir.name\" directory! Please install a MaryTTS voice first"
+        classpath jarFiles
     }
 }
 
