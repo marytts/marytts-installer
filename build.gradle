@@ -127,7 +127,7 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
     }
 }
 
-task list(description: 'List all available voices') << {
+task list(group: 'Help', description: 'List all available voices') << {
     project(':install').tasks.grep { it.group == 'Install' }.each { println "$it.name\t$it.description" }
 }
 
