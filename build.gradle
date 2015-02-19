@@ -157,15 +157,3 @@ task wrapper(type: Wrapper) {
     scriptFile 'marytts'
     init.dependsOn it
 }
-
-apply plugin: 'distribution'
-distributions.main {
-    contents {
-        from rootDir, { exclude file('.gitignore').canRead() ? file('.gitignore').readLines() : buildDir.name }
-        from buildDir, {
-            into buildDir.name
-            exclude distsDir.name, 'install'
-        }
-        eachFile { logger.lifecycle "Pack\t$it.name" }
-    }
-}
