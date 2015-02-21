@@ -13,15 +13,15 @@ page](https://github.com/marytts/marytts-installer/releases) (the source code
 
 The MaryTTS Installer can be used on the command line, by changing to the
 directory where it was unpacked and running tasks, for example to run
-`install:cmu-slt-hsmm`, do:
+`install:cmu-slt`, do:
 
 ### OSX and Linux
 
-    $ ./marytts install:cmu-slt-shmm
+    $ ./marytts install:cmu-slt
 
 ### Windows
 
-    > marytts install:cmu-slt-hsmm
+    > marytts install:cmu-slt
 
 The Installer can also be launched with a Graphical User Interface (GUI) by
 adding the `--gui` option:
@@ -34,25 +34,26 @@ The MaryTTS Installer uses [Gradle](https://gradle.org/), and will first
 automatically download it if it isn't already installed.
 
 Before MaryTTS can be used, one or more voices must be installed from the cloud.
-This is done by running an `install` task, for example, to install the
-`cmu-slt-hsmm` voice, change into the directory where you unpacked the installer
-and run
+This is done by running an `install` task, for example, to install the `cmu-slt`
+voice, change into the directory where you unpacked the installer and run
 
-    marytts install:cmu-slt-shmm
+    marytts install:cmu-slt
+
+If no voices are installed, the `cmu-slt-hsmm` voice will be installed by
+default.
 
 ## Common tasks
-
 ### Install a voice
 
-    marytts install:cmu-slt-hsmm
+    marytts install:cmu-slt
 
 or
 
-    marytts cmu-slt-hsmm:install
+    marytts cmu-slt:install
 
 or simply
 
-    marytts cmu-slt-hsmm
+    marytts cmu-slt
 
 ### List available voices
 
@@ -60,11 +61,11 @@ or simply
 
 ### Show details for an available voice
 
-    marytts cmu-slt-hsmm:info
+    marytts cmu-slt:info
 
 ### Uninstall an installed voice
 
-    marytts cmu-slt-hsmm:uninstall
+    marytts cmu-slt:uninstall
 
 Note that this is effectively the same as simply removing the corresponding
 voice files from the `installed` directory.
@@ -126,11 +127,11 @@ It is possible to customize the location of the download cache by running the
 `install` tasks with the `--gradle-user-home` (or simply `-g`) parameter; i.e.,
 to use some (possibly new) directory named `download` as the download cache, run
 
-    marytts --gradle-user-home download install:cmu-slt-hsmm
+    marytts --gradle-user-home download install:cmu-slt
 
 or simply
 
-    marytts -g download cmu-slt-hsmm
+    marytts -g download cmu-slt
 
 Note that this will also first download Gradle itself into the custom download
 cache.
