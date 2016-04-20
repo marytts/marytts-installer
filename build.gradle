@@ -1,5 +1,5 @@
 buildDir 'installed'
-allprojects { version '5.1.2' }
+allprojects { version '5.2-SNAPSHOT' }
 
 subprojects {
     repositories {
