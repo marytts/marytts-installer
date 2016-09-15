@@ -268,6 +268,26 @@
     "version": "5.2"
   },
   {
+    "artifact": "voice-cmu-slt-hsmm",
+    "description": "A female US English hidden semi-Markov model voice, built from recordings provided by Carnegie Mellon University",
+    "files": {
+      "voice-cmu-slt-hsmm-5.2.jar": {
+        "sha1": "cae0223460ab045dc2187b855b50754c483220b0",
+        "size": 1242746
+      }
+    },
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "en",
+    "license": {
+      "name": "Arctic License",
+      "url": "http://mary.dfki.de/download/arctic-license.html"
+    },
+    "name": "cmu-slt-hsmm",
+    "type": "hsmm",
+    "version": "5.2"
+  },
+  {
     "artifact": "voice-dfki-obadiah",
     "description": "A male British English expressive unit selection voice: Gloomy Obadiah",
     "files": {
