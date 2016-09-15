@@ -151,9 +151,3 @@ task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS se
         classpath jarFiles
     }
 }
-
-task wrapper(type: Wrapper) {
-    gradleVersion '2.3'
-    scriptFile 'marytts'
-    init.dependsOn it
-}
