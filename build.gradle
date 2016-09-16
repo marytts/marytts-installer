@@ -1,18 +1,11 @@
 buildDir 'installed'
-allprojects { version '5.2-SNAPSHOT' }
+allprojects { version '5.2' }
 
 subprojects {
     repositories {
         jcenter()
-        maven {
-            url 'https://oss.jfrog.org/artifactory/repo'
-        }
         ivy {
             url 'http://mary.dfki.de/repo'
-            layout 'maven'
-        }
-        ivy {
-            url 'https://dl.dropboxusercontent.com/u/77978669/repo'
             layout 'maven'
         }
     }
