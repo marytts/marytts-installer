@@ -1,5 +1,77 @@
 [
   {
+    "artifact": "voice-ac-elena",
+    "description": "A female Russian unit selection voice",
+    "files": {
+      "voice-ac-elena-5.2.1-data.zip": {
+        "sha1": "99b16c9a62614cb051e91657ef3b130354043a23",
+        "size": 136364377
+      },
+      "voice-ac-elena-5.2.1.jar": {
+        "sha1": "c18bc09cb1423a95051a4d7358bb5a7ff145bade",
+        "size": 441423
+      }
+    },
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "ru",
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-sa-3.0.html"
+    },
+    "name": "ac-elena",
+    "type": "unit selection",
+    "version": "5.2.1"
+  },
+  {
+    "artifact": "voice-ac-irina",
+    "description": "A female Russian unit selection voice",
+    "files": {
+      "voice-ac-irina-5.2.1-data.zip": {
+        "sha1": "261c805e8976986dd5874abb577bb198525d9bcf",
+        "size": 339017463
+      },
+      "voice-ac-irina-5.2.1.jar": {
+        "sha1": "280959471e9e45fbf71190f5c7c5a7264da1f811",
+        "size": 1039571
+      }
+    },
+    "gender": "female",
+    "group": "de.dfki.mary",
+    "language": "ru",
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-sa-3.0.html"
+    },
+    "name": "ac-irina",
+    "type": "unit selection",
+    "version": "5.2.1"
+  },
+  {
+    "artifact": "voice-ac-nsh",
+    "description": "A male Russian unit selection voice",
+    "files": {
+      "voice-ac-nsh-5.2.1-data.zip": {
+        "sha1": "2d1bf02a6c97757ff19fb20835dfc9af8c86a8bd",
+        "size": 174788584
+      },
+      "voice-ac-nsh-5.2.1.jar": {
+        "sha1": "0965c8bd0cb3fdb615c5db4b935665de0bdd11ac",
+        "size": 443423
+      }
+    },
+    "gender": "male",
+    "group": "de.dfki.mary",
+    "language": "ru",
+    "license": {
+      "name": "Creative Commons Attribution-ShareAlike 3.0 Unported",
+      "url": "http://mary.dfki.de/download/by-sa-3.0.html"
+    },
+    "name": "ac-nsh",
+    "type": "unit selection",
+    "version": "5.2.1"
+  },
+  {
     "artifact": "voice-bits1",
     "description": "A female German unit selection voice, built from voice recordings provided by the BITS project at the Bavarian Archive of Speech Signals",
     "files": {
