@@ -71,7 +71,7 @@ Note that this is effectively the same as simply removing the corresponding
 voice files from the `installed` directory.
 ### Install all voices
 
-    marytts 'install:*'
+    marytts 'install:all'
 
 ## Run MaryTTS
 

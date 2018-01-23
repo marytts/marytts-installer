@@ -11,7 +11,7 @@ subprojects {
     }
 }
 
-project(':install').task('*', description: 'Install all available voices (Caution: this will take a long time!)')
+project(':install').task('all', description: 'Install all available voices (Caution: this will take a long time!)')
 new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
     project(":$voice.name") {
         configurations.create 'marytts'
@@ -126,7 +126,7 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
 
     project(':install') {
         task(voice.name, dependsOn: ":$voice.name:install", group: 'Install', description: voice.description)
-        tasks.getByName('*').dependsOn voice.name
+        tasks.getByName('all').dependsOn voice.name
     }
 }
 
