@@ -30,13 +30,15 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             }
         }
 
-        task info(group: 'Help', description: "Display details") << {
-            println "Gender\t$voice.gender"
-            println "Language\t$voice.language"
-            println "Type\t$voice.type"
-            println "Download size\t${voice.files.values().sum { it.size }}"
-            println "License\t$voice.license.name, see $voice.license.url"
-            println "Description\t$voice.description"
+        task info(group: 'Help', description: "Display details") {
+            doLast {
+                println "Gender\t$voice.gender"
+                println "Language\t$voice.language"
+                println "Type\t$voice.type"
+                println "Download size\t${voice.files.values().sum { it.size }}"
+                println "License\t$voice.license.name, see $voice.license.url"
+                println "Description\t$voice.description"
+            }
         }
 
         task payload(type: Copy) {
@@ -53,62 +55,70 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             }
         }
 
-        task verify(dependsOn: payload, description: "Verify SHA-1 checksum of downloaded files for $voice.name") << {
-            payload.files.keySet().each {
-                if (voice.files[it.name]) {
-                    def expected = voice.files[it.name].sha1
-                    def actual = it.parentFile.name.padLeft(40, '0')
-                    logger.lifecycle "Verify\t$it.name"
-                    assert expected == actual: "Checksum failed for $it.name"
+        task verify(dependsOn: payload, description: "Verify SHA-1 checksum of downloaded files for $voice.name") {
+            doLast {
+                payload.files.keySet().each {
+                    if (voice.files[it.name]) {
+                        def expected = voice.files[it.name].sha1
+                        def actual = it.parentFile.name.padLeft(40, '0')
+                        logger.lifecycle "Verify\t$it.name"
+                        assert expected == actual: "Checksum failed for $it.name"
+                    }
                 }
             }
         }
         verify.outputs.upToDateWhen { gradle.taskGraph.hasTask(install) }
 
-        task install(dependsOn: rootProject.hasProperty('noverify') ? payload : verify, description: voice.description) << {
-            payload.files.keySet().each { source ->
-                if (source.name.endsWith('.zip')) {
-                    copy {
-                        from zipTree(source)
-                        into rootProject.buildDir
-                        eachFile {
-                            def target = new File(rootProject.buildDir, it.path)
-                            if (!target.exists() || rootProject.hasProperty('force')) {
-                                logger.lifecycle "Unpack\t$it.name"
-                            } else {
-                                it.exclude()
+        task install(dependsOn: rootProject.hasProperty('noverify') ? payload : verify, description: voice.description) {
+            doLast {
+                payload.files.keySet().each { source ->
+                    if (source.name.endsWith('.zip')) {
+                        copy {
+                            from zipTree(source)
+                            into rootProject.buildDir
+                            eachFile {
+                                def target = new File(rootProject.buildDir, it.path)
+                                if (!target.exists() || rootProject.hasProperty('force')) {
+                                    logger.lifecycle "Unpack\t$it.name"
+                                } else {
+                                    it.exclude()
+                                }
+                            }
+                        }
+                    } else {
+                        def target = new File(rootProject.buildDir, source.name)
+                        if (!target.exists() || rootProject.hasProperty('force')) {
+                            logger.lifecycle "Copy\t$source.name"
+                            copy {
+                                from source
+                                into rootProject.buildDir
                             }
                         }
                     }
-                } else {
-                    def target = new File(rootProject.buildDir, source.name)
-                    if (!target.exists() || rootProject.hasProperty('force')) {
-                        logger.lifecycle "Copy\t$source.name"
-                        copy {
-                            from source
-                            into rootProject.buildDir
+                }
+            }
+        }
+
+        task uninstall(dependsOn: payload, description: "Remove the files for $voice.name from \"$rootProject.buildDir.name\" directory") {
+            doLast {
+                payload.files.each { source, targets ->
+                    targets.each { target ->
+                        if (target.isFile() && voice.files.containsKey(source.name)) {
+                            logger.lifecycle "Delete\t$target.name"
+                            delete target
                         }
                     }
                 }
             }
         }
 
-        task uninstall(dependsOn: payload, description: "Remove the files for $voice.name from \"$rootProject.buildDir.name\" directory") << {
-            payload.files.each { source, targets ->
-                targets.each { target ->
-                    if (target.isFile() && voice.files.containsKey(source.name)) {
-                        logger.lifecycle "Delete\t$target.name"
-                        delete target
+        task purge(dependsOn: payload, description: "Remove the files for $voice.name from the download cache (experimental)") {
+            doLast {
+                payload.files.keySet().each {
+                    if (voice.files.containsKey(it.name)) {
+                        logger.lifecycle "Delete\t$it"
+                        delete it
                     }
-                }
-            }
-        }
-
-        task purge(dependsOn: payload, description: "Remove the files for $voice.name from the download cache (experimental)") << {
-            payload.files.keySet().each {
-                if (voice.files.containsKey(it.name)) {
-                    logger.lifecycle "Delete\t$it"
-                    delete it
                 }
             }
         }
@@ -120,8 +130,10 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
     }
 }
 
-task list(group: 'Help', description: 'List all available voices') << {
-    project(':install').tasks.grep { it.group == 'Install' }.each { println "$it.name\t$it.description" }
+task list(group: 'Help', description: 'List all available voices') {
+    doLast {
+        project(':install').tasks.grep { it.group == 'Install' }.each { println "$it.name\t$it.description" }
+    }
 }
 
 task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS server') {
