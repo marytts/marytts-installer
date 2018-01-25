@@ -11,6 +11,13 @@ subprojects {
     }
 }
 
+task list(group: 'Help', description: 'List all available voices') {
+    ext.voiceDescriptions = []
+    doLast {
+        voiceDescriptions.each { println it }
+    }
+}
+
 new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
     project(":$voice.name") {
         configurations.create 'marytts'
@@ -39,6 +46,8 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
                 println "Description\t$voice.description"
             }
         }
+
+        rootProject.list.voiceDescriptions << "$voice.name\t$voice.description"
 
         task payload(type: Copy) {
             from configurations.marytts
@@ -125,12 +134,6 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
 
     project(':install') {
         task(voice.name, dependsOn: ":$voice.name:install", group: 'Install', description: voice.description)
-    }
-}
-
-task list(group: 'Help', description: 'List all available voices') {
-    doLast {
-        project(':install').tasks.grep { it.group == 'Install' }.each { println "$it.name\t$it.description" }
     }
 }
 
