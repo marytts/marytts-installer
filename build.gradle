@@ -1,13 +1,11 @@
 buildDir 'installed'
-allprojects { version '5.2' }
+version '5.2'
 
-subprojects {
-    repositories {
-        jcenter()
-        ivy {
-            url 'http://mary.dfki.de/repo'
-            layout 'maven'
-        }
+repositories {
+    jcenter()
+    ivy {
+        url 'http://mary.dfki.de/repo'
+        layout 'maven'
     }
 }
 
@@ -19,114 +17,110 @@ task list(group: 'Help', description: 'List all available voices') {
 }
 
 new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
-    project(":$voice.name") {
-        configurations.create 'marytts'
-
-        voice.files.keySet().each { name ->
-            def dependency = "$voice.group:$voice.artifact:$voice.version"
-            if (name.endsWith('.zip')) {
-                dependency += ":data@zip"
-            }
-            dependencies.marytts dependency
+    configurations.create(voice.name)
+    voice.files.keySet().each { name ->
+        def dependency = "$voice.group:$voice.artifact:$voice.version"
+        if (name.endsWith('.zip')) {
+            dependency += ":data@zip"
         }
-
-        configurations.marytts.resolutionStrategy.eachDependency {
-            if (it.requested.group == 'de.dfki.mary' && it.requested.name.startsWith('marytts-')) {
-                it.useVersion version
-            }
+        dependencies.add(voice.name, dependency)
+    }
+    configurations.getByName(voice.name).resolutionStrategy.eachDependency {
+        if (it.requested.group == 'de.dfki.mary' && it.requested.name.startsWith('marytts-')) {
+            it.useVersion version
         }
+    }
 
-        task info(group: 'Help', description: "Display details") {
-            doLast {
-                println "Gender\t$voice.gender"
-                println "Language\t$voice.language"
-                println "Type\t$voice.type"
-                println "Download size\t${voice.files.values().sum { it.size }}"
-                println "License\t$voice.license.name, see $voice.license.url"
-                println "Description\t$voice.description"
-            }
+    task("info_$voice.name", group: 'Help', description: "Display details") {
+        doLast {
+            println "Gender\t$voice.gender"
+            println "Language\t$voice.language"
+            println "Type\t$voice.type"
+            println "Download size\t${voice.files.values().sum { it.size }}"
+            println "License\t$voice.license.name, see $voice.license.url"
+            println "Description\t$voice.description"
         }
+    }
 
-        rootProject.list.voiceDescriptions << "$voice.name\t$voice.description"
+    list.voiceDescriptions << "$voice.name\t$voice.description"
 
-        task payload(type: Copy) {
-            from configurations.marytts
-            into rootProject.buildDir
-            outputs.upToDateWhen { false }
-            ext.files = [:]
-            eachFile { source ->
-                files[source.file] = source.name.endsWith('.zip') ?
-                        new java.util.zip.ZipFile(source.file).entries().collect {
-                            new File(destinationDir, it.name)
-                        } : [new File(destinationDir, source.name)]
-                source.exclude()
-            }
+    task("payload_$voice.name", type: Copy) {
+        from configurations.getByName(voice.name)
+        into buildDir
+        outputs.upToDateWhen { false }
+        ext.files = [:]
+        eachFile { source ->
+            files[source.file] = source.name.endsWith('.zip') ?
+                    new java.util.zip.ZipFile(source.file).entries().collect {
+                        new File(destinationDir, it.name)
+                    } : [new File(destinationDir, source.name)]
+            source.exclude()
         }
+    }
 
-        task verify(dependsOn: payload, description: "Verify SHA-1 checksum of downloaded files for $voice.name") {
-            doLast {
-                payload.files.keySet().each {
-                    if (voice.files[it.name]) {
-                        def expected = voice.files[it.name].sha1
-                        def actual = it.parentFile.name.padLeft(40, '0')
-                        logger.lifecycle "Verify\t$it.name"
-                        assert expected == actual: "Checksum failed for $it.name"
-                    }
+    task("verify_$voice.name", dependsOn: "payload_$voice.name", description: "Verify SHA-1 checksum of downloaded files for $voice.name") {
+        doLast {
+            tasks.findByName("payload_$voice.name").files.keySet().each {
+                if (voice.files[it.name]) {
+                    def expected = voice.files[it.name].sha1
+                    def actual = it.parentFile.name.padLeft(40, '0')
+                    logger.lifecycle "Verify\t$it.name"
+                    assert expected == actual: "Checksum failed for $it.name"
                 }
             }
         }
-        verify.outputs.upToDateWhen { gradle.taskGraph.hasTask(install) }
+        outputs.upToDateWhen { gradle.taskGraph.hasTask("install_$voice.name") }
+    }
 
-        task install(dependsOn: rootProject.hasProperty('noverify') ? payload : verify, description: voice.description) {
-            doLast {
-                payload.files.keySet().each { source ->
-                    if (source.name.endsWith('.zip')) {
+    task("install_$voice.name", dependsOn: hasProperty('noverify') ? payload : "verify_$voice.name", description: voice.description) {
+        doLast {
+            tasks.findByName("payload_$voice.name").files.keySet().each { source ->
+                if (source.name.endsWith('.zip')) {
+                    copy {
+                        from zipTree(source)
+                        into buildDir
+                        eachFile {
+                            def target = new File(buildDir, it.path)
+                            if (!target.exists() || hasProperty('force')) {
+                                logger.lifecycle "Unpack\t$it.name"
+                            } else {
+                                it.exclude()
+                            }
+                        }
+                    }
+                } else {
+                    def target = new File(buildDir, source.name)
+                    if (!target.exists() || hasProperty('force')) {
+                        logger.lifecycle "Copy\t$source.name"
                         copy {
-                            from zipTree(source)
-                            into rootProject.buildDir
-                            eachFile {
-                                def target = new File(rootProject.buildDir, it.path)
-                                if (!target.exists() || rootProject.hasProperty('force')) {
-                                    logger.lifecycle "Unpack\t$it.name"
-                                } else {
-                                    it.exclude()
-                                }
-                            }
-                        }
-                    } else {
-                        def target = new File(rootProject.buildDir, source.name)
-                        if (!target.exists() || rootProject.hasProperty('force')) {
-                            logger.lifecycle "Copy\t$source.name"
-                            copy {
-                                from source
-                                into rootProject.buildDir
-                            }
+                            from source
+                            into buildDir
                         }
                     }
                 }
             }
         }
+    }
 
-        task uninstall(dependsOn: payload, description: "Remove the files for $voice.name from \"$rootProject.buildDir.name\" directory") {
-            doLast {
-                payload.files.each { source, targets ->
-                    targets.each { target ->
-                        if (target.isFile() && voice.files.containsKey(source.name)) {
-                            logger.lifecycle "Delete\t$target.name"
-                            delete target
-                        }
+    task("uninstall_$voice.name", dependsOn: "payload_$voice.name", description: "Remove the files for $voice.name from \"$buildDir.name\" directory") {
+        doLast {
+            tasks.findByName("payload_$voice.name").files.each { source, targets ->
+                targets.each { target ->
+                    if (target.isFile() && voice.files.containsKey(source.name)) {
+                        logger.lifecycle "Delete\t$target.name"
+                        delete target
                     }
                 }
             }
         }
+    }
 
-        task purge(dependsOn: payload, description: "Remove the files for $voice.name from the download cache (experimental)") {
-            doLast {
-                payload.files.keySet().each {
-                    if (voice.files.containsKey(it.name)) {
-                        logger.lifecycle "Delete\t$it"
-                        delete it
-                    }
+    task("purge_$voice.name", dependsOn: "payload_$voice.name", description: "Remove the files for $voice.name from the download cache (experimental)") {
+        doLast {
+            tasks.findByName("payload_$voice.name").files.keySet().each {
+                if (voice.files.containsKey(it.name)) {
+                    logger.lifecycle "Delete\t$it"
+                    delete it
                 }
             }
         }
@@ -136,7 +130,7 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
 task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS server') {
     defaultTasks.add it.name
     if (!buildDir.exists()) {
-        dependsOn ':cmu-slt-hsmm:install'
+        dependsOn 'install_cmu-slt-hsmm'
     }
     workingDir buildDir
     main 'marytts.server.Mary'
