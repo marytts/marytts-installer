@@ -23,11 +23,6 @@ directory where it was unpacked and running tasks, for example to run
 
     > marytts install:cmu-slt
 
-The Installer can also be launched with a Graphical User Interface (GUI) by
-adding the `--gui` option:
-
-    marytts --gui
-
 ## First-time setup
 
 The MaryTTS Installer uses [Gradle](https://gradle.org/), and will first
