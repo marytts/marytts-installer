@@ -36,20 +36,6 @@ voices.each { voice ->
         }
     }
 
-    task("payload_$voice.name", type: Copy) {
-        from configurations.getByName(voice.name)
-        into buildDir
-        outputs.upToDateWhen { false }
-        ext.files = [:]
-        eachFile { source ->
-            files[source.file] = source.name.endsWith('.zip') ?
-                    new java.util.zip.ZipFile(source.file).entries().collect {
-                        new File(destinationDir, it.name)
-                    } : [new File(destinationDir, source.name)]
-            source.exclude()
-        }
-    }
-
     task("verify_$voice.name", dependsOn: "payload_$voice.name", description: "Verify SHA-1 checksum of downloaded files for $voice.name") {
         doLast {
             tasks.findByName("payload_$voice.name").files.keySet().each {
@@ -131,6 +117,27 @@ tasks.addRule("Pattern: info_<voice>") { taskName ->
                     println "Download size\t${voice.files.values().sum { it.size }}"
                     println "License\t$voice.license.name, see $voice.license.url"
                     println "Description\t$voice.description"
+                }
+            }
+        }
+    }
+}
+
+tasks.addRule("Pattern: payload_<voice>") { taskName ->
+    (taskName =~ /payload_(.+)/).each { match, voiceName ->
+        task(taskName, type: Copy) {
+            def voice = voices.find { it.name == voiceName }
+            if (voice) {
+                from configurations.getByName(voice.name)
+                into buildDir
+                outputs.upToDateWhen { false }
+                ext.files = [:]
+                eachFile { source ->
+                    files[source.file] = source.name.endsWith('.zip') ?
+                            new java.util.zip.ZipFile(source.file).entries().collect {
+                                new File(destinationDir, it.name)
+                            } : [new File(destinationDir, source.name)]
+                    source.exclude()
                 }
             }
         }
