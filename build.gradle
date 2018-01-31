@@ -62,7 +62,7 @@ voices.each { voice ->
 }
 
 tasks.addRule("Pattern: info_<voice>") { taskName ->
-    (taskName =~ /info_(.+)/).each { match, voiceName ->
+    (taskName =~ /^info_(.+)/).each { match, voiceName ->
         task(taskName, group: 'Help', description: "Display details") {
             doLast {
                 def voice = voices.find { it.name == voiceName }
@@ -80,7 +80,7 @@ tasks.addRule("Pattern: info_<voice>") { taskName ->
 }
 
 tasks.addRule("Pattern: payload_<voice>") { taskName ->
-    (taskName =~ /payload_(.+)/).each { match, voiceName ->
+    (taskName =~ /^payload_(.+)/).each { match, voiceName ->
         task(taskName, type: Copy) {
             def voice = voices.find { it.name == voiceName }
             if (voice) {
@@ -101,7 +101,7 @@ tasks.addRule("Pattern: payload_<voice>") { taskName ->
 }
 
 tasks.addRule("Pattern: verify_<voice>") { taskName ->
-    (taskName =~ /verify_(.+)/).each { match, voiceName ->
+    (taskName =~ /^verify_(.+)/).each { match, voiceName ->
         task(taskName, dependsOn: "payload_$voiceName", description: "Verify SHA-1 checksum of downloaded files for $voiceName") {
             doLast {
                 def voice = voices.find { it.name == voiceName }
@@ -122,7 +122,7 @@ tasks.addRule("Pattern: verify_<voice>") { taskName ->
 }
 
 tasks.addRule("Pattern: install_<voice>") { taskName ->
-    (taskName =~ /install_(.+)/).each { match, voiceName ->
+    (taskName =~ /^install_(.+)/).each { match, voiceName ->
         task(taskName, dependsOn: hasProperty('noverify') ? payload : "verify_$voiceName") {
             def voice = voices.find { it.name == voiceName }
             if (voice) {
