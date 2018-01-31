@@ -36,20 +36,6 @@ voices.each { voice ->
         }
     }
 
-    task("verify_$voice.name", dependsOn: "payload_$voice.name", description: "Verify SHA-1 checksum of downloaded files for $voice.name") {
-        doLast {
-            tasks.findByName("payload_$voice.name").files.keySet().each {
-                if (voice.files[it.name]) {
-                    def expected = voice.files[it.name].sha1
-                    def actual = it.parentFile.name.padLeft(40, '0')
-                    logger.lifecycle "Verify\t$it.name"
-                    assert expected == actual: "Checksum failed for $it.name"
-                }
-            }
-        }
-        outputs.upToDateWhen { gradle.taskGraph.hasTask("install_$voice.name") }
-    }
-
     task("install_$voice.name", dependsOn: hasProperty('noverify') ? payload : "verify_$voice.name", description: voice.description) {
         doLast {
             tasks.findByName("payload_$voice.name").files.keySet().each { source ->
@@ -140,6 +126,27 @@ tasks.addRule("Pattern: payload_<voice>") { taskName ->
                     source.exclude()
                 }
             }
+        }
+    }
+}
+
+tasks.addRule("Pattern: verify_<voice>") { taskName ->
+    (taskName =~ /verify_(.+)/).each { match, voiceName ->
+        task(taskName, dependsOn: "payload_$voiceName", description: "Verify SHA-1 checksum of downloaded files for $voiceName") {
+            doLast {
+                def voice = voices.find { it.name == voiceName }
+                if (voice) {
+                    tasks.findByName("payload_$voice.name").files.keySet().each {
+                        if (voice.files[it.name]) {
+                            def expected = voice.files[it.name].sha1
+                            def actual = it.parentFile.name.padLeft(40, '0')
+                            logger.lifecycle "Verify\t$it.name"
+                            assert expected == actual: "Checksum failed for $it.name"
+                        }
+                    }
+                }
+            }
+            outputs.upToDateWhen { gradle.taskGraph.hasTask("install_$voiceName") }
         }
     }
 }
