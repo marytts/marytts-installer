@@ -9,14 +9,19 @@ repositories {
     }
 }
 
+ext {
+    voices = new groovy.json.JsonSlurper().parse(file('components.json'))
+}
+
 task list(group: 'Help', description: 'List all available voices') {
-    ext.voiceDescriptions = []
     doLast {
-        voiceDescriptions.each { println it }
+        voices.each { voice ->
+            println "$voice.name\t$voice.description"
+        }
     }
 }
 
-new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
+voices.each { voice ->
     configurations.create(voice.name)
     voice.files.keySet().each { name ->
         def dependency = "$voice.group:$voice.artifact:$voice.version"
@@ -30,97 +35,138 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             it.useVersion version
         }
     }
+}
 
-    task("info_$voice.name", group: 'Help', description: "Display details") {
-        doLast {
-            println "Gender\t$voice.gender"
-            println "Language\t$voice.language"
-            println "Type\t$voice.type"
-            println "Download size\t${voice.files.values().sum { it.size }}"
-            println "License\t$voice.license.name, see $voice.license.url"
-            println "Description\t$voice.description"
-        }
-    }
-
-    list.voiceDescriptions << "$voice.name\t$voice.description"
-
-    task("payload_$voice.name", type: Copy) {
-        from configurations.getByName(voice.name)
-        into buildDir
-        outputs.upToDateWhen { false }
-        ext.files = [:]
-        eachFile { source ->
-            files[source.file] = source.name.endsWith('.zip') ?
-                    new java.util.zip.ZipFile(source.file).entries().collect {
-                        new File(destinationDir, it.name)
-                    } : [new File(destinationDir, source.name)]
-            source.exclude()
-        }
-    }
-
-    task("verify_$voice.name", dependsOn: "payload_$voice.name", description: "Verify SHA-1 checksum of downloaded files for $voice.name") {
-        doLast {
-            tasks.findByName("payload_$voice.name").files.keySet().each {
-                if (voice.files[it.name]) {
-                    def expected = voice.files[it.name].sha1
-                    def actual = it.parentFile.name.padLeft(40, '0')
-                    logger.lifecycle "Verify\t$it.name"
-                    assert expected == actual: "Checksum failed for $it.name"
+tasks.addRule("Pattern: info_<voice>") { taskName ->
+    (taskName =~ /^info_(.+)/).each { match, voiceName ->
+        task(taskName, group: 'Help', description: "Display details") {
+            doLast {
+                def voice = voices.find { it.name == voiceName }
+                if (voice) {
+                    println "Gender\t$voice.gender"
+                    println "Language\t$voice.language"
+                    println "Type\t$voice.type"
+                    println "Download size\t${voice.files.values().sum { it.size }}"
+                    println "License\t$voice.license.name, see $voice.license.url"
+                    println "Description\t$voice.description"
                 }
             }
         }
-        outputs.upToDateWhen { gradle.taskGraph.hasTask("install_$voice.name") }
     }
+}
 
-    task("install_$voice.name", dependsOn: hasProperty('noverify') ? payload : "verify_$voice.name", description: voice.description) {
-        doLast {
-            tasks.findByName("payload_$voice.name").files.keySet().each { source ->
-                if (source.name.endsWith('.zip')) {
-                    copy {
-                        from zipTree(source)
-                        into buildDir
-                        eachFile {
-                            def target = new File(buildDir, it.path)
+tasks.addRule("Pattern: payload_<voice>") { taskName ->
+    (taskName =~ /^payload_(.+)/).each { match, voiceName ->
+        task(taskName, type: Copy) {
+            def voice = voices.find { it.name == voiceName }
+            if (voice) {
+                from configurations.getByName(voice.name)
+                into buildDir
+                outputs.upToDateWhen { false }
+                ext.files = [:]
+                eachFile { source ->
+                    files[source.file] = source.name.endsWith('.zip') ?
+                            new java.util.zip.ZipFile(source.file).entries().collect {
+                                new File(destinationDir, it.name)
+                            } : [new File(destinationDir, source.name)]
+                    source.exclude()
+                }
+            }
+        }
+    }
+}
+
+tasks.addRule("Pattern: verify_<voice>") { taskName ->
+    (taskName =~ /^verify_(.+)/).each { match, voiceName ->
+        task(taskName, dependsOn: "payload_$voiceName", description: "Verify SHA-1 checksum of downloaded files for $voiceName") {
+            doLast {
+                def voice = voices.find { it.name == voiceName }
+                if (voice) {
+                    tasks.findByName("payload_$voice.name").files.keySet().each {
+                        if (voice.files[it.name]) {
+                            def expected = voice.files[it.name].sha1
+                            def actual = it.parentFile.name.padLeft(40, '0')
+                            logger.lifecycle "Verify\t$it.name"
+                            assert expected == actual: "Checksum failed for $it.name"
+                        }
+                    }
+                }
+            }
+            outputs.upToDateWhen { gradle.taskGraph.hasTask("install_$voiceName") }
+        }
+    }
+}
+
+tasks.addRule("Pattern: install_<voice>") { taskName ->
+    (taskName =~ /^install_(.+)/).each { match, voiceName ->
+        task(taskName, dependsOn: hasProperty('noverify') ? payload : "verify_$voiceName") {
+            def voice = voices.find { it.name == voiceName }
+            if (voice) {
+                description voice.description
+                doLast {
+                    tasks.findByName("payload_$voice.name").files.keySet().each { source ->
+                        if (source.name.endsWith('.zip')) {
+                            copy {
+                                from zipTree(source)
+                                into buildDir
+                                eachFile {
+                                    def target = new File(buildDir, it.path)
+                                    if (!target.exists() || hasProperty('force')) {
+                                        logger.lifecycle "Unpack\t$it.name"
+                                    } else {
+                                        it.exclude()
+                                    }
+                                }
+                            }
+                        } else {
+                            def target = new File(buildDir, source.name)
                             if (!target.exists() || hasProperty('force')) {
-                                logger.lifecycle "Unpack\t$it.name"
-                            } else {
-                                it.exclude()
+                                logger.lifecycle "Copy\t$source.name"
+                                copy {
+                                    from source
+                                    into buildDir
+                                }
                             }
                         }
                     }
-                } else {
-                    def target = new File(buildDir, source.name)
-                    if (!target.exists() || hasProperty('force')) {
-                        logger.lifecycle "Copy\t$source.name"
-                        copy {
-                            from source
-                            into buildDir
+                }
+            }
+        }
+    }
+}
+
+tasks.addRule("Pattern: uninstall_<voice>") { taskName ->
+    (taskName =~ /^uninstall_(.+)/).each { match, voiceName ->
+        task(taskName, dependsOn: "payload_$voiceName", description: "Remove the files for $voiceName from \"$buildDir.name\" directory") {
+            doLast {
+                def voice = voices.find { it.name == voiceName }
+                if (voice) {
+                    tasks.findByName("payload_$voice.name").files.each { source, targets ->
+                        targets.each { target ->
+                            if (target.isFile() && voice.files.containsKey(source.name)) {
+                                logger.lifecycle "Delete\t$target.name"
+                                delete target
+                            }
                         }
                     }
                 }
             }
         }
     }
+}
 
-    task("uninstall_$voice.name", dependsOn: "payload_$voice.name", description: "Remove the files for $voice.name from \"$buildDir.name\" directory") {
-        doLast {
-            tasks.findByName("payload_$voice.name").files.each { source, targets ->
-                targets.each { target ->
-                    if (target.isFile() && voice.files.containsKey(source.name)) {
-                        logger.lifecycle "Delete\t$target.name"
-                        delete target
+tasks.addRule("Pattern: purge_<voice>") { taskName ->
+    (taskName =~ /^purge_(.+)/).each { match, voiceName ->
+        task(taskName, dependsOn: "payload_$voiceName", description: "Remove the files for $voiceName from the download cache (experimental)") {
+            doLast {
+                def voice = voices.find { it.name == voiceName }
+                if (voice) {
+                    tasks.findByName("payload_$voice.name").files.keySet().each {
+                        if (voice.files.containsKey(it.name)) {
+                            logger.lifecycle "Delete\t$it"
+                            delete it
+                        }
                     }
-                }
-            }
-        }
-    }
-
-    task("purge_$voice.name", dependsOn: "payload_$voice.name", description: "Remove the files for $voice.name from the download cache (experimental)") {
-        doLast {
-            tasks.findByName("payload_$voice.name").files.keySet().each {
-                if (voice.files.containsKey(it.name)) {
-                    logger.lifecycle "Delete\t$it"
-                    delete it
                 }
             }
         }
