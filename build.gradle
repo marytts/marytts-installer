@@ -35,17 +35,6 @@ voices.each { voice ->
             it.useVersion version
         }
     }
-
-    task("purge_$voice.name", dependsOn: "payload_$voice.name", description: "Remove the files for $voice.name from the download cache (experimental)") {
-        doLast {
-            tasks.findByName("payload_$voice.name").files.keySet().each {
-                if (voice.files.containsKey(it.name)) {
-                    logger.lifecycle "Delete\t$it"
-                    delete it
-                }
-            }
-        }
-    }
 }
 
 tasks.addRule("Pattern: info_<voice>") { taskName ->
@@ -158,6 +147,24 @@ tasks.addRule("Pattern: uninstall_<voice>") { taskName ->
                                 logger.lifecycle "Delete\t$target.name"
                                 delete target
                             }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+tasks.addRule("Pattern: purge_<voice>") { taskName ->
+    (taskName =~ /^purge_(.+)/).each { match, voiceName ->
+        task(taskName, dependsOn: "payload_$voiceName", description: "Remove the files for $voiceName from the download cache (experimental)") {
+            doLast {
+                def voice = voices.find { it.name == voiceName }
+                if (voice) {
+                    tasks.findByName("payload_$voice.name").files.keySet().each {
+                        if (voice.files.containsKey(it.name)) {
+                            logger.lifecycle "Delete\t$it"
+                            delete it
                         }
                     }
                 }
