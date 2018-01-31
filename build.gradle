@@ -9,14 +9,19 @@ repositories {
     }
 }
 
+ext {
+    voices = new groovy.json.JsonSlurper().parse(file('components.json'))
+}
+
 task list(group: 'Help', description: 'List all available voices') {
-    ext.voiceDescriptions = []
     doLast {
-        voiceDescriptions.each { println it }
+        voices.each { voice ->
+            println "$voice.name\t$voice.description"
+        }
     }
 }
 
-new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
+voices.each { voice ->
     configurations.create(voice.name)
     voice.files.keySet().each { name ->
         def dependency = "$voice.group:$voice.artifact:$voice.version"
@@ -41,8 +46,6 @@ new groovy.json.JsonSlurper().parse(file('components.json')).each { voice ->
             println "Description\t$voice.description"
         }
     }
-
-    list.voiceDescriptions << "$voice.name\t$voice.description"
 
     task("payload_$voice.name", type: Copy) {
         from configurations.getByName(voice.name)
