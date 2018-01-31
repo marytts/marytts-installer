@@ -36,36 +36,6 @@ voices.each { voice ->
         }
     }
 
-    task("install_$voice.name", dependsOn: hasProperty('noverify') ? payload : "verify_$voice.name", description: voice.description) {
-        doLast {
-            tasks.findByName("payload_$voice.name").files.keySet().each { source ->
-                if (source.name.endsWith('.zip')) {
-                    copy {
-                        from zipTree(source)
-                        into buildDir
-                        eachFile {
-                            def target = new File(buildDir, it.path)
-                            if (!target.exists() || hasProperty('force')) {
-                                logger.lifecycle "Unpack\t$it.name"
-                            } else {
-                                it.exclude()
-                            }
-                        }
-                    }
-                } else {
-                    def target = new File(buildDir, source.name)
-                    if (!target.exists() || hasProperty('force')) {
-                        logger.lifecycle "Copy\t$source.name"
-                        copy {
-                            from source
-                            into buildDir
-                        }
-                    }
-                }
-            }
-        }
-    }
-
     task("uninstall_$voice.name", dependsOn: "payload_$voice.name", description: "Remove the files for $voice.name from \"$buildDir.name\" directory") {
         doLast {
             tasks.findByName("payload_$voice.name").files.each { source, targets ->
@@ -147,6 +117,44 @@ tasks.addRule("Pattern: verify_<voice>") { taskName ->
                 }
             }
             outputs.upToDateWhen { gradle.taskGraph.hasTask("install_$voiceName") }
+        }
+    }
+}
+
+tasks.addRule("Pattern: install_<voice>") { taskName ->
+    (taskName =~ /install_(.+)/).each { match, voiceName ->
+        task(taskName, dependsOn: hasProperty('noverify') ? payload : "verify_$voiceName") {
+            def voice = voices.find { it.name == voiceName }
+            if (voice) {
+                description voice.description
+                doLast {
+                    tasks.findByName("payload_$voice.name").files.keySet().each { source ->
+                        if (source.name.endsWith('.zip')) {
+                            copy {
+                                from zipTree(source)
+                                into buildDir
+                                eachFile {
+                                    def target = new File(buildDir, it.path)
+                                    if (!target.exists() || hasProperty('force')) {
+                                        logger.lifecycle "Unpack\t$it.name"
+                                    } else {
+                                        it.exclude()
+                                    }
+                                }
+                            }
+                        } else {
+                            def target = new File(buildDir, source.name)
+                            if (!target.exists() || hasProperty('force')) {
+                                logger.lifecycle "Copy\t$source.name"
+                                copy {
+                                    from source
+                                    into buildDir
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 }
