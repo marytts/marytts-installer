@@ -9,6 +9,13 @@ repositories {
     }
 }
 
+configurations.create 'marytts'
+configurations.marytts.resolutionStrategy.eachDependency {
+    if (it.requested.group == 'de.dfki.mary' && it.requested.name.startsWith('marytts-')) {
+        it.useVersion version
+    }
+}
+
 ext {
     voices = new groovy.json.JsonSlurper().parse(file('components.json'))
 }
@@ -22,18 +29,12 @@ task list(group: 'Help', description: 'List all available voices') {
 }
 
 voices.each { voice ->
-    configurations.create(voice.name)
     voice.files.keySet().each { name ->
         def dependency = "$voice.group:$voice.artifact:$voice.version"
         if (name.endsWith('.zip')) {
             dependency += ":data@zip"
         }
-        dependencies.add(voice.name, dependency)
-    }
-    configurations.getByName(voice.name).resolutionStrategy.eachDependency {
-        if (it.requested.group == 'de.dfki.mary' && it.requested.name.startsWith('marytts-')) {
-            it.useVersion version
-        }
+        dependencies.add 'marytts', dependency
     }
 }
 
@@ -60,7 +61,7 @@ tasks.addRule("Pattern: payload_<voice>") { taskName ->
         task(taskName, type: Copy) {
             def voice = voices.find { it.name == voiceName }
             if (voice) {
-                from configurations.getByName(voice.name)
+                from configurations.marytts.findAll { it.name in voice.files.keySet() }
                 into buildDir
                 outputs.upToDateWhen { false }
                 ext.files = [:]
