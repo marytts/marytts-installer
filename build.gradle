@@ -57,9 +57,9 @@ task payload(type: Copy) {
     }
 }
 
-task verify {
-    dependsOn payload
+task verify(group: 'Install') {
     description "Verify SHA-1 checksum of downloaded files for selected voices"
+    dependsOn payload
     doLast {
         selectedVoices.each { voice ->
             payload.files.keySet().each {
@@ -74,7 +74,8 @@ task verify {
     }
 }
 
-task install {
+task install(group: 'Install') {
+    description "Install selected voices"
     dependsOn hasProperty('noverify') ? payload : verify
     doLast {
         payload.files.keySet().each { source ->
@@ -105,7 +106,8 @@ task install {
     }
 }
 
-task uninstall {
+task uninstall(group: 'Uninstall') {
+    description "Uninstall selected voices"
     dependsOn payload
     doLast {
         selectedVoices.each { voice ->
@@ -121,7 +123,8 @@ task uninstall {
     }
 }
 
-task purge {
+task purge(group: 'Uninstall') {
+    description "Remove the selected voice files from the download cache (experimental)"
     dependsOn payload
     doLast {
         selectedVoices.each { voice ->
