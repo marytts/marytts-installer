@@ -28,16 +28,6 @@ task list(group: 'Help', description: 'List all available voices') {
     }
 }
 
-voices.each { voice ->
-    voice.files.keySet().each { name ->
-        def dependency = "$voice.group:$voice.artifact:$voice.version"
-        if (name.endsWith('.zip')) {
-            dependency += ":data@zip"
-        }
-        dependencies.add 'marytts', dependency
-    }
-}
-
 tasks.addRule("Pattern: info_<voice>") { taskName ->
     (taskName =~ /^info_(.+)/).each { match, voiceName ->
         task(taskName, group: 'Help', description: "Display details") {
@@ -61,7 +51,14 @@ tasks.addRule("Pattern: payload_<voice>") { taskName ->
         task(taskName, type: Copy) {
             def voice = voices.find { it.name == voiceName }
             if (voice) {
-                from configurations.marytts.findAll { it.name in voice.files.keySet() }
+                voice.files.keySet().each { name ->
+                    def dependency = "$voice.group:$voice.artifact:$voice.version"
+                    if (name.endsWith('.zip')) {
+                        dependency += ":data@zip"
+                    }
+                    dependencies.add 'marytts', dependency
+                }
+                from configurations.marytts
                 into buildDir
                 outputs.upToDateWhen { false }
                 ext.files = [:]
