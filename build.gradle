@@ -155,7 +155,7 @@ tasks.addRule("Pattern: <voice>") { taskName ->
 
 task server(type: JavaExec, group: 'Runtime', description: 'Start the MaryTTS server') {
     defaultTasks.add it.name
-    if (!buildDir.exists()) {
+    if (!fileTree(buildDir).include('voice-*.jar').files) {
         dependsOn install, 'voice-cmu-slt-hsmm'
     }
     workingDir buildDir
