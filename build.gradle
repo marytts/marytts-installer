@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath group: 'org.kohsuke', name: 'github-api', version: '1.92'
+    }
+}
+
 buildDir 'installed'
 version '5.2'
 
@@ -23,8 +32,29 @@ ext {
 
 task list(group: 'Help', description: 'List all available voices') {
     doLast {
-        voices.each { voice ->
-            println "$voice.name\t$voice.description"
+        def github
+        if (System.env.GITHUB_API_TOKEN) {
+            github = org.kohsuke.github.GitHub.connectUsingOAuth(System.env.GITHUB_API_TOKEN)
+        } else {
+            github = org.kohsuke.github.GitHub.connectAnonymously()
+        }
+        github.getOrganization('marytts').repositories.findAll { it.key.startsWith('voice-') }.each { repoName, repo ->
+            logger.debug "$repo"
+            def voice = [
+                    name       : repoName,
+                    description: repo.description,
+                    license    : repo.license?.name,
+                    url        : repo.html_url,
+                    version    : repo.latestRelease?.name,
+                    files      : repo.latestRelease?.assets?.collectEntries { asset ->
+                        [(asset.name): [
+                                size: asset.size,
+                                url : asset.browserDownloadUrl
+                        ]]
+                    }
+            ]
+            logger.info new groovy.json.JsonBuilder(voice).toPrettyString()
+            logger.lifecycle "$voice.name\t$voice.description"
         }
     }
 }
