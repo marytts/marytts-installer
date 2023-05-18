@@ -18,6 +18,9 @@ directory where it was unpacked and running tasks, for example to run
 ### OSX and Linux
 
     $ ./marytts install voice-cmu-slt
+    
+### for Centos 7
+   $ .marytts install cmu-slt
 
 ### Windows
 
